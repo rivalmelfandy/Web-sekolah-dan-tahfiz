@@ -8,23 +8,24 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * Tabel `users` mengikuti skema DBML: login memakai nip_nis + password,
+     * tanpa kolom email/username/status. Foreign key halaqah_id ditambahkan
+     * terpisah (migration add_halaqah_id_foreign) karena adanya referensi
+     * melingkar antara users <-> halaqah.
      */
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->string('nip_nis', 30)->unique();
             $table->string('password');
+            $table->string('nama_lengkap', 100);
+            $table->string('no_hp', 20)->nullable();
+            $table->enum('role', ['admin', 'ustadz', 'siswa'])->index();
+            $table->foreignId('halaqah_id')->nullable()->index();
             $table->rememberToken();
             $table->timestamps();
-        });
-
-        Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary();
-            $table->string('token');
-            $table->timestamp('created_at')->nullable();
         });
 
         Schema::create('sessions', function (Blueprint $table) {
@@ -43,7 +44,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
     }
 };

@@ -1,0 +1,1883 @@
+/*
+ * tahfiz.css
+ * Stylesheet Resmi Sistem Informasi & Monitoring Tahfiz "Tahfiz Yuk"
+ * SMA IT Al-Fadhilah Pekanbaru
+ * Palet Warna Wajib: Teal-Green (#11756D, #0D5C56, #E6F4F1) & Putih (#FFFFFF)
+ */
+
+:root {
+    --color-primary:       #11756D; /* Primary Teal-Green */
+    --color-primary-dark:  #0D5C56; /* Hover / Dark Teal-Green */
+    --color-primary-deep:  #0A2922; /* Deep Teal-Green untuk Sidebar (#0A2922) */
+    --color-accent:        #11756D;
+    --color-soft:          #E6F4F1; /* Soft Teal-Green Tint */
+    --color-soft-light:    #F4F7F6; /* Page Background / Light Soft */
+    --color-canvas:        #F4F7F6; /* Latar Halaman Putih Keabuan Sangat Lembut */
+    --color-card:          #FFFFFF; /* Kartu & Kontainer Putih Bersih */
+    --color-text:          #1E293B; /* Slate Gelap */
+    --color-muted:         #64748B; /* Abu-abu Sekunder */
+    --color-border:        #E2E8F0;
+    --color-gold:          #D97706;
+    --color-gold-light:    #FEF3C7;
+}
+
+/* ── Global Layout ─────────────────────────────────────────── */
+body.tahfiz-body, .tahfiz-app {
+    background-color: var(--color-canvas);
+    color: var(--color-text);
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+}
+
+/* ── Sidebar Sistem Monitoring Tahfiz (Seragam: 250px, #11756D) ─ */
+.tahfiz-sidebar, .admin-sidebar, .ustadz-sidebar, .siswa-sidebar {
+    width: 250px !important;
+    min-width: 250px !important;
+    max-width: 250px !important;
+    height: 100vh !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    background: linear-gradient(180deg, #11756D 0%, #0E625B 100%) !important;
+    color: #FFFFFF !important;
+    flex-shrink: 0 !important;
+    padding: 0 !important;
+    z-index: 1000 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow-y: auto !important;
+    scrollbar-width: none !important; /* Firefox */
+    -ms-overflow-style: none !important; /* IE/Edge */
+}
+
+.tahfiz-sidebar::-webkit-scrollbar, 
+.admin-sidebar::-webkit-scrollbar, 
+.ustadz-sidebar::-webkit-scrollbar, 
+.siswa-sidebar::-webkit-scrollbar {
+    display: none !important; /* Chrome, Safari, Opera */
+}
+
+/* Kontainer Utama di Sebelah Kanan Sidebar */
+.admin-content-wrapper, .ustadz-content-wrapper, .siswa-content-wrapper {
+    margin-left: 250px !important;
+    width: calc(100% - 250px) !important;
+    min-height: 100vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background-color: #F6F7F5 !important;
+}
+
+/* ── Brand Header Sidebar (Seragam – Admin / Ustadz / Siswa) ── */
+.admin-sidebar .sidebar-brand,
+.ustadz-sidebar .sidebar-brand,
+.siswa-sidebar .sidebar-brand {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 20px 18px 16px !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14) !important;
+}
+
+/* Kotak putih pembungkus logo */
+.admin-sidebar .sidebar-brand-logo,
+.ustadz-sidebar .sidebar-brand-logo,
+.siswa-sidebar .sidebar-brand-logo {
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    background: #FFFFFF !important;
+    border-radius: 10px !important;
+    padding: 5px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12) !important;
+    flex-shrink: 0 !important;
+}
+
+/* Gambar logo – max 32×32px di dalam kotak 42px, selalu proporsional di tengah */
+.admin-sidebar .sidebar-brand-logo img,
+.ustadz-sidebar .sidebar-brand-logo img,
+.siswa-sidebar .sidebar-brand-logo img {
+    width: 32px !important;
+    height: 32px !important;
+    max-width: 32px !important;
+    max-height: 32px !important;
+    object-fit: contain !important;
+    object-position: center !important;
+    display: block !important;
+}
+
+/* Judul & subjudul brand – identik di semua peran */
+.admin-sidebar .sidebar-brand-title,
+.ustadz-sidebar .sidebar-brand-title,
+.siswa-sidebar .sidebar-brand-title {
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    color: #FACC15 !important;
+    line-height: 1.2 !important;
+}
+
+.admin-sidebar .sidebar-brand-subtitle,
+.ustadz-sidebar .sidebar-brand-subtitle,
+.siswa-sidebar .sidebar-brand-subtitle {
+    font-size: 12px !important;
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-weight: 500 !important;
+    line-height: 1.2 !important;
+    margin-top: 2px !important;
+}
+
+/* ── Kartu Ringkas Profil Pengguna di Bawah Header ─────────── */
+.sidebar-user-card, .ustadz-user-info, .siswa-user-card {
+    margin: 14px 12px !important;
+    padding: 10px 12px !important;
+    background: rgba(255, 255, 255, 0.10) !important;
+    border: 1px solid rgba(255, 255, 255, 0.16) !important;
+    border-radius: 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+}
+
+.sidebar-user-avatar, .ustadz-user-avatar, .siswa-user-avatar {
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    font-weight: 700 !important;
+    font-size: 13px !important;
+    color: #FFFFFF !important;
+    background: #0B4F49 !important; /* Gelap Kontras #0B4F49 */
+    flex-shrink: 0 !important;
+}
+
+.sidebar-user-info, .ustadz-user-text, .siswa-user-text {
+    overflow: hidden !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.sidebar-user-name, .ustadz-user-role, .siswa-user-name {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: #FFFFFF !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    line-height: 1.3 !important;
+}
+
+.sidebar-user-status, .ustadz-user-name, .siswa-user-status {
+    font-size: 11px !important;
+    color: #A7F3D0 !important; /* Hijau mint terang #A7F3D0 */
+    font-weight: 500 !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+/* ── Label Kategori Menu ───────────────────────────────────── */
+.sidebar-menu-label, .ustadz-nav-label, .siswa-menu-label {
+    padding: 10px 20px 6px !important;
+    font-size: 11px !important;
+    letter-spacing: 0.08em !important;
+    color: rgba(255, 255, 255, 0.70) !important;
+    text-transform: uppercase !important;
+    font-weight: 700 !important;
+    display: block !important;
+}
+
+/* ── Link Navigasi Menu Lurus & Konsisten ──────────────────── */
+.admin-nav-link, .ustadz-nav-link, .siswa-nav-link, .tahfiz-nav-link {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 11px 14px !important;
+    margin: 4px 12px !important;
+    border-radius: 10px !important;
+    font-size: 13.5px !important;
+    font-weight: 500 !important;
+    color: rgba(255, 255, 255, 0.88) !important;
+    text-decoration: none !important;
+    transition: all 0.2s ease !important;
+    border: 1px solid transparent !important;
+}
+
+.admin-nav-link i, .ustadz-nav-link i, .siswa-nav-link i, .tahfiz-nav-link i {
+    width: 20px !important;
+    height: 20px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+    font-size: 16px !important;
+}
+
+.admin-nav-link:hover, .ustadz-nav-link:hover, .siswa-nav-link:hover, .tahfiz-nav-link:hover {
+    background: rgba(255, 255, 255, 0.10) !important;
+    color: #FFFFFF !important;
+}
+
+.admin-nav-link.active, .ustadz-nav-link.active, .siswa-nav-link.active, .tahfiz-nav-link.active {
+    background: rgba(255, 255, 255, 0.20) !important;
+    color: #FFFFFF !important;
+    font-weight: 600 !important;
+    border: 1px solid rgba(255, 255, 255, 0.28) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.10) !important;
+}
+
+/* ── Footer Sidebar Seragam (margin-top: auto) ─────────────── */
+.sidebar-footer, .ustadz-sidebar-footer, .siswa-sidebar-footer {
+    margin-top: auto !important;
+    padding: 16px 14px 20px !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.14) !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.btn-sidebar-logout {
+    width: 100% !important;
+    height: 42px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    background: #DC2626 !important;
+    color: #FFFFFF !important;
+    border: none !important;
+    border-radius: 10px !important;
+    font-size: 13.5px !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    transition: background 0.2s ease !important;
+}
+
+.btn-sidebar-logout:hover {
+    background: #B91C1C !important;
+    color: #FFFFFF !important;
+}
+
+/* ── Top Header / Navbar Dashboard ─────────────────────────── */
+.tahfiz-topbar {
+    background: var(--color-card) !important;
+    border-bottom: 1px solid var(--color-border) !important;
+    padding: 12px 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+/* ── Logo Proporsional ─────────────────────────────────────── */
+.tahfiz-logo, .tahfiz-header-logo, .login-logo-img {
+    height: 44px;
+    width: auto;
+    object-fit: contain;
+}
+
+/* Logo di topbar/breadcrumb – sejajar teks (24px) */
+.topbar-logo, .tahfiz-topbar-logo {
+    height: 24px !important;
+    width: auto !important;
+    object-fit: contain !important;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* ── Tombol Simpan & Aksi Tahfiz ───────────────────────────── */
+.btn-simpan-hafalan, .btn-tahfiz {
+    background-color: var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+    color: #FFFFFF !important;
+    font-weight: 700;
+    border-radius: 10px;
+    padding: 10px 20px;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 12px rgba(17, 117, 109, 0.2);
+}
+
+.btn-simpan-hafalan:hover, .btn-tahfiz:hover {
+    background-color: var(--color-primary-dark) !important;
+    border-color: var(--color-primary-dark) !important;
+    color: #FFFFFF !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(13, 92, 86, 0.35);
+}
+
+/* Override btn-primary di halaman Tahfiz agar selalu teal */
+.tahfiz-page .btn-primary,
+.admin-sidebar ~ div .btn-primary,
+.ustadz-sidebar ~ div .btn-primary,
+.siswa-sidebar ~ div .btn-primary,
+.btn-teal {
+    background-color: var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+    color: #FFFFFF !important;
+}
+
+.tahfiz-page .btn-primary:hover,
+.admin-sidebar ~ div .btn-primary:hover,
+.ustadz-sidebar ~ div .btn-primary:hover,
+.siswa-sidebar ~ div .btn-primary:hover,
+.btn-teal:hover {
+    background-color: var(--color-primary-dark) !important;
+    border-color: var(--color-primary-dark) !important;
+    color: #FFFFFF !important;
+}
+
+/* ── Tab & Seleksi Surah / Juz ─────────────────────────────── */
+.surah-select-btn, .santri-select-card {
+    border: 1.5px solid var(--color-border);
+    border-radius: 10px;
+    background: #FFFFFF;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.surah-select-btn:hover, .santri-select-card:hover {
+    border-color: var(--color-primary);
+    background: var(--color-soft);
+}
+
+.surah-select-btn.active {
+    border-color: var(--color-primary) !important;
+    background: var(--color-soft) !important;
+    color: var(--color-primary) !important;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(17, 117, 109, 0.15);
+}
+
+.santri-select-card.active {
+    border-color: var(--color-primary) !important;
+    background: var(--color-soft) !important;
+    border-left: 5px solid var(--color-primary) !important;
+}
+
+/* ── Badge Predikat Hafalan (Mumtaz, Jayyid, dll.) ──────────── */
+.badge-predikat-mumtaz, .badge-mumtaz {
+    background-color: var(--color-soft) !important;
+    color: var(--color-primary) !important;
+    font-weight: 700;
+    border: 1px solid #A2D5D2 !important;
+    padding: 6px 12px;
+    border-radius: 20px;
+}
+
+.badge-predikat-jayyid-jiddan, .badge-jayyid-jiddan {
+    background-color: var(--color-soft-light) !important;
+    color: var(--color-primary-dark) !important;
+    font-weight: 600;
+    border: 1px solid #CBD5E1 !important;
+    padding: 6px 12px;
+    border-radius: 20px;
+}
+
+.badge-status-teal, .badge-status-green {
+    background-color: var(--color-soft) !important;
+    color: var(--color-primary) !important;
+    border: 1px solid #A2D5D2 !important;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+}
+
+/* ── Form Controls Focus Teal ──────────────────────────────── */
+.form-control:focus, .form-select:focus {
+    border-color: var(--color-primary) !important;
+    box-shadow: 0 0 0 3px rgba(17, 117, 109, 0.2) !important;
+}
+
+/* ── Grafik Batang / Chart Capaian Halaqah ──────────────────── */
+.chart-bar-track {
+    width: 38px;
+    height: 140px;
+    background: #E2E8F0;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+    margin: 0 auto 10px;
+    position: relative;
+}
+
+.chart-bar-fill, .chart-bar-clean {
+    width: 100%;
+    background: linear-gradient(180deg, #136F5B 0%, #0F766E 100%);
+    border-radius: 8px 8px 0 0;
+    transition: height 0.4s ease;
+}
+
+.chart-bar-fill:hover, .chart-bar-clean:hover {
+    filter: brightness(1.08);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PROFIL SAYA — Desain Bersih Standar 2 Kolom
+   ═══════════════════════════════════════════════════════════════ */
+.profil-page-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #11756D;
+    margin-bottom: 6px;
+}
+
+.profil-page-subtitle {
+    font-size: 13.5px;
+    color: #64748B;
+    margin-bottom: 24px;
+}
+
+.profil-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 24px !important;
+    align-items: start !important;
+}
+
+.profil-card {
+    background: #FFFFFF !important;
+    border-radius: 16px !important;
+    padding: 28px !important;
+    border: 1px solid #E2E8F0 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03) !important;
+}
+
+.profil-card-title {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    color: #11756D !important;
+    margin-bottom: 20px !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.profil-field {
+    margin-bottom: 16px;
+}
+
+.profil-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1E293B;
+    margin-bottom: 6px;
+}
+
+.profil-input, .profil-field .form-control {
+    width: 100%;
+    height: 42px !important;
+    border-radius: 8px !important;
+    border: 1px solid #E2E8F0 !important;
+    padding: 0 14px !important;
+    font-size: 13.5px !important;
+    color: #1E293B !important;
+    background: #F1F5F9 !important;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.profil-input:focus, .profil-field .form-control:focus {
+    border-color: #11756D !important;
+    box-shadow: 0 0 0 3px rgba(17, 117, 109, 0.15) !important;
+    background: #FFFFFF !important;
+}
+
+.profil-input[readonly], .profil-field .form-control[readonly] {
+    background: #F8FAFC !important;
+    color: #64748B !important;
+    cursor: default;
+}
+
+.profil-hint {
+    display: block;
+    font-size: 11.5px;
+    color: #94A3B8;
+    margin-top: 4px;
+}
+
+.profil-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.profil-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 42px;
+    padding: 0 20px;
+    border-radius: 8px;
+    border: none;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.profil-btn:active {
+    transform: translateY(1px);
+}
+
+.profil-btn-primary {
+    background: #11756D !important;
+    color: #FFFFFF !important;
+}
+
+.profil-btn-primary:hover {
+    background: #0D5C56 !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 4px 10px rgba(17, 117, 109, 0.25);
+}
+
+.profil-btn-reset {
+    background: #F1F5F9 !important;
+    color: #64748B !important;
+    border: 1px solid #E2E8F0 !important;
+}
+
+.profil-btn-reset:hover {
+    background: #E2E8F0 !important;
+    color: #1E293B !important;
+}
+
+@media (max-width: 991.98px) {
+    .profil-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+    }
+}
+
+/* ── Tab Hafalan Ustadz: panel siswa, tabel surah, modal setoran & mushaf ── */
+.hafalan-layout {
+    display: grid;
+    grid-template-columns: 330px 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+.hafalan-panel {
+    background: #FFFFFF;
+    border-radius: 16px;
+    border: 1px solid #E2E8F0;
+    box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04);
+}
+
+.hafalan-panel-siswa {
+    padding: 24px;
+}
+
+.hafalan-panel-surah {
+    padding: 24px;
+    min-height: 520px;
+}
+
+.hafalan-panel-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 14px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #1E293B;
+}
+
+.hafalan-panel-title i {
+    font-size: 16px;
+    color: #334155;
+}
+
+.hafalan-search-wrap {
+    position: relative;
+    margin-bottom: 14px;
+}
+
+.hafalan-search-wrap i {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94A3B8;
+    font-size: 14px;
+    pointer-events: none;
+}
+
+#searchHafalanSiswa {
+    width: 100%;
+    height: 42px;
+    border: 1px solid #E2E8F0;
+    background: #F1F5F9;
+    border-radius: 10px;
+    padding: 0 14px 0 38px;
+    font-size: 13.5px;
+    color: #1E293B;
+    outline: none;
+}
+
+#searchHafalanSiswa::placeholder {
+    color: #94A3B8;
+}
+
+#searchHafalanSiswa:focus {
+    box-shadow: 0 0 0 3px rgba(17, 117, 109, 0.15);
+}
+
+.hafalan-siswa-card {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+    border: 1.5px solid transparent;
+    background: #F8FAFC;
+    border-radius: 12px;
+    padding: 12px 14px;
+    cursor: pointer;
+    margin-bottom: 0;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.hafalan-siswa-card:hover {
+    border-color: #11756D;
+    background: #F8FAFC;
+}
+
+.hafalan-siswa-card.aktif,
+.hafalan-siswa-card.active {
+    border-color: #11756D !important;
+    background: #F0FDF9 !important;
+    border-left: 5px solid #11756D !important;
+}
+
+.hafalan-avatar {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    border-radius: 50%;
+    background: #E2E8F0;
+    color: #64748B;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.hafalan-siswa-meta {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.hafalan-siswa-nama {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1E293B;
+    line-height: 1.3;
+}
+
+.hafalan-siswa-nis {
+    font-size: 11.5px;
+    color: #64748B;
+    margin-top: 2px;
+}
+
+.hafalan-empty {
+    min-height: 440px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 32px 24px;
+}
+
+.hafalan-empty p {
+    max-width: 420px;
+    margin: 0;
+    color: #64748B;
+    font-size: 14.5px;
+    line-height: 1.65;
+}
+
+.hafalan-surah-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    border-bottom: 1px solid #F1F5F9;
+    padding-bottom: 16px;
+    margin-bottom: 18px;
+}
+
+.hafalan-surah-head h2 {
+    margin: 0 0 4px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #0F172A;
+}
+
+.hafalan-surah-head p {
+    margin: 0;
+    color: #64748B;
+    font-size: 13.5px;
+}
+
+.hafalan-santri-pill {
+    background: #E6F4F1;
+    color: #11756D;
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.hafalan-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.hafalan-table th {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #64748B;
+    text-align: left;
+    padding: 12px 14px;
+    border-bottom: 1px solid #F1F5F9;
+}
+
+.hafalan-table td {
+    padding: 16px 14px;
+    border-bottom: 1px solid #F1F5F9;
+    vertical-align: middle;
+    font-size: 14px;
+    color: #1E293B;
+}
+
+.hafalan-table th.col-aksi,
+.hafalan-table td.col-aksi {
+    text-align: center;
+    width: 72px;
+}
+
+.hafalan-surah-cell {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+}
+
+#listHafalanSiswa {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 14px;
+    max-height: 480px;
+    overflow-y: auto;
+}
+
+.hafalan-surah-nama {
+    font-weight: 600;
+    color: #1E293B;
+}
+
+.hafalan-arab {
+    font-family: 'Amiri', serif;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.btn-baca-ayat {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    border: 1px solid #FFEDD5;
+    border-radius: 8px;
+    background: #FFF7ED;
+    color: #EA580C;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-left: 10px;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.btn-baca-ayat:hover {
+    background: #FFEDD5;
+}
+
+.btn-setoran-plus {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    border: none;
+    border-radius: 8px;
+    background: #11756D;
+    color: #FFFFFF;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-setoran-plus:hover {
+    background: #0D5C56;
+    color: #FFFFFF;
+}
+
+.hafalan-badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.hafalan-badge-selesai {
+    background: #DCFCE7;
+    color: #15803D;
+}
+
+.hafalan-badge-berjalan {
+    background: #FEF3C7;
+    color: #B45309;
+}
+
+.hafalan-badge-belum {
+    background: #F1F5F9;
+    color: #64748B;
+}
+
+.hafalan-modal-setoran {
+    max-width: 560px;
+}
+
+#modalInputSetoran .modal-content {
+    border: none;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.18);
+}
+
+#modalInputSetoran .modal-header,
+#modalInputSetoran .modal-body,
+#modalInputSetoran .modal-footer {
+    padding: 0;
+    border: 0;
+}
+
+#modalInputSetoran .modal-header {
+    align-items: flex-start;
+    margin-bottom: 18px;
+}
+
+#modalInputSetoran .modal-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0F172A;
+}
+
+.hafalan-modal-sub {
+    margin: 4px 0 0;
+    color: #64748B;
+    font-size: 13px;
+}
+
+#modalInputSetoran .modal-body {
+    margin-bottom: 18px;
+}
+
+.hafalan-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 16px;
+}
+
+.hafalan-form-full {
+    grid-column: 1 / -1;
+}
+
+.hafalan-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #64748B;
+}
+
+#modalInputSetoran .hafalan-field {
+    background-color: #EEF2F6;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    height: 44px;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: #1E293B;
+    box-shadow: none;
+}
+
+#modalInputSetoran textarea.hafalan-field {
+    height: auto;
+    min-height: 88px;
+    padding: 12px 14px;
+    resize: vertical;
+}
+
+#modalInputSetoran .hafalan-field:focus {
+    background-color: #EEF2F6;
+    box-shadow: 0 0 0 3px rgba(17, 117, 109, 0.15);
+}
+
+.hafalan-ayat-error {
+    margin: 10px 0 0;
+    color: #DC2626;
+    font-size: 12.5px;
+    font-weight: 600;
+}
+
+#modalInputSetoran .modal-footer {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-simpan-setoran,
+.btn-batal-setoran,
+.btn-tutup-mushaf {
+    border: none;
+    border-radius: 10px;
+    height: 46px;
+    font-weight: 700;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-simpan-setoran {
+    flex: 1;
+    background: #11756D;
+    color: #FFFFFF;
+}
+
+.btn-simpan-setoran:hover {
+    background: #0D5C56;
+    color: #FFFFFF;
+}
+
+.btn-batal-setoran {
+    flex: 1;
+    background: #F1F5F9;
+    color: #EF4444;
+}
+
+.btn-batal-setoran:hover {
+    background: #E2E8F0;
+    color: #DC2626;
+}
+
+.hafalan-modal-mushaf {
+    max-width: 680px;
+}
+
+#modalBacaSurah .modal-content {
+    border: none;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.18);
+}
+
+.mushaf-header {
+    background: #E6F4F1;
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.mushaf-header h5 {
+    margin: 0 0 4px;
+    color: #11756D;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.mushaf-judul-arab {
+    font-family: 'Amiri', serif;
+    font-size: 22px;
+}
+
+.mushaf-header p {
+    margin: 0;
+    color: #64748B;
+    font-size: 13px;
+}
+
+.mushaf-header-tools {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+}
+
+.mushaf-filter {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.mushaf-filter label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748B;
+    margin: 0;
+}
+
+#filterAyatMushaf {
+    width: 148px;
+    height: 38px;
+    border-radius: 10px;
+    border: none;
+    background-color: #FFFFFF;
+    font-size: 13px;
+    box-shadow: none;
+}
+
+.mushaf-body {
+    position: relative;
+    background: #FFFFFF;
+    max-height: 440px;
+    overflow-y: auto;
+    padding: 8px 24px 12px;
+}
+
+.mushaf-ayat {
+    padding: 14px 8px 16px;
+    border-bottom: 1px solid #F1F5F9;
+}
+
+.mushaf-ayat.aktif {
+    background: #F0FDF9;
+    border-radius: 12px;
+}
+
+.mushaf-ayat-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.mushaf-no {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border-radius: 10px;
+    background: #E6F4F1;
+    color: #11756D;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.mushaf-arab {
+    flex: 1;
+    margin: 0;
+    text-align: right;
+    direction: rtl;
+    font-family: 'Amiri', serif;
+    font-size: 24px;
+    line-height: 2;
+    color: #0F172A;
+}
+
+.mushaf-latin {
+    margin: 8px 0 2px;
+    color: #11756D;
+    font-weight: 700;
+    font-size: 14.5px;
+}
+
+.mushaf-terjemah {
+    margin: 0;
+    color: #475569;
+    font-size: 14px;
+}
+
+.mushaf-ket {
+    margin: 6px 0 0;
+    color: #94A3B8;
+    font-size: 12px;
+}
+
+.mushaf-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 16px 24px 20px;
+    background: #FFFFFF;
+}
+
+.btn-tutup-mushaf {
+    background: #11756D;
+    color: #FFFFFF;
+    padding: 0 22px;
+}
+
+.btn-tutup-mushaf:hover {
+    background: #0D5C56;
+    color: #FFFFFF;
+}
+
+#toastHafalan {
+    border: none;
+    border-radius: 12px;
+    background: #FFFFFF;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+}
+
+#toastHafalan .toast-body {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    color: #14532D;
+    font-size: 13.5px;
+    font-weight: 600;
+}
+
+@media (max-width: 991.98px) {
+    .hafalan-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .hafalan-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hafalan-surah-head {
+        flex-direction: column;
+    }
+}
+
+/* ── UI Komponen Pendukung Ustadz (KPI & Halaqah) ─────────────── */
+.kpi-stat-card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 20px;
+    border: 1px solid #E2E8F0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+    transition: transform 0.2s;
+}
+
+.kpi-stat-card:hover {
+    transform: translateY(-2px);
+    border-color: #11756D;
+}
+
+.santri-avatar-initial {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.82rem;
+    font-weight: 700;
+    background: #F1F5F9;
+    color: #475569;
+    border: 1px solid #E2E8F0;
+    transition: all 0.2s ease;
+}
+
+.santri-select-card.active .santri-avatar-initial {
+    background: #11756D;
+    color: #ffffff;
+    border-color: #11756D;
+}
+
+.row-surah-clickable {
+    transition: background-color 0.15s ease;
+}
+
+.row-surah-clickable:hover {
+    background-color: #F8FAFC !important;
+}
+
+.row-surah-clickable:hover .btn-tahfiz {
+    transform: scale(1.08);
+}
+
+/* ── Tab Target Hafalan Santri (Figma Exact) ─────────────────── */
+.target-panel {
+    border: 1px solid #E2E8F0;
+    border-radius: 16px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+
+.target-siswa-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 12px;
+    background: #FFFFFF;
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.target-siswa-card:hover {
+    border-color: #11756D;
+    background: #F8FFFD;
+    transform: translateX(2px);
+}
+
+.target-siswa-card.aktif {
+    border-color: #11756D !important;
+    background: #F0FDF9 !important;
+    border-left: 5px solid #11756D !important;
+}
+
+.target-field {
+    height: 44px;
+    border-radius: 10px;
+    border: 1px solid #E2E8F0;
+    background-color: #F8FAFC;
+    font-size: 13.5px;
+    color: #1E293B;
+    transition: border-color 0.15s ease;
+}
+
+.target-field:focus {
+    border-color: #11756D;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(17, 117, 109, 0.15);
+    background-color: #FFFFFF;
+}
+
+.target-select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2364748B' d='M1.4.6 6 5.2 10.6.6 12 2l-6 6-6-6z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 38px;
+}
+
+.btn-target-simpan {
+    height: 44px;
+    background-color: #11756D;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 0 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.btn-target-simpan:hover {
+    background-color: #0D5C56;
+    color: #FFFFFF;
+    box-shadow: 0 4px 12px rgba(17, 117, 109, 0.25);
+}
+
+.btn-target-batal {
+    height: 44px;
+    background-color: #E2E8F0;
+    color: #EF4444;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 0 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-target-batal:hover {
+    background-color: #CBD5E1;
+    color: #DC2626;
+}
+
+.preset-pill-btn {
+    border: 1.5px solid #CBD5E1;
+    background: #FFFFFF;
+    color: #334155;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.preset-pill-btn:hover {
+    border-color: #11756D;
+    background: #F0FDF9;
+    color: #11756D;
+    transform: translateY(-1px);
+}
+
+.preset-pill-btn.active {
+    border-color: #11756D;
+    background: #11756D;
+    color: #FFFFFF;
+    box-shadow: 0 2px 8px rgba(17, 117, 109, 0.25);
+}
+
+.duration-pill-btn {
+    border: 1px solid #E2E8F0;
+    background: #F8FAFC;
+    color: #475569;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.duration-pill-btn:hover, .duration-pill-btn.active {
+    border-color: #11756D;
+    background: #E6F4F1;
+    color: #11756D;
+}
+
+.visual-route-card {
+    background: linear-gradient(135deg, #F0FDF4 0%, #ECFDF5 100%);
+    border: 1.5px solid #86EFAC;
+    border-radius: 14px;
+    padding: 16px 20px;
+    position: relative;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   USTADZ HALAMAN — Selector tambahan (dipindah dari inline style)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Surah Selector Button (tab Hafalan) */
+.surah-select-btn {
+    border: 1.5px solid #E2E8F0;
+    border-radius: 10px;
+    padding: 10px 14px;
+    cursor: pointer;
+    background: #ffffff;
+    text-align: left;
+    transition: all 0.2s;
+    width: 100%;
+}
+
+.surah-select-btn:hover {
+    border-color: #11756D;
+    background: #F4F7F6;
+}
+
+.surah-select-btn.active {
+    border-color: #11756D;
+    background: #E6F4F1;
+    font-weight: 700;
+    color: #0D5C56;
+}
+
+/* Hafalan Tab — Panel kiri komentar override */
+/* Panel Kiri – Search */
+.hafalan-panel-title i {
+    color: #334155;
+}
+
+/* Panel Kanan – komentar label tabel */
+.hafalan-surah-head > div > p {
+    margin: 0;
+    color: #64748B;
+    font-size: 13.5px;
+}
+
+/* Preset Pill & Duration (tab Target) */
+.preset-pill-btn {
+    border: 1.5px solid #CBD5E1;
+    background: #FFFFFF;
+    color: #334155;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.preset-pill-btn:hover {
+    border-color: #11756D;
+    background: #F0FDF9;
+    color: #11756D;
+    transform: translateY(-1px);
+}
+
+.preset-pill-btn.active {
+    border-color: #11756D;
+    background: #11756D;
+    color: #FFFFFF;
+    box-shadow: 0 2px 8px rgba(17, 117, 109, 0.25);
+}
+
+.duration-pill-btn {
+    border: 1px solid #E2E8F0;
+    background: #F8FAFC;
+    color: #475569;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.duration-pill-btn:hover,
+.duration-pill-btn.active {
+    border-color: #11756D;
+    background: #E6F4F1;
+    color: #11756D;
+}
+
+.visual-route-card {
+    background: linear-gradient(135deg, #F0FDF4 0%, #ECFDF5 100%);
+    border: 1.5px solid #86EFAC;
+    border-radius: 14px;
+    padding: 16px 20px;
+    position: relative;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TAB MURAJAAH — selector spesifik ID (mirror dari tab Hafalan)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Input pencarian panel kiri Murajaah — identik dengan #searchHafalanSiswa */
+#searchMurajaahSiswa {
+    width: 100%;
+    height: 42px;
+    border: 1px solid #E2E8F0;
+    background: #F1F5F9;
+    border-radius: 10px;
+    padding: 0 14px 0 38px;
+    font-size: 13.5px;
+    color: #1E293B;
+    outline: none;
+}
+
+#searchMurajaahSiswa::placeholder {
+    color: #94A3B8;
+}
+
+#searchMurajaahSiswa:focus {
+    box-shadow: 0 0 0 3px rgba(17, 117, 109, 0.15);
+}
+
+/* Daftar siswa panel kiri Murajaah */
+#listMurajaahSiswa {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 14px;
+    max-height: 480px;
+    overflow-y: auto;
+}
+
+/* Modal Evaluasi Murajaah — identik dengan #modalInputSetoran */
+#modalEvaluasiMurajaah .modal-content {
+    border: none;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.18);
+}
+
+#modalEvaluasiMurajaah .modal-header,
+#modalEvaluasiMurajaah .modal-body,
+#modalEvaluasiMurajaah .modal-footer {
+    padding: 0;
+    border: 0;
+}
+
+#modalEvaluasiMurajaah .modal-header {
+    align-items: flex-start;
+    margin-bottom: 18px;
+}
+
+#modalEvaluasiMurajaah .modal-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0F172A;
+}
+
+#modalEvaluasiMurajaah .modal-body {
+    margin-bottom: 18px;
+}
+
+#modalEvaluasiMurajaah .modal-footer {
+    display: flex;
+    gap: 12px;
+}
+
+#modalEvaluasiMurajaah .hafalan-field {
+    background-color: #EEF2F6;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    height: 44px;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: #1E293B;
+    box-shadow: none;
+}
+
+#modalEvaluasiMurajaah textarea.hafalan-field {
+    height: auto;
+    min-height: 88px;
+    resize: vertical;
+}
+
+#modalEvaluasiMurajaah .hafalan-field:focus {
+    border-color: #11756D;
+    box-shadow: 0 0 0 3px rgba(17, 117, 109, 0.15);
+}
+
+/* Select dikunci (disabled) di modal Murajaah */
+#murajaahAyatAwal,
+#murajaahAyatAkhir {
+    background-color: #F1F5F9 !important;
+    color: #64748B !important;
+    cursor: not-allowed !important;
+    opacity: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   HAFALAN — Input Angka Ayat (menggantikan <select>)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Input number di modal setoran — tampilan identik dengan hafalan-field */
+.hafalan-input-ayat {
+    /* Sembunyikan spinner browser bawaan */
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+.hafalan-input-ayat::-webkit-outer-spin-button,
+.hafalan-input-ayat::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* State peringatan saat nilai melebihi maks */
+.hafalan-input-ayat--warn {
+    border-color: #D97706 !important;
+    box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.18) !important;
+}
+
+/* Teks hint rentang ayat di bawah input */
+.hafalan-ayat-hint {
+    display: block;
+    font-size: 11.5px;
+    color: #64748B;
+    margin-top: 4px;
+    line-height: 1.4;
+    min-height: 1.4em; /* cegah layout shift saat teks muncul */
+}
+
+/* ── Modal Mushaf — Input Lompat Ayat ───────────────────────── */
+
+/* Wrapper input + tombol lompat */
+.mushaf-filter-wrap {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Input number lompat ayat */
+.mushaf-filter-input {
+    width: 72px;
+    height: 38px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.92);
+    color: #0F172A;
+    font-size: 13.5px;
+    font-weight: 600;
+    text-align: center;
+    padding: 0 8px;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    /* Sembunyikan spinner */
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+.mushaf-filter-input::-webkit-outer-spin-button,
+.mushaf-filter-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.mushaf-filter-input:focus {
+    border-color: #11756D;
+    box-shadow: 0 0 0 3px rgba(17, 117, 109, 0.22);
+    background: #fff;
+}
+
+.mushaf-filter-input::placeholder {
+    color: #94A3B8;
+    font-weight: 400;
+}
+
+/* Tombol lompat (ikon panah) */
+.mushaf-filter-btn {
+    width: 36px;
+    height: 38px;
+    border: none;
+    border-radius: 10px;
+    background: #11756D;
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 20px;
+    flex-shrink: 0;
+    transition: background 0.2s ease;
+}
+
+.mushaf-filter-btn:hover {
+    background: #0D5C56;
+}
+
+.mushaf-filter-btn:active {
+    transform: scale(0.94);
+}
+
+/* Feedback / pesan error inline di bawah filter mushaf */
+.mushaf-filter-feedback {
+    display: block;
+    font-size: 11px;
+    color: #FDE68A;
+    margin-top: 4px;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+
+/* Label "Lompat ke Ayat" di atas input */
+.mushaf-filter label {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.80);
+    margin-bottom: 4px;
+    display: block;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   MODUL SISWA — Badge Kualitas Hafalan & Tombol Lihat Detail
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Badge Kualitas Hafalan — Lancar */
+.badge-kualitas-lancar {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 4px 11px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    background-color: #DCFCE7;
+    color: #15803D;
+}
+
+/* Badge Kualitas Hafalan — Kurang Lancar */
+.badge-kualitas-kurang {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 4px 11px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    background-color: #FEF3C7;
+    color: #B45309;
+}
+
+/* Badge Kualitas Hafalan — Tidak Lancar */
+.badge-kualitas-tidak {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 4px 11px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    background-color: #FEE2E2;
+    color: #B91C1C;
+}
+
+/* Badge Kategori — Setoran (teal lembut) */
+.badge-kategori-setoran {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 4px 11px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    background-color: #E6F4F1;
+    color: #11756D;
+}
+
+/* Badge Kategori — Murajaah (amber lembut) */
+.badge-kategori-murajaah {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 4px 11px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    background-color: #FEF3C7;
+    color: #B45309;
+}
+
+/* Badge Kategori — Hafalan Baru (teal lembut) */
+.badge-kategori-hafalan-baru {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 4px 11px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    background-color: #E6F4F1;
+    color: #11756D;
+}
+
+/* Tombol ikon Lihat Detail */
+.btn-lihat-detail {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    background: #F8FAFC;
+    color: #11756D;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 15px;
+    transition: background 0.15s ease, border-color 0.15s ease;
+    text-decoration: none;
+}
+
+.btn-lihat-detail:hover {
+    background: #E6F4F1;
+    border-color: #11756D;
+    color: #0D5C56;
+}
+
+/* Modal Detail Riwayat Siswa */
+#modalDetailRiwayatSiswa .modal-content {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.18);
+}
+
+#modalDetailRiwayatSiswa .modal-header {
+    background: #E6F4F1;
+    border-radius: 16px 16px 0 0;
+    border-bottom: none;
+    padding: 20px 24px;
+}
+
+#modalDetailRiwayatSiswa .modal-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #0F172A;
+}
+
+#modalDetailRiwayatSiswa .modal-body {
+    padding: 24px;
+}
+
+#modalDetailRiwayatSiswa .modal-footer {
+    padding: 16px 24px 20px;
+    border-top: 1px solid #F1F5F9;
+}
+
+/* Baris info dalam modal detail */
+.detail-info-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid #F1F5F9;
+}
+
+.detail-info-row:last-child {
+    border-bottom: none;
+}
+
+.detail-info-label {
+    min-width: 130px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #64748B;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding-top: 2px;
+}
+
+.detail-info-value {
+    font-size: 14px;
+    font-weight: 500;
+    color: #1E293B;
+    flex: 1;
+}
+
+/* Kotak kutipan catatan ustadz */
+.detail-catatan-box {
+    background: #F4F7F6;
+    border-left: 3px solid #11756D;
+    border-radius: 0 8px 8px 0;
+    padding: 12px 14px;
+    font-size: 13.5px;
+    color: #475569;
+    font-style: italic;
+    line-height: 1.6;
+    margin: 0;
+}

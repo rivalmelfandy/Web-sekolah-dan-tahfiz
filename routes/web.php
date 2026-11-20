@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\HalaqahController as AdminHalaqahController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\Siswa\DashboardController as SiswaDashboardController;
@@ -50,4 +52,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/siswa', [SiswaDashboardController::class, 'index'])
         ->name('siswa.dashboard')
         ->middleware('role:siswa');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tahap 3 — CRUD Admin: Pengguna & Halaqah
+    |
+    */
+
+    Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
+        Route::resource('users', AdminUserController::class)->except(['show']);
+        Route::resource('halaqah', AdminHalaqahController::class)->except(['show']);
+    });
 });

@@ -97,9 +97,16 @@
                         <div class="input-group">
                             <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock-fill"></i></span>
                             <input type="password" name="password" id="password"
-                                   class="form-control border-start-0 {{ $errors->has('password') ? 'is-invalid' : '' }}"
+                                   class="form-control border-start-0 border-end-0 {{ $errors->has('password') ? 'is-invalid' : '' }}"
                                    placeholder="Masukkan password"
                                    autocomplete="current-password" required>
+                            <button type="button"
+                                    id="togglePassword"
+                                    class="input-group-text bg-light border-start-0"
+                                    aria-label="Tampilkan password"
+                                    style="cursor:pointer;">
+                                <i class="bi bi-eye" id="togglePasswordIcon"></i>
+                            </button>
                         </div>
                         @error('password')
                             <div class="invalid-feedback d-block small">{{ $message }}</div>
@@ -117,6 +124,20 @@
                         <i class="bi bi-box-arrow-in-right me-1"></i>Masuk
                     </button>
                 </form>
+
+                <script>
+                    (function () {
+                        const btn  = document.getElementById('togglePassword');
+                        const inp  = document.getElementById('password');
+                        const icon = document.getElementById('togglePasswordIcon');
+                        btn.addEventListener('click', function () {
+                            const isHidden = inp.type === 'password';
+                            inp.type            = isHidden ? 'text' : 'password';
+                            icon.className      = isHidden ? 'bi bi-eye-slash' : 'bi bi-eye';
+                            btn.setAttribute('aria-label', isHidden ? 'Sembunyikan password' : 'Tampilkan password');
+                        });
+                    })();
+                </script>
 
                 <hr class="my-4">
 

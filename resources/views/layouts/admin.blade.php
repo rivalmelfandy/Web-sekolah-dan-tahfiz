@@ -282,15 +282,13 @@
                 Kelompok Halaqah
             </a>
         </li>
-        @if(Route::has('admin.laporan'))
         <li>
-            <a href="{{ route('admin.laporan') }}"
-               class="sb-link {{ request()->routeIs('admin.laporan*') ? 'active' : '' }}">
+            <a href="{{ route('admin.rekap-tahfidz') }}"
+               class="sb-link {{ request()->routeIs('admin.rekap-tahfidz') ? 'active' : '' }}">
                 <i class="bi bi-file-earmark-bar-graph"></i>
-                Laporan Tahfiz
+                Rekap Tahfidz
             </a>
         </li>
-        @endif
     </ul>
 
     <div class="sb-spacer"></div>

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\HalaqahController as AdminHalaqahController;
+use App\Http\Controllers\Admin\RekapTahfidzController as AdminRekapTahfidzController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PublicController;
@@ -62,5 +63,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::resource('users', AdminUserController::class)->except(['show']);
         Route::resource('halaqah', AdminHalaqahController::class)->except(['show']);
+        Route::get('rekap-tahfidz', [AdminRekapTahfidzController::class, 'index'])
+            ->name('rekap-tahfidz');
     });
 });

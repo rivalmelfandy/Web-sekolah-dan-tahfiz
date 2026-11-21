@@ -2,9 +2,31 @@
 
 @section('breadcrumb', 'Edit Halaqah')
 
+@section('styles')
+<style>
+    .form-label { font-size: .82rem; font-weight: 600; color: #374151; }
+    .form-control:focus, .form-select:focus {
+        border-color: #047857;
+        box-shadow: 0 0 0 3px rgba(4,120,87,.12);
+    }
+    .siswa-item:hover { background: #F0FDF4; }
+    .form-check-input:checked { background-color: #047857; border-color: #047857; }
+    .btn-simpan-hlq {
+        background: #047857; border: none; color: #fff;
+        border-radius: 8px; padding: .5rem 1.25rem;
+        font-size: .85rem; font-weight: 600;
+        display: inline-flex; align-items: center; gap: .4rem;
+        transition: background .15s;
+    }
+    .btn-simpan-hlq:hover  { background: #065F46; color: #fff; }
+    .btn-simpan-hlq:active { background: #064E3B; color: #fff; }
+</style>
+@endsection
+
 @section('content')
 
-<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+{{-- ── Breadcrumb / Header ──────────────────────────────────────────── --}}
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4">
     <div>
         <h2 class="fw-bold mb-0 h4" style="color:#1F4172;">
             <i class="bi bi-pencil me-2"></i>Edit Halaqah
@@ -12,7 +34,7 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0 small">
                 <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}" class="text-decoration-none">Dashboard</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('admin.halaqah.index') }}" class="text-decoration-none">Halaqah</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('admin.halaqah.index') }}" class="text-decoration-none">Kelompok Halaqah</a></li>
                 <li class="breadcrumb-item active">Edit</li>
             </ol>
         </nav>
@@ -21,73 +43,126 @@
 
 @include('admin._alert')
 
-<div class="card border-0 shadow-sm rounded-4" style="max-width: 560px;">
-    <div class="card-body p-4 p-md-5">
-        <form method="POST" action="{{ route('admin.halaqah.update', $halaqah) }}">
-            @csrf
-            @method('PUT')
-
-            {{-- Kode Halaqah --}}
-            <div class="mb-3">
-                <label for="kode_halaqah" class="form-label fw-semibold small">Kode Halaqah <span class="text-danger">*</span></label>
-                <input type="text" id="kode_halaqah" name="kode_halaqah"
-                       class="form-control @error('kode_halaqah') is-invalid @enderror"
-                       value="{{ old('kode_halaqah', $halaqah->kode_halaqah) }}" maxlength="20" required>
-                @error('kode_halaqah')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
-            {{-- Nama Halaqah --}}
-            <div class="mb-3">
-                <label for="nama_halaqah" class="form-label fw-semibold small">Nama Halaqah <span class="text-danger">*</span></label>
-                <input type="text" id="nama_halaqah" name="nama_halaqah"
-                       class="form-control @error('nama_halaqah') is-invalid @enderror"
-                       value="{{ old('nama_halaqah', $halaqah->nama_halaqah) }}" maxlength="50" required>
-                @error('nama_halaqah')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
-            {{-- Ustadz Pembimbing --}}
-            <div class="mb-3">
-                <label for="ustadz_id" class="form-label fw-semibold small">Ustadz Pembimbing</label>
-                <select id="ustadz_id" name="ustadz_id"
-                        class="form-select @error('ustadz_id') is-invalid @enderror">
-                    <option value="">— Belum Ditentukan —</option>
-                    @foreach($ustadzList as $u)
-                        <option value="{{ $u->id }}"
-                            {{ old('ustadz_id', $halaqah->ustadz_id) == $u->id ? 'selected' : '' }}>
-                            {{ $u->nama_lengkap }} ({{ $u->nip_nis }})
-                        </option>
-                    @endforeach
-                </select>
-                @error('ustadz_id')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
-            {{-- Target Juz --}}
-            <div class="mb-4">
-                <label for="target_juz" class="form-label fw-semibold small">Target Juz</label>
-                <input type="text" id="target_juz" name="target_juz"
-                       class="form-control @error('target_juz') is-invalid @enderror"
-                       value="{{ old('target_juz', $halaqah->target_juz) }}" maxlength="50">
-                @error('target_juz')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-primary fw-semibold">
-                    <i class="bi bi-check-lg me-1"></i>Perbarui
-                </button>
-                <a href="{{ route('admin.halaqah.index') }}" class="btn btn-outline-secondary fw-semibold">
-                    Batal
-                </a>
-            </div>
-        </form>
+{{-- ── Error validasi ───────────────────────────────────────────────── --}}
+@if($errors->any())
+<div class="alert alert-danger d-flex align-items-start gap-2 py-2 mb-3" role="alert">
+    <i class="bi bi-exclamation-triangle-fill flex-shrink-0 mt-1"></i>
+    <div class="small">
+        <div class="fw-semibold mb-1">Mohon perbaiki kesalahan berikut:</div>
+        <ul class="mb-0 ps-3">
+            @foreach($errors->all() as $e)<li>{{ $e }}</li>@endforeach
+        </ul>
     </div>
 </div>
+@endif
 
+{{-- ── FORM ─────────────────────────────────────────────────────────── --}}
+<form method="POST" action="{{ route('admin.halaqah.update', $halaqah) }}" id="formEditHalaqah">
+@csrf
+@method('PUT')
+
+<div class="row g-4 align-items-start">
+
+    {{-- ── Kolom kiri: Detail halaqah ──────────────────────────────── --}}
+    <div class="col-12 col-xl-5">
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-header bg-transparent border-0 pt-4 px-4 pb-0">
+                <h3 class="fw-bold mb-0 h6" style="color:#047857;">
+                    <i class="bi bi-collection me-1"></i>Detail Kelompok
+                </h3>
+            </div>
+            <div class="card-body px-4 pb-4 pt-3">
+
+                {{-- Kode Halaqah --}}
+                <div class="mb-3">
+                    <label for="kode_halaqah" class="form-label">Kode Halaqah <span class="text-danger">*</span></label>
+                    <input type="text" id="kode_halaqah" name="kode_halaqah"
+                           class="form-control @error('kode_halaqah') is-invalid @enderror"
+                           value="{{ old('kode_halaqah', $halaqah->kode_halaqah) }}" maxlength="20" required>
+                    @error('kode_halaqah')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+
+                {{-- Nama Halaqah --}}
+                <div class="mb-3">
+                    <label for="nama_halaqah" class="form-label">Nama Halaqah <span class="text-danger">*</span></label>
+                    <input type="text" id="nama_halaqah" name="nama_halaqah"
+                           class="form-control @error('nama_halaqah') is-invalid @enderror"
+                           value="{{ old('nama_halaqah', $halaqah->nama_halaqah) }}" maxlength="50" required>
+                    @error('nama_halaqah')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+
+                {{-- Ustadz Pembimbing --}}
+                <div class="mb-3">
+                    <label for="ustadz_id" class="form-label">Ustadz Pembimbing</label>
+                    <select id="ustadz_id" name="ustadz_id"
+                            class="form-select @error('ustadz_id') is-invalid @enderror">
+                        <option value="">— Belum Ditentukan —</option>
+                        @foreach($ustadzList as $u)
+                            <option value="{{ $u->id }}"
+                                {{ old('ustadz_id', $halaqah->ustadz_id) == $u->id ? 'selected' : '' }}>
+                                {{ $u->nama_lengkap }} ({{ $u->nip_nis }})
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('ustadz_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+
+                {{-- Target Juz --}}
+                <div class="mb-0">
+                    <label for="target_juz" class="form-label">Target Juz</label>
+                    <input type="text" id="target_juz" name="target_juz"
+                           class="form-control @error('target_juz') is-invalid @enderror"
+                           value="{{ old('target_juz', $halaqah->target_juz) }}" maxlength="50">
+                    @error('target_juz')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    {{-- ── Kolom kanan: Panel Anggota Siswa ────────────────────────── --}}
+    <div class="col-12 col-xl-7">
+        @include('admin.halaqah._panel_siswa', [
+            'siswaList'         => $siswaList,
+            'checkedIds'        => $siswaHalaqahIni,
+            'currentHalaqahId'  => $halaqah->id,
+        ])
+    </div>
+
+</div>
+
+{{-- ── Tombol aksi ──────────────────────────────────────────────────── --}}
+<div class="d-flex justify-content-end align-items-center gap-3 mt-4">
+    <a href="{{ route('admin.halaqah.index') }}"
+       class="btn btn-link text-secondary text-decoration-none fw-semibold">
+        Batal
+    </a>
+    <button type="submit" class="btn-simpan-hlq">
+        <i class="bi bi-check-circle-fill"></i>Simpan Perubahan
+    </button>
+</div>
+
+</form>
+
+@endsection
+
+@section('scripts')
+<script>
+function updateBadge() {
+    const count = document.querySelectorAll('.siswa-checkbox:checked').length;
+    document.getElementById('badgeSiswa').textContent = count + ' siswa dipilih';
+}
+
+function filterSiswa(q) {
+    const kata = q.toLowerCase().trim();
+    document.querySelectorAll('.siswa-item').forEach(function (el) {
+        const cocok = !kata
+            || el.dataset.nama.includes(kata)
+            || el.dataset.nis.includes(kata);
+        el.style.display = cocok ? '' : 'none';
+    });
+}
+
+document.addEventListener('DOMContentLoaded', updateBadge);
+</script>
 @endsection

@@ -37,22 +37,41 @@ class HalaqahController extends Controller
             ->orderBy('nama_lengkap')
             ->get(['id', 'nama_lengkap', 'nip_nis']);
 
-        return view('admin.halaqah.create', compact('ustadzList'));
+        // Semua siswa dengan info halaqah saat ini untuk panel pemilihan anggota.
+        $siswaList = User::where('role', UserRole::Siswa)
+            ->with('halaqah:id,nama_halaqah')
+            ->orderBy('nama_lengkap')
+            ->get(['id', 'nama_lengkap', 'nip_nis', 'halaqah_id']);
+
+        return view('admin.halaqah.create', compact('ustadzList', 'siswaList'));
     }
 
     /**
      * Simpan halaqah baru.
+     * Setelah record halaqah dibuat, perbarui halaqah_id untuk siswa yang dicentang.
      */
     public function store(StoreHalaqahRequest $request): RedirectResponse
     {
         $data = $request->validated();
 
-        // Pastikan target_juz terisi default jika dikosongkan.
         if (empty($data['target_juz'])) {
             $data['target_juz'] = 'Juz 29 - 30';
         }
 
-        Halaqah::create($data);
+        $halaqah = Halaqah::create([
+            'kode_halaqah' => $data['kode_halaqah'],
+            'nama_halaqah' => $data['nama_halaqah'],
+            'ustadz_id' => $data['ustadz_id'] ?? null,
+            'target_juz' => $data['target_juz'],
+        ]);
+
+        // Tetapkan halaqah_id untuk siswa yang dicentang (hanya role=siswa).
+        $siswaIds = $data['siswa_ids'] ?? [];
+        if (! empty($siswaIds)) {
+            User::where('role', UserRole::Siswa)
+                ->whereIn('id', $siswaIds)
+                ->update(['halaqah_id' => $halaqah->id]);
+        }
 
         return redirect()
             ->route('admin.halaqah.index')
@@ -68,11 +87,27 @@ class HalaqahController extends Controller
             ->orderBy('nama_lengkap')
             ->get(['id', 'nama_lengkap', 'nip_nis']);
 
-        return view('admin.halaqah.edit', compact('halaqah', 'ustadzList'));
+        // Semua siswa: anggota halaqah ini ditandai, siswa lain juga ditampilkan.
+        $siswaList = User::where('role', UserRole::Siswa)
+            ->with('halaqah:id,nama_halaqah')
+            ->orderBy('nama_lengkap')
+            ->get(['id', 'nama_lengkap', 'nip_nis', 'halaqah_id']);
+
+        // ID siswa yang saat ini tergabung di halaqah ini (untuk state awal checkbox).
+        $siswaHalaqahIni = $siswaList
+            ->where('halaqah_id', $halaqah->id)
+            ->pluck('id')
+            ->toArray();
+
+        return view('admin.halaqah.edit', compact('halaqah', 'ustadzList', 'siswaList', 'siswaHalaqahIni'));
     }
 
     /**
-     * Perbarui data halaqah.
+     * Perbarui data halaqah dan sinkronkan keanggotaan siswa.
+     *
+     * - Siswa dicentang → halaqah_id = $halaqah->id
+     * - Siswa sebelumnya di halaqah ini tapi tidak dicentang → halaqah_id = null
+     * - Siswa di halaqah lain yang tidak dicentang → tidak diubah
      */
     public function update(UpdateHalaqahRequest $request, Halaqah $halaqah): RedirectResponse
     {
@@ -82,7 +117,28 @@ class HalaqahController extends Controller
             $data['target_juz'] = 'Juz 29 - 30';
         }
 
-        $halaqah->update($data);
+        $halaqah->update([
+            'kode_halaqah' => $data['kode_halaqah'],
+            'nama_halaqah' => $data['nama_halaqah'],
+            'ustadz_id' => $data['ustadz_id'] ?? null,
+            'target_juz' => $data['target_juz'],
+        ]);
+
+        $siswaIds = array_map('intval', $data['siswa_ids'] ?? []);
+
+        // Tambahkan anggota baru yang dicentang.
+        if (! empty($siswaIds)) {
+            User::where('role', UserRole::Siswa)
+                ->whereIn('id', $siswaIds)
+                ->update(['halaqah_id' => $halaqah->id]);
+        }
+
+        // Lepaskan siswa yang sebelumnya di halaqah ini tapi kini tidak dicentang.
+        User::where('role', UserRole::Siswa)
+            ->where('halaqah_id', $halaqah->id)
+            ->when(! empty($siswaIds), fn ($q) => $q->whereNotIn('id', $siswaIds))
+            ->when(empty($siswaIds), fn ($q) => $q) // hapus semua jika kosong
+            ->update(['halaqah_id' => null]);
 
         return redirect()
             ->route('admin.halaqah.index')
@@ -91,6 +147,7 @@ class HalaqahController extends Controller
 
     /**
      * Hapus halaqah.
+     * FK users.halaqah_id ON DELETE SET NULL ditangani database.
      */
     public function destroy(Halaqah $halaqah): RedirectResponse
     {

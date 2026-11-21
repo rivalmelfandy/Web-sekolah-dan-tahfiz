@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Enums\KualitasLevel;
+use App\Enums\NilaiIndeks;
 use Database\Factories\MurajaahFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -29,23 +29,32 @@ class Murajaah extends Model
         'setoran_id',
         'ustadz_id',
         'ayat_range',
-        'status_mutqin',
+        'nilai_murajaah',
         'catatan',
         'tanggal_murajaah',
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * Nilai default sebelum disimpan, mengikuti default database.
      *
+     * @var array<string, mixed>
+     */
+    protected $attributes = [
+        'nilai_murajaah' => 80,
+    ];
+
+    /**
      * @return array<string, string>
      */
     protected function casts(): array
     {
         return [
-            'status_mutqin' => KualitasLevel::class,
+            'nilai_murajaah' => 'integer',
             'tanggal_murajaah' => 'date',
         ];
     }
+
+    // ── Relasi ──────────────────────────────────────────────────────────
 
     /**
      * Setoran hafalan yang dimurajaah.
@@ -61,5 +70,15 @@ class Murajaah extends Model
     public function ustadz(): BelongsTo
     {
         return $this->belongsTo(User::class, 'ustadz_id');
+    }
+
+    // ── Accessor ────────────────────────────────────────────────────────
+
+    /**
+     * Indeks huruf dari nilai_murajaah (A / AB / B / BC / C / D / E).
+     */
+    public function getIndeksMurajaahAttribute(): NilaiIndeks
+    {
+        return NilaiIndeks::dariNilai($this->nilai_murajaah);
     }
 }

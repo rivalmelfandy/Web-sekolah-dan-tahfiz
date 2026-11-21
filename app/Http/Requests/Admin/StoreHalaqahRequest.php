@@ -22,6 +22,8 @@ class StoreHalaqahRequest extends FormRequest
             'nama_halaqah' => ['required', 'string', 'max:50', Rule::unique('halaqah', 'nama_halaqah')],
             'ustadz_id' => ['nullable', 'integer', Rule::exists('users', 'id')->where('role', 'ustadz')],
             'target_juz' => ['nullable', 'string', 'max:50'],
+            'siswa_ids' => ['nullable', 'array'],
+            'siswa_ids.*' => ['integer', Rule::exists('users', 'id')->where('role', 'siswa')],
         ];
     }
 

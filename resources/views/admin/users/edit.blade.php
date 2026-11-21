@@ -136,12 +136,21 @@
                     </div>
                     <div class="col-6">
                         <label for="password" class="form-label">Ganti Sandi <span class="text-muted fw-normal" style="font-size:.68rem;">(Opsional)</span></label>
-                        <input type="password" id="password" name="password"
-                               class="form-control @error('password') is-invalid @enderror"
-                               placeholder="Kosongkan jika tidak ubah"
-                               autocomplete="new-password">
+                        <div class="input-group">
+                            <input type="password" id="password" name="password"
+                                   class="form-control border-end-0 @error('password') is-invalid @enderror"
+                                   placeholder="Kosongkan jika tidak ubah"
+                                   autocomplete="new-password">
+                            <button type="button"
+                                    id="togglePasswordEdit"
+                                    class="input-group-text bg-white border-start-0"
+                                    aria-label="Tampilkan kata sandi"
+                                    style="cursor:pointer;">
+                                <i class="bi bi-eye" id="togglePasswordEditIcon" style="font-size:.85rem;"></i>
+                            </button>
+                        </div>
                         @error('password')
-                            <div class="invalid-feedback">{{ $message }}</div>
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
                 </div>
@@ -222,5 +231,21 @@
 function toggleHalaqahEdit(role) {
     document.getElementById('halaqahFieldEdit').style.display = role === 'siswa' ? '' : 'none';
 }
+
+(function () {
+    var btn  = document.getElementById('togglePasswordEdit');
+    var inp  = document.getElementById('password');
+    var icon = document.getElementById('togglePasswordEditIcon');
+    if (!btn) return;
+    // Saat halaman dimuat (termasuk setelah validasi gagal), pastikan type=password.
+    inp.type = 'password';
+    btn.addEventListener('click', function () {
+        var show  = inp.type === 'password';
+        inp.type        = show ? 'text' : 'password';
+        icon.className  = show ? 'bi bi-eye-slash' : 'bi bi-eye';
+        icon.style.fontSize = '.85rem';
+        btn.setAttribute('aria-label', show ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi');
+    });
+})();
 </script>
 @endsection

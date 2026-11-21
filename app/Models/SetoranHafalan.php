@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Enums\KualitasLevel;
+use App\Enums\NilaiIndeks;
 use Database\Factories\SetoranHafalanFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -33,34 +33,34 @@ class SetoranHafalan extends Model
         'surah',
         'ayat_awal',
         'ayat_akhir',
-        'kualitas',
-        'nilai',
+        'nilai_hafalan',
         'catatan',
         'tanggal_setor',
     ];
 
     /**
-     * Nilai default yang diasumsikan model sebelum disimpan, mengikuti default database.
+     * Nilai default sebelum disimpan, mengikuti default database.
      *
      * @var array<string, mixed>
      */
     protected $attributes = [
-        'nilai' => 85,
+        'nilai_hafalan' => 80,
     ];
 
     /**
-     * Get the attributes that should be cast.
-     *
      * @return array<string, string>
      */
     protected function casts(): array
     {
         return [
-            'kualitas' => KualitasLevel::class,
-            'nilai' => 'integer',
+            'nilai_hafalan' => 'integer',
+            'ayat_awal' => 'integer',
+            'ayat_akhir' => 'integer',
             'tanggal_setor' => 'date',
         ];
     }
+
+    // ── Relasi ──────────────────────────────────────────────────────────
 
     /**
      * Siswa pemilik setoran ini.
@@ -71,7 +71,7 @@ class SetoranHafalan extends Model
     }
 
     /**
-     * Ustadz penerima (verifikator) setoran ini. Null jika ustadz sudah dihapus.
+     * Ustadz penerima setoran. Null jika ustadz sudah dihapus.
      */
     public function ustadz(): BelongsTo
     {
@@ -79,7 +79,7 @@ class SetoranHafalan extends Model
     }
 
     /**
-     * Seluruh murajaah atas setoran ini (bisa berkali-kali).
+     * Seluruh murajaah atas setoran ini (satu setoran bisa dimurajaah berkali-kali).
      */
     public function murajaah(): HasMany
     {
@@ -87,7 +87,7 @@ class SetoranHafalan extends Model
     }
 
     /**
-     * Murajaah terakhir berdasarkan tanggal (dan id sebagai penentu urutan).
+     * Murajaah terakhir berdasarkan tanggal (id sebagai penentu urutan saat tanggal sama).
      */
     public function murajaahTerakhir(): HasOne
     {
@@ -96,12 +96,33 @@ class SetoranHafalan extends Model
             ->orderByDesc('id');
     }
 
+    // ── Accessor: nilai & indeks terkini ────────────────────────────────
+
     /**
-     * Kualitas terkini: status_mutqin dari murajaah terakhir jika ada,
-     * atau kembali ke kualitas awal (kolom kualitas) bila belum ada murajaah.
+     * Nilai terkini (0–100):
+     *   - nilai_murajaah dari murajaah terakhir jika sudah pernah dimurajaah
+     *   - nilai_hafalan (setoran awal) jika belum ada murajaah
+     *
+     * Kolom nilai_hafalan tidak ditimpa oleh murajaah.
      */
-    public function getKualitasTerkiniAttribute(): KualitasLevel
+    public function getNilaiTerkiniAttribute(): int
     {
-        return $this->murajaahTerakhir?->status_mutqin ?? $this->kualitas;
+        return $this->murajaahTerakhir?->nilai_murajaah ?? $this->nilai_hafalan;
+    }
+
+    /**
+     * Indeks huruf dari nilai terkini (A / AB / B / BC / C / D / E).
+     */
+    public function getIndeksTerkiniAttribute(): NilaiIndeks
+    {
+        return NilaiIndeks::dariNilai($this->nilai_terkini);
+    }
+
+    /**
+     * Indeks huruf dari nilai_hafalan awal (tidak berubah walau ada murajaah).
+     */
+    public function getIndeksHafalanAttribute(): NilaiIndeks
+    {
+        return NilaiIndeks::dariNilai($this->nilai_hafalan);
     }
 }

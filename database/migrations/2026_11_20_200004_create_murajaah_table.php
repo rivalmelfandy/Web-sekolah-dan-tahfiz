@@ -8,6 +8,11 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * Mengikuti skema DBML terbaru:
+     *   - nilai_murajaah (tinyInteger, default 80, not null)
+     *     menggantikan kolom enum `status_mutqin` yang lama.
+     *   - Indeks huruf dihitung di aplikasi melalui NilaiIndeks::dariNilai().
      */
     public function up(): void
     {
@@ -16,7 +21,7 @@ return new class extends Migration
             $table->foreignId('setoran_id');
             $table->foreignId('ustadz_id')->nullable();
             $table->string('ayat_range', 50)->nullable();
-            $table->enum('status_mutqin', ['Lancar', 'Kurang Lancar', 'Tidak Lancar']);
+            $table->tinyInteger('nilai_murajaah')->unsigned()->default(80);
             $table->text('catatan')->nullable();
             $table->date('tanggal_murajaah');
             $table->timestamps();

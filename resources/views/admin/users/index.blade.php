@@ -89,7 +89,7 @@
                 @forelse($users as $u)
                 <tr>
                     <td class="px-4 py-3 text-muted small">{{ $users->firstItem() + $loop->index }}</td>
-                    <td class="px-3 py-3 fw-semibold small" style="color:#065F46;">{{ $u->nip_nis }}</td>
+                    <td class="px-3 py-3 fw-semibold small" style="color:#111827;">{{ $u->nip_nis }}</td>
                     <td class="px-3 py-3">
                         <div class="fw-semibold small">{{ $u->nama_lengkap }}</div>
                     </td>

@@ -8,6 +8,11 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * Mengikuti skema DBML terbaru:
+     *   - nilai_hafalan (tinyInteger, default 80, not null)
+     *     menggantikan kolom enum `kualitas` dan integer `nilai` yang lama.
+     *   - Indeks huruf (A/AB/B/BC/C/D/E) dihitung di aplikasi, tidak disimpan.
      */
     public function up(): void
     {
@@ -18,8 +23,7 @@ return new class extends Migration
             $table->string('surah', 50);
             $table->integer('ayat_awal');
             $table->integer('ayat_akhir');
-            $table->enum('kualitas', ['Lancar', 'Kurang Lancar', 'Tidak Lancar']);
-            $table->integer('nilai')->default(85);
+            $table->tinyInteger('nilai_hafalan')->unsigned()->default(80);
             $table->text('catatan')->nullable();
             $table->date('tanggal_setor');
             $table->timestamps();

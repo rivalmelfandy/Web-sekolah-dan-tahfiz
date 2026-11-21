@@ -48,14 +48,14 @@ class DashboardController extends Controller
             ->withAvg(
                 // withAvg pada relasi hasManyThrough
                 'setoranHafalan',
-                'nilai'
+                'nilai_hafalan'
             )
             ->orderBy('kode_halaqah')
             ->get(['id', 'kode_halaqah', 'nama_halaqah', 'ustadz_id', 'target_juz']);
 
         // Rata-rata capaian keseluruhan (hindari division-by-zero jika semua avg NULL)
         $listCapaian = $halaqahList
-            ->map(fn ($h) => round($h->setoran_hafalan_avg_nilai ?? 0, 1));
+            ->map(fn ($h) => round($h->setoran_hafalan_avg_nilai_hafalan ?? 0, 1));
 
         $rataCapaianKeseluruhan = $listCapaian->isNotEmpty()
             ? round($listCapaian->average(), 1)
@@ -67,7 +67,7 @@ class DashboardController extends Controller
         // Status = "Aktif" jika ada ≥1 siswa, "Kosong" jika belum ada siswa.
 
         $ringkasanHalaqah = $halaqahList->map(function (Halaqah $h) {
-            $capaian = round($h->setoran_hafalan_avg_nilai ?? 0, 1);
+            $capaian = round($h->setoran_hafalan_avg_nilai_hafalan ?? 0, 1);
 
             return [
                 'nama_halaqah' => $h->nama_halaqah,

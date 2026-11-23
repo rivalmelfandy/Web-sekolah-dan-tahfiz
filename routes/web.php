@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\HalaqahController as AdminHalaqahController;
 use App\Http\Controllers\Admin\LaporanTahfizController as AdminLaporanTahfizController;
+use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Admin\RekapTahfidzController as AdminRekapTahfidzController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\AuthController;
@@ -70,5 +71,11 @@ Route::middleware('auth')->group(function () {
             ->name('laporan-tahfiz.index');
         Route::get('laporan-tahfiz/{siswa}', [AdminLaporanTahfizController::class, 'show'])
             ->name('laporan-tahfiz.show');
+        Route::get('profil', [AdminProfileController::class, 'index'])
+            ->name('profil');
+        Route::put('profil', [AdminProfileController::class, 'updateProfile'])
+            ->name('profil.update');
+        Route::put('profil/password', [AdminProfileController::class, 'updatePassword'])
+            ->name('profil.password');
     });
 });

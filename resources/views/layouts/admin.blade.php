@@ -83,6 +83,8 @@
         }
         .sb-profile-name  { font-size: .78rem; font-weight: 600; color: #fff; line-height: 1.2; }
         .sb-profile-role  { font-size: .68rem; color: var(--sb-text-dim); }
+        a.sb-profile:hover { background: var(--sb-hover-bg); }
+        a.sb-profile.sb-profile-active { background: var(--sb-active-bg); }
 
         /* ── Label grup ─────────────────────────────────────────────── */
         .sb-label {
@@ -250,13 +252,15 @@
     </a>
 
     {{-- ── Profil ──────────────────────────────────────────────────── --}}
-    <div class="sb-profile">
+    <a href="{{ route('admin.profil') }}"
+       class="sb-profile text-decoration-none {{ request()->routeIs('admin.profil') ? 'sb-profile-active' : '' }}"
+       style="display:flex;">
         <div class="sb-avatar"><i class="bi bi-person-fill"></i></div>
         <div class="min-w-0">
             <div class="sb-profile-name text-truncate" style="max-width:160px;">{{ Auth::user()->nama_lengkap }}</div>
             <div class="sb-profile-role">{{ Auth::user()->role->label() }}</div>
         </div>
-    </div>
+    </a>
 
     {{-- ── Menu Utama ──────────────────────────────────────────────── --}}
     <div class="sb-label">Menu Utama</div>

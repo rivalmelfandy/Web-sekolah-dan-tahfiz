@@ -162,7 +162,7 @@
     <div class="card-body p-4">
         <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
             <h3 class="fw-bold mb-0 h5" style="color:#000000;">
-                <i class="bi bi-bar-chart-fill me-2" style="color:#10B981;"></i>Aktivitas Setoran Bulanan
+                <i class="bi bi-bar-chart-fill me-2" style="color:#000000;"></i>Aktivitas Setoran Bulanan
             </h3>
             <span class="text-muted small">12 Bulan Terakhir</span>
         </div>
@@ -184,7 +184,7 @@
 <div class="card border-0 shadow-sm rounded-4">
     <div class="card-header bg-transparent border-0 pt-4 px-4 pb-0 d-flex align-items-center justify-content-between flex-wrap gap-2">
         <h3 class="fw-bold mb-0 h5" style="color:#000000;">
-            <i class="bi bi-people-fill me-2" style="color:#2563EB;"></i>Rekap Capaian Siswa
+            <i class="bi bi-people-fill me-2" style="color:#000000;"></i>Rekap Capaian Siswa
         </h3>
         <span class="text-muted small">{{ $siswaList->count() }} siswa</span>
     </div>

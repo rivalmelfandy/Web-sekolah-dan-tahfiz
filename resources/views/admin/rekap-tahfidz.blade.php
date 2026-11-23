@@ -53,7 +53,7 @@
 {{-- ── Header ──────────────────────────────────────────────────────── --}}
 <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-4">
     <div>
-        <h2 class="fw-bold mb-1 h4" style="color:#065F46;">
+        <h2 class="fw-bold mb-1 h4" style="color:#000000;">
             <i class="bi bi-file-earmark-bar-graph me-2"></i>Rekap Tahfidz
         </h2>
         <p class="text-muted mb-0 small">
@@ -69,8 +69,8 @@
     <div class="col-6 col-xl-3">
         <div class="card border-0 shadow-sm rounded-4 h-100">
             <div class="card-body p-3 d-flex align-items-center gap-3">
-                <div class="stat-icon" style="background:#E8F5F4;">
-                    <i class="bi bi-mortarboard-fill" style="color:#117A74; font-size:1.1rem;"></i>
+                <div class="stat-icon" style="background: linear-gradient(135deg, #10B981, #0D9488); box-shadow: 0 4px 10px rgba(16,185,129,.25);">
+                    <i class="bi bi-mortarboard-fill" style="color:#FFFFFF !important; font-size:1.1rem;"></i>
                 </div>
                 <div>
                     <div class="fw-bold fs-4 lh-1" style="color:#065F46;">{{ $statTotal['siswa'] }}</div>
@@ -82,8 +82,8 @@
     <div class="col-6 col-xl-3">
         <div class="card border-0 shadow-sm rounded-4 h-100">
             <div class="card-body p-3 d-flex align-items-center gap-3">
-                <div class="stat-icon" style="background:#E8F5F4;">
-                    <i class="bi bi-collection-fill" style="color:#117A74; font-size:1.1rem;"></i>
+                <div class="stat-icon" style="background: linear-gradient(135deg, #EC4899, #DB2777); box-shadow: 0 4px 10px rgba(236,72,153,.25);">
+                    <i class="bi bi-collection-fill" style="color:#FFFFFF !important; font-size:1.1rem;"></i>
                 </div>
                 <div>
                     <div class="fw-bold fs-4 lh-1" style="color:#065F46;">{{ $statTotal['halaqah'] }}</div>
@@ -95,8 +95,8 @@
     <div class="col-6 col-xl-3">
         <div class="card border-0 shadow-sm rounded-4 h-100">
             <div class="card-body p-3 d-flex align-items-center gap-3">
-                <div class="stat-icon" style="background:#E8F5F4;">
-                    <i class="bi bi-journal-bookmark-fill" style="color:#117A74; font-size:1.1rem;"></i>
+                <div class="stat-icon" style="background: linear-gradient(135deg, #3B82F6, #2563EB); box-shadow: 0 4px 10px rgba(59,130,246,.25);">
+                    <i class="bi bi-journal-bookmark-fill" style="color:#FFFFFF !important; font-size:1.1rem;"></i>
                 </div>
                 <div>
                     <div class="fw-bold fs-4 lh-1" style="color:#065F46;">{{ $statTotal['setoran'] }}</div>
@@ -108,8 +108,8 @@
     <div class="col-6 col-xl-3">
         <div class="card border-0 shadow-sm rounded-4 h-100">
             <div class="card-body p-3 d-flex align-items-center gap-3">
-                <div class="stat-icon" style="background:#E8F5F4;">
-                    <i class="bi bi-graph-up-arrow" style="color:#117A74; font-size:1.1rem;"></i>
+                <div class="stat-icon" style="background: linear-gradient(135deg, #F97316, #EA580C); box-shadow: 0 4px 10px rgba(249,115,22,.25);">
+                    <i class="bi bi-graph-up-arrow" style="color:#FFFFFF !important; font-size:1.1rem;"></i>
                 </div>
                 <div>
                     <div class="fw-bold fs-4 lh-1" style="color:#065F46;">
@@ -161,8 +161,8 @@
 <div class="card border-0 shadow-sm rounded-4 mb-4">
     <div class="card-body p-4">
         <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
-            <h3 class="fw-bold mb-0 h5" style="color:#117A74;">
-                <i class="bi bi-bar-chart-fill me-2"></i>Aktivitas Setoran Bulanan
+            <h3 class="fw-bold mb-0 h5" style="color:#000000;">
+                <i class="bi bi-bar-chart-fill me-2" style="color:#10B981;"></i>Aktivitas Setoran Bulanan
             </h3>
             <span class="text-muted small">12 Bulan Terakhir</span>
         </div>
@@ -183,8 +183,8 @@
 {{-- ── TABEL SISWA ──────────────────────────────────────────────────── --}}
 <div class="card border-0 shadow-sm rounded-4">
     <div class="card-header bg-transparent border-0 pt-4 px-4 pb-0 d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <h3 class="fw-bold mb-0 h5" style="color:#117A74;">
-            <i class="bi bi-people-fill me-2"></i>Rekap Capaian Siswa
+        <h3 class="fw-bold mb-0 h5" style="color:#000000;">
+            <i class="bi bi-people-fill me-2" style="color:#2563EB;"></i>Rekap Capaian Siswa
         </h3>
         <span class="text-muted small">{{ $siswaList->count() }} siswa</span>
     </div>
@@ -201,12 +201,12 @@
             <table class="table table-hover align-middle mb-0 tbl-rekap">
                 <thead>
                     <tr>
-                        <th class="px-4 py-3 text-uppercase">#</th>
-                        <th class="px-3 py-3 text-uppercase">Nama Siswa</th>
-                        <th class="px-3 py-3 text-uppercase">Nama Halaqah</th>
-                        <th class="px-3 py-3 text-uppercase">Target Aktif</th>
-                        <th class="px-3 py-3 text-uppercase">Hafalan Terakhir</th>
-                        <th class="px-3 py-3 text-uppercase text-center" style="min-width:140px;">Capaian</th>
+                        <th class="px-4 py-3 text-uppercase" style="color:#000000;">No</th>
+                        <th class="px-3 py-3 text-uppercase" style="color:#000000;">Nama Siswa</th>
+                        <th class="px-3 py-3 text-uppercase" style="color:#000000;">Nama Halaqah</th>
+                        <th class="px-3 py-3 text-uppercase" style="color:#000000;">Target Aktif</th>
+                        <th class="px-3 py-3 text-uppercase" style="color:#000000;">Hafalan Terakhir</th>
+                        <th class="px-3 py-3 text-uppercase text-center" style="color:#000000; min-width:140px;">Capaian</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -217,7 +217,7 @@
 
                         {{-- Nama Siswa --}}
                         <td class="px-3 py-3">
-                            <div class="fw-semibold small" style="color:#065F46;">{{ $s['nama_lengkap'] }}</div>
+                            <div class="fw-semibold small" style="color:#000000;">{{ $s['nama_lengkap'] }}</div>
                         </td>
 
                         {{-- Nama Halaqah --}}

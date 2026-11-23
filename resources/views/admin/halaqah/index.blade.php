@@ -15,8 +15,8 @@
 
     /* ── Badge jumlah siswa ──────────────────────────────────────── */
     .badge-siswa {
-        background: #D1FAE5; color: #065F46;
-        border: 1px solid #A7F3D0;
+        background: #DBEAFE; color: #1D4ED8;
+        border: 1px solid #93C5FD;
         font-size: .72rem; font-weight: 700;
         border-radius: 99px; padding: .2em .75em;
         display: inline-flex; align-items: center; gap: .3rem;
@@ -39,18 +39,18 @@
 
     /* ── Tombol aksi ─────────────────────────────────────────────── */
     .btn-aksi-edit {
-        border: 1.5px solid #047857; color: #047857; background: transparent;
+        border: 1.5px solid #F59E0B; color: #D97706; background: #FFFBEB;
         border-radius: 7px; padding: .28rem .55rem; font-size: .78rem; line-height: 1;
         transition: background .15s, color .15s;
     }
-    .btn-aksi-edit:hover { background: #047857; color: #fff; }
+    .btn-aksi-edit:hover { background: #FEF3C7; color: #D97706; border-color: #F59E0B; }
 
     .btn-aksi-hapus {
-        border: 1.5px solid #E11D48; color: #E11D48; background: transparent;
+        border: 1.5px solid #FCA5A5; color: #DC2626; background: #FEF2F2;
         border-radius: 7px; padding: .28rem .55rem; font-size: .78rem; line-height: 1;
         transition: background .15s, color .15s;
     }
-    .btn-aksi-hapus:hover { background: #E11D48; color: #fff; }
+    .btn-aksi-hapus:hover { background: #FEE2E2; color: #DC2626; border-color: #FCA5A5; }
 </style>
 @endsection
 
@@ -59,8 +59,8 @@
 {{-- ── Header halaman ─────────────────────────────────────────────── --}}
 <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-4">
     <div>
-        <h2 class="fw-bold mb-1 h4" style="color:#065F46;">
-            Kelompok Halaqah Belajar
+        <h2 class="fw-bold mb-1 h4" style="color:#000000;">
+            <i class="bi bi-collection me-2"></i>Kelompok Halaqah Belajar
         </h2>
         <p class="text-muted mb-0 small">Pembagian siswa dan asatidz pembimbing penanggung jawab mutabaah.</p>
     </div>
@@ -79,13 +79,13 @@
         <table class="table table-hover align-middle mb-0 tbl-hlq">
             <thead>
                 <tr>
-                    <th class="px-4 py-3 text-uppercase">Kode</th>
-                    <th class="px-3 py-3 text-uppercase">Nama Halaqah</th>
-                    <th class="px-3 py-3 text-uppercase">Ustadz Pembimbing</th>
-                    <th class="px-3 py-3 text-uppercase">Target Hafalan</th>
-                    <th class="px-3 py-3 text-uppercase text-center">Jumlah Siswa</th>
-                    <th class="px-3 py-3 text-uppercase text-center">Status</th>
-                    <th class="px-4 py-3 text-uppercase text-center">Aksi</th>
+                    <th class="px-4 py-3 text-uppercase" style="color:#000000;">Kode</th>
+                    <th class="px-3 py-3 text-uppercase" style="color:#000000;">Nama Halaqah</th>
+                    <th class="px-3 py-3 text-uppercase" style="color:#000000;">Ustadz Pembimbing</th>
+                    <th class="px-3 py-3 text-uppercase" style="color:#000000;">Target Hafalan</th>
+                    <th class="px-3 py-3 text-uppercase text-center" style="color:#000000;">Jumlah Siswa</th>
+                    <th class="px-3 py-3 text-uppercase text-center" style="color:#000000;">Status</th>
+                    <th class="px-4 py-3 text-uppercase text-center" style="color:#000000;">Aksi</th>
                 </tr>
             </thead>
             <tbody>

@@ -289,6 +289,13 @@
                 Rekap Tahfidz
             </a>
         </li>
+        <li>
+            <a href="{{ route('admin.laporan-tahfiz.index') }}"
+               class="sb-link {{ request()->routeIs('admin.laporan-tahfiz.*') ? 'active' : '' }}">
+                <i class="bi bi-clipboard2-data"></i>
+                Laporan Tahfiz
+            </a>
+        </li>
     </ul>
 
     <div class="sb-spacer"></div>

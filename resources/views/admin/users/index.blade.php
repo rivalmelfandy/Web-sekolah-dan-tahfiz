@@ -19,9 +19,15 @@
 .user-toast-close { background: none; border: none; padding: 0; margin-left: auto; cursor: pointer; opacity: .6; color: inherit; }
 .user-toast-close:hover { opacity: 1; }
 @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-/* ── Badge aksi edit hijau ──────────────────────────────────────── */
-.btn-edit-user { color: #047857; border-color: #047857; }
-.btn-edit-user:hover { background: #047857; color: #fff; border-color: #047857; }
+/* ── Badge aksi edit (amber) ────────────────────────────────────── */
+.btn-edit-user { background: #FFFBEB; color: #D97706; border-color: #F59E0B; }
+.btn-edit-user:hover { background: #FEF3C7; color: #D97706; border-color: #F59E0B; }
+/* ── Tombol aksi hapus (merah lembut) ───────────────────────────── */
+.btn-hapus-user { background: #FEF2F2; color: #DC2626; border: 1px solid #FCA5A5; }
+.btn-hapus-user:hover { background: #FEE2E2; color: #DC2626; border-color: #FCA5A5; }
+/* ── Tombol Tambah Pengguna Baru (hijau tema) ───────────────────── */
+.btn-tambah-pengguna { background: #0D6B65; border-color: #0D6B65; color: #FFFFFF; }
+.btn-tambah-pengguna:hover { background: #09524D; border-color: #09524D; color: #FFFFFF; }
 </style>
 @endsection
 
@@ -64,8 +70,7 @@
         </nav>
     </div>
     <a href="{{ route('admin.users.create') }}"
-       class="btn btn-sm fw-semibold rounded-pill px-3"
-       style="background:#047857; border-color:#047857; color:#fff;">
+       class="btn btn-sm fw-semibold rounded-pill px-3 btn-tambah-pengguna">
         <i class="bi bi-person-plus me-1"></i>Tambah Pengguna Baru
     </a>
 </div>
@@ -76,13 +81,13 @@
         <table class="table table-hover align-middle mb-0">
             <thead style="background:#F0F9F8;">
                 <tr>
-                    <th class="px-4 py-3 small fw-semibold text-uppercase" style="color:#047857; letter-spacing:.04em;">#</th>
-                    <th class="px-3 py-3 small fw-semibold text-uppercase" style="color:#047857; letter-spacing:.04em;">NIP / NIS</th>
-                    <th class="px-3 py-3 small fw-semibold text-uppercase" style="color:#047857; letter-spacing:.04em;">Nama Lengkap</th>
-                    <th class="px-3 py-3 small fw-semibold text-uppercase d-none d-md-table-cell" style="color:#047857; letter-spacing:.04em;">No. HP</th>
-                    <th class="px-3 py-3 small fw-semibold text-uppercase" style="color:#047857; letter-spacing:.04em;">Peran</th>
-                    <th class="px-3 py-3 small fw-semibold text-uppercase d-none d-lg-table-cell" style="color:#047857; letter-spacing:.04em;">Halaqah</th>
-                    <th class="px-4 py-3 small fw-semibold text-uppercase text-center" style="color:#047857; letter-spacing:.04em;">Aksi</th>
+                    <th class="px-4 py-3 small fw-semibold text-uppercase" style="color:#000000; letter-spacing:.04em;">No</th>
+                    <th class="px-3 py-3 small fw-semibold text-uppercase" style="color:#000000; letter-spacing:.04em;">NIP / NIS</th>
+                    <th class="px-3 py-3 small fw-semibold text-uppercase" style="color:#000000; letter-spacing:.04em;">Nama Lengkap</th>
+                    <th class="px-3 py-3 small fw-semibold text-uppercase d-none d-md-table-cell" style="color:#000000; letter-spacing:.04em;">No. HP</th>
+                    <th class="px-3 py-3 small fw-semibold text-uppercase" style="color:#000000; letter-spacing:.04em;">Peran</th>
+                    <th class="px-3 py-3 small fw-semibold text-uppercase d-none d-lg-table-cell" style="color:#000000; letter-spacing:.04em;">Halaqah</th>
+                    <th class="px-4 py-3 small fw-semibold text-uppercase text-center" style="color:#000000; letter-spacing:.04em;">Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -114,7 +119,7 @@
                         <div class="d-flex justify-content-center gap-1">
                             {{-- Tombol edit → menuju halaman edit (modal) --}}
                             <a href="{{ route('admin.users.edit', $u) }}"
-                               class="btn btn-sm btn-outline-success btn-edit-user py-1 px-2" title="Edit">
+                               class="btn btn-sm btn-edit-user py-1 px-2" title="Edit">
                                 <i class="bi bi-pencil-fill"></i>
                             </a>
                             {{-- Tombol hapus --}}
@@ -123,7 +128,7 @@
                                   onsubmit="return confirm('Hapus pengguna {{ addslashes($u->nama_lengkap) }}?\nSemua setoran dan data terkait akan ikut terhapus.')">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-outline-danger py-1 px-2" title="Hapus">
+                                <button type="submit" class="btn btn-sm btn-hapus-user py-1 px-2" title="Hapus">
                                     <i class="bi bi-trash-fill"></i>
                                 </button>
                             </form>

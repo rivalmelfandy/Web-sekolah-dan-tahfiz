@@ -29,13 +29,13 @@
             <div class="card-body p-4">
                 <div class="d-flex align-items-start justify-content-between mb-3">
                     <div class="rounded-3 d-flex align-items-center justify-content-center"
-                         style="width:46px; height:46px; background:#E8F5F4;">
-                        <i class="bi bi-mortarboard-fill fs-5" style="color:#117A74;"></i>
+                         style="width:46px; height:46px; background: linear-gradient(135deg, #10B981, #0D9488); box-shadow: 0 4px 10px rgba(16,185,129,.25);">
+                        <i class="bi bi-mortarboard-fill fs-5" style="color:#FFFFFF !important;"></i>
                     </div>
-                    <i class="bi bi-people text-muted opacity-25 fs-3"></i>
+                    <i class="bi bi-people fs-3" style="color:#10B981; opacity:.18;"></i>
                 </div>
-                <div class="display-6 fw-bold" style="color:#0D6B65;">{{ $totalSiswaDalamHalaqah }}</div>
-                <div class="fw-semibold small mt-1" style="color:#1F4172;">TOTAL SISWA</div>
+                <div class="display-6 fw-bold" style="color:#000000;">{{ $totalSiswaDalamHalaqah }}</div>
+                <div class="fw-semibold small mt-1" style="color:#000000;">TOTAL SISWA</div>
                 <div class="text-muted" style="font-size:.72rem;">Aktif dalam Halaqah</div>
             </div>
         </div>
@@ -47,13 +47,13 @@
             <div class="card-body p-4">
                 <div class="d-flex align-items-start justify-content-between mb-3">
                     <div class="rounded-3 d-flex align-items-center justify-content-center"
-                         style="width:46px; height:46px; background:#E8F5F4;">
-                        <i class="bi bi-person-check-fill fs-5" style="color:#117A74;"></i>
+                         style="width:46px; height:46px; background: linear-gradient(135deg, #3B82F6, #2563EB); box-shadow: 0 4px 10px rgba(59,130,246,.25);">
+                        <i class="bi bi-person-check-fill fs-5" style="color:#FFFFFF !important;"></i>
                     </div>
-                    <i class="bi bi-person-workspace text-muted opacity-25 fs-3"></i>
+                    <i class="bi bi-person-workspace fs-3" style="color:#3B82F6; opacity:.18;"></i>
                 </div>
-                <div class="display-6 fw-bold" style="color:#0D6B65;">{{ $totalUstadz }}</div>
-                <div class="fw-semibold small mt-1" style="color:#1F4172;">USTADZ PENGAMPU</div>
+                <div class="display-6 fw-bold" style="color:#000000;">{{ $totalUstadz }}</div>
+                <div class="fw-semibold small mt-1" style="color:#000000;">USTADZ PENGAMPU</div>
                 <div class="text-muted" style="font-size:.72rem;">Semua Aktif Membimbing</div>
             </div>
         </div>
@@ -65,15 +65,15 @@
             <div class="card-body p-4">
                 <div class="d-flex align-items-start justify-content-between mb-3">
                     <div class="rounded-3 d-flex align-items-center justify-content-center"
-                         style="width:46px; height:46px; background:#E8F5F4;">
-                        <i class="bi bi-graph-up-arrow fs-5" style="color:#117A74;"></i>
+                         style="width:46px; height:46px; background: linear-gradient(135deg, #F97316, #EA580C); box-shadow: 0 4px 10px rgba(249,115,22,.25);">
+                        <i class="bi bi-graph-up-arrow fs-5" style="color:#FFFFFF !important;"></i>
                     </div>
-                    <i class="bi bi-activity text-muted opacity-25 fs-3"></i>
+                    <i class="bi bi-activity fs-3" style="color:#F97316; opacity:.18;"></i>
                 </div>
-                <div class="display-6 fw-bold" style="color:#0D6B65;">
+                <div class="display-6 fw-bold" style="color:#000000;">
                     {{ $rataCapaianKeseluruhan }}<span class="fs-4 fw-normal text-muted">%</span>
                 </div>
-                <div class="fw-semibold small mt-1" style="color:#1F4172;">RATA-RATA CAPAIAN</div>
+                <div class="fw-semibold small mt-1" style="color:#000000;">RATA-RATA CAPAIAN</div>
                 <div class="text-muted" style="font-size:.72rem;">
                     @if($rataCapaianKeseluruhan > 0)
                         +{{ $rataCapaianKeseluruhan }}% dari target bulanan
@@ -91,13 +91,13 @@
             <div class="card-body p-4">
                 <div class="d-flex align-items-start justify-content-between mb-3">
                     <div class="rounded-3 d-flex align-items-center justify-content-center"
-                         style="width:46px; height:46px; background:#E8F5F4;">
-                        <i class="bi bi-collection-fill fs-5" style="color:#117A74;"></i>
+                         style="width:46px; height:46px; background: linear-gradient(135deg, #EC4899, #DB2777); box-shadow: 0 4px 10px rgba(236,72,153,.25);">
+                        <i class="bi bi-collection-fill fs-5" style="color:#FFFFFF !important;"></i>
                     </div>
-                    <i class="bi bi-diagram-3 text-muted opacity-25 fs-3"></i>
+                    <i class="bi bi-diagram-3 fs-3" style="color:#EC4899; opacity:.18;"></i>
                 </div>
-                <div class="display-6 fw-bold" style="color:#0D6B65;">{{ $totalHalaqah }}</div>
-                <div class="fw-semibold small mt-1" style="color:#1F4172;">HALAQAH AKTIF</div>
+                <div class="display-6 fw-bold" style="color:#000000;">{{ $totalHalaqah }}</div>
+                <div class="fw-semibold small mt-1" style="color:#000000;">HALAQAH AKTIF</div>
                 <div class="text-muted" style="font-size:.72rem;">Kelompok Tahfiz</div>
             </div>
         </div>
@@ -113,8 +113,8 @@
         <div class="card border-0 shadow-sm rounded-4 h-100">
             <div class="card-body p-4">
                 <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
-                    <h2 class="fw-bold mb-0 h5" style="color:#117A74;">
-                        <i class="bi bi-bar-chart-fill me-2"></i>Capaian per Kelompok Halaqah
+                    <h2 class="fw-bold mb-0 h5" style="color:#000000;">
+                        <i class="bi bi-bar-chart-fill me-2" style="color:#10B981;"></i>Capaian per Kelompok Halaqah
                     </h2>
                     <span class="text-muted small">Bulan Berjalan</span>
                 </div>
@@ -178,8 +178,8 @@
 {{-- ── TABEL RINGKASAN KELOMPOK HALAQAH ───────────────────────────── --}}
 <div class="card border-0 shadow-sm rounded-4">
     <div class="card-header bg-transparent border-0 pt-4 px-4 pb-0 d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <h2 class="fw-bold mb-0 h5" style="color:#117A74;">
-            <i class="bi bi-table me-2"></i>Ringkasan Kelompok Halaqah
+        <h2 class="fw-bold mb-0 h5" style="color:#000000;">
+            <i class="bi bi-table me-2" style="color:#3B82F6;"></i>Ringkasan Kelompok Halaqah
         </h2>
         <a href="{{ route('admin.halaqah.index') }}"
            class="btn btn-sm fw-semibold rounded-pill px-3"
@@ -198,19 +198,18 @@
             <table class="table table-hover align-middle mb-0">
                 <thead style="background:#F0F9F8;">
                     <tr>
-                        <th class="px-4 py-3 small fw-semibold text-uppercase" style="color:#117A74; letter-spacing:.04em;">Nama Halaqah</th>
-                        <th class="px-3 py-3 small fw-semibold text-uppercase" style="color:#117A74; letter-spacing:.04em;">Ustadz Pembimbing</th>
-                        <th class="px-3 py-3 small fw-semibold text-uppercase" style="color:#117A74; letter-spacing:.04em;">Target Hafalan</th>
-                        <th class="px-3 py-3 small fw-semibold text-uppercase text-center" style="color:#117A74; letter-spacing:.04em;">Rata-Rata Capaian</th>
-                        <th class="px-4 py-3 small fw-semibold text-uppercase text-center" style="color:#117A74; letter-spacing:.04em;">Status</th>
+                        <th class="px-4 py-3 small fw-semibold text-uppercase" style="color:#000000; letter-spacing:.04em;">Nama Halaqah</th>
+                        <th class="px-3 py-3 small fw-semibold text-uppercase" style="color:#000000; letter-spacing:.04em;">Ustadz Pembimbing</th>
+                        <th class="px-3 py-3 small fw-semibold text-uppercase" style="color:#000000; letter-spacing:.04em;">Target Hafalan</th>
+                        <th class="px-3 py-3 small fw-semibold text-uppercase text-center" style="color:#000000; letter-spacing:.04em;">Rata-Rata Capaian</th>
+                        <th class="px-4 py-3 small fw-semibold text-uppercase text-center" style="color:#000000; letter-spacing:.04em;">Jumlah Siswa</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($ringkasanHalaqah as $row)
                     <tr>
                         <td class="px-4 py-3">
-                            <div class="fw-semibold small" style="color:#0D6B65;">{{ $row['nama_halaqah'] }}</div>
-                            <div class="text-muted" style="font-size:.74rem;">{{ $row['kode_halaqah'] }} · {{ $row['jumlah_siswa'] }} siswa</div>
+                            <div class="fw-semibold small" style="color:#000000;">{{ $row['nama_halaqah'] }}</div>
                         </td>
                         <td class="px-3 py-3 text-muted small">{{ $row['ustadz'] }}</td>
                         <td class="px-3 py-3 text-muted small">{{ $row['target_juz'] }}</td>
@@ -224,21 +223,11 @@
                                          aria-valuenow="{{ $pct }}" aria-valuemin="0" aria-valuemax="100">
                                     </div>
                                 </div>
-                                <span class="fw-bold small" style="min-width:38px; color:#0D6B65;">{{ $pct }}%</span>
+                                <span class="fw-bold small" style="min-width:38px; color:#000000;">{{ $pct }}%</span>
                             </div>
                         </td>
-                        <td class="px-4 py-3 text-center">
-                            @if($row['status'] === 'Aktif')
-                                <span class="badge fw-semibold rounded-pill px-3 py-1 small"
-                                      style="background:#E8F5F4; color:#117A74; border:1px solid rgba(17,122,116,.2);">
-                                    Sesuai Target
-                                </span>
-                            @else
-                                <span class="badge fw-semibold rounded-pill px-3 py-1 small"
-                                      style="background:#F1F5F9; color:#64748B; border:1px solid #E2E8F0;">
-                                    Belum Ada Siswa
-                                </span>
-                            @endif
+                        <td class="px-4 py-3 text-center fw-semibold small" style="color:#000000;">
+                            {{ $row['jumlah_siswa'] }}/{{ $row['kapasitas'] ?? 30 }}
                         </td>
                     </tr>
                     @endforeach

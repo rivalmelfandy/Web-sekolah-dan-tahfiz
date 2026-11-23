@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\HalaqahController as AdminHalaqahController;
+use App\Http\Controllers\Admin\LaporanTahfizController as AdminLaporanTahfizController;
 use App\Http\Controllers\Admin\RekapTahfidzController as AdminRekapTahfidzController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\AuthController;
@@ -65,5 +66,9 @@ Route::middleware('auth')->group(function () {
         Route::resource('halaqah', AdminHalaqahController::class)->except(['show']);
         Route::get('rekap-tahfidz', [AdminRekapTahfidzController::class, 'index'])
             ->name('rekap-tahfidz');
+        Route::get('laporan-tahfiz', [AdminLaporanTahfizController::class, 'index'])
+            ->name('laporan-tahfiz.index');
+        Route::get('laporan-tahfiz/{siswa}', [AdminLaporanTahfizController::class, 'show'])
+            ->name('laporan-tahfiz.show');
     });
 });

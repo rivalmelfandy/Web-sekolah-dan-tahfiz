@@ -37,6 +37,10 @@
     }
     .link-teal { color: #117A74 !important; }
     .link-teal:hover { color: #0D6B65 !important; }
+    .link-lupa { color: #2563EB !important; }
+    .link-lupa:hover { color: #1D4ED8 !important; text-decoration: underline !important; }
+    .link-beranda { color: #64748B !important; }
+    .link-beranda:hover { color: #0F172A !important; }
 </style>
 
 <div class="container d-flex align-items-center justify-content-center flex-grow-1 py-5">
@@ -88,7 +92,7 @@
                         <div class="d-flex justify-content-between align-items-center mb-1">
                             <label for="password" class="form-label fw-semibold small mb-0">Password</label>
                             <button type="button"
-                                    class="btn btn-link btn-sm p-0 link-teal text-decoration-none"
+                                    class="btn btn-link btn-sm p-0 link-lupa text-decoration-none"
                                     style="font-size: 0.78rem;"
                                     onclick="alert('Silakan hubungi Administrator Sekolah atau Ustadz Pembimbing untuk bantuan reset password.')">
                                 Lupa password?
@@ -141,7 +145,7 @@
 
                 <hr class="my-4">
 
-                <a href="{{ route('public.beranda') }}" class="text-decoration-none small d-flex align-items-center justify-content-center gap-1 link-teal">
+                <a href="{{ route('public.beranda') }}" class="text-decoration-none small d-flex align-items-center justify-content-center gap-1 link-beranda">
                     <i class="bi bi-arrow-left"></i>Kembali ke Beranda
                 </a>
             </div>

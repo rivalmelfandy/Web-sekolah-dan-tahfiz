@@ -246,7 +246,7 @@
         <img src="{{ asset('images/logo-tahfiz-baru.png') }}" alt="Logo" width="38" height="38"
              class="rounded-circle bg-white bg-opacity-10 p-1 object-fit-contain flex-shrink-0">
         <div class="sb-brand-text">
-            <div class="sb-brand-title">SMA IT Al-Fadhilah</div>
+            <div class="sb-brand-title">TahfizKu</div>
             <div class="sb-brand-sub">Admin Panel</div>
         </div>
     </a>

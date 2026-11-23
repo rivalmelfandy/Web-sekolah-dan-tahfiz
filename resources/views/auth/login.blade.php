@@ -45,7 +45,7 @@
         {{-- Logo & Judul --}}
         <div class="text-center mb-4">
             <img src="{{ asset('images/logo-tahfiz-baru.png') }}" alt="Logo Tahfiz SMA IT Al-Fadhilah" width="72" height="72" class="rounded-circle bg-white p-2 shadow-sm mb-3 d-block mx-auto object-fit-contain">
-            <h1 class="fw-bold text-white mb-1" style="font-size: 1.4rem;">SMA IT Al-Fadhilah</h1>
+            <h1 class="fw-bold text-white mb-1" style="font-size: 1.4rem;">TahfizKu</h1>
             <p class="text-white-50 mb-0 small">Sistem Informasi Sekolah &amp; Monitoring Tahfiz</p>
         </div>
 
@@ -53,8 +53,8 @@
         <div class="card border-0 shadow-lg rounded-4">
             <div class="card-body p-4 p-md-5">
 
-                <h2 class="fw-bold mb-1" style="color:#117A74;">Login</h2>
-                <p class="text-muted small mb-4">Masuk menggunakan NIP/NIS dan password Anda.</p>
+                <h2 class="fw-bold mb-1" style="color:#117A74; text-align:center;">Login</h2>
+                <p class="text-muted small mb-4" style="text-align:center;">Masuk menggunakan NIP/NIS dan password Anda.</p>
 
                 {{-- Pesan error global --}}
                 @if ($errors->any())

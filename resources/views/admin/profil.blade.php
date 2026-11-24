@@ -172,34 +172,58 @@
             {{-- Kata Sandi Saat Ini --}}
             <div class="mb-3">
                 <label for="current_password" class="form-label">Kata Sandi Saat Ini <span class="text-danger">*</span></label>
-                <input type="password" id="current_password" name="current_password"
-                       class="form-control @error('current_password') is-invalid @enderror"
-                       placeholder="Masukkan kata sandi lama"
-                       autocomplete="current-password" required>
+                <div style="position:relative;">
+                    <input type="password" id="current_password" name="current_password"
+                           class="form-control @error('current_password') is-invalid @enderror"
+                           placeholder="Masukkan kata sandi lama"
+                           style="padding-right:42px;"
+                           autocomplete="current-password" required>
+                    <button type="button" onclick="togglePassword(this)" aria-label="Lihat kata sandi"
+                            style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;padding:0;cursor:pointer;color:#64748B;display:flex;align-items:center;">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="icon-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="icon-eye-off" style="display:none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                    </button>
+                </div>
                 @error('current_password')
-                    <div class="invalid-feedback">{{ $message }}</div>
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
             </div>
 
             {{-- Kata Sandi Baru --}}
             <div class="mb-3">
                 <label for="password" class="form-label">Kata Sandi Baru <span class="text-danger">*</span></label>
-                <input type="password" id="password" name="password"
-                       class="form-control @error('password') is-invalid @enderror"
-                       placeholder="Minimal 6 karakter"
-                       autocomplete="new-password" required>
+                <div style="position:relative;">
+                    <input type="password" id="password" name="password"
+                           class="form-control @error('password') is-invalid @enderror"
+                           placeholder="Minimal 6 karakter"
+                           style="padding-right:42px;"
+                           autocomplete="new-password" required>
+                    <button type="button" onclick="togglePassword(this)" aria-label="Lihat kata sandi"
+                            style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;padding:0;cursor:pointer;color:#64748B;display:flex;align-items:center;">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="icon-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="icon-eye-off" style="display:none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                    </button>
+                </div>
                 @error('password')
-                    <div class="invalid-feedback">{{ $message }}</div>
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
             </div>
 
             {{-- Konfirmasi Kata Sandi --}}
             <div class="mb-4">
                 <label for="password_confirmation" class="form-label">Konfirmasi Ganti Kata Sandi <span class="text-danger">*</span></label>
-                <input type="password" id="password_confirmation" name="password_confirmation"
-                       class="form-control"
-                       placeholder="Ulangi kata sandi baru"
-                       autocomplete="new-password" required>
+                <div style="position:relative;">
+                    <input type="password" id="password_confirmation" name="password_confirmation"
+                           class="form-control"
+                           placeholder="Ulangi kata sandi baru"
+                           style="padding-right:42px;"
+                           autocomplete="new-password" required>
+                    <button type="button" onclick="togglePassword(this)" aria-label="Lihat kata sandi"
+                            style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;padding:0;cursor:pointer;color:#64748B;display:flex;align-items:center;">
+                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="icon-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="icon-eye-off" style="display:none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                    </button>
+                </div>
             </div>
 
             {{-- Catatan keamanan --}}
@@ -216,4 +240,20 @@
 
 </div>
 
+@endsection
+
+@section('scripts')
+<script>
+function togglePassword(btn) {
+    var wrapper = btn.parentElement;
+    var input   = wrapper.querySelector('input');
+    var eyeOpen = btn.querySelector('.icon-eye');
+    var eyeOff  = btn.querySelector('.icon-eye-off');
+    var show    = input.type === 'password';
+    input.type            = show ? 'text' : 'password';
+    eyeOpen.style.display = show ? 'none' : '';
+    eyeOff.style.display  = show ? ''     : 'none';
+    btn.setAttribute('aria-label', show ? 'Sembunyikan kata sandi' : 'Lihat kata sandi');
+}
+</script>
 @endsection

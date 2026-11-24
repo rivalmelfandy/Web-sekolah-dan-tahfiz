@@ -9,7 +9,9 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\Siswa\DashboardController as SiswaDashboardController;
+use App\Http\Controllers\Siswa\ProfileController as SiswaProfileController;
 use App\Http\Controllers\Ustadz\DashboardController as UstadzDashboardController;
+use App\Http\Controllers\Ustadz\ProfileController as UstadzProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -52,9 +54,27 @@ Route::middleware('auth')->group(function () {
         ->name('ustadz.dashboard')
         ->middleware('role:ustadz');
 
+    Route::middleware(['role:ustadz'])->prefix('ustadz')->name('ustadz.')->group(function () {
+        Route::get('profil', [UstadzProfileController::class, 'index'])
+            ->name('profil');
+        Route::put('profil', [UstadzProfileController::class, 'updateProfile'])
+            ->name('profil.update');
+        Route::put('profil/password', [UstadzProfileController::class, 'updatePassword'])
+            ->name('profil.password');
+    });
+
     Route::get('/siswa', [SiswaDashboardController::class, 'index'])
         ->name('siswa.dashboard')
         ->middleware('role:siswa');
+
+    Route::middleware(['role:siswa'])->prefix('siswa')->name('siswa.')->group(function () {
+        Route::get('profil', [SiswaProfileController::class, 'index'])
+            ->name('profil');
+        Route::put('profil', [SiswaProfileController::class, 'updateProfile'])
+            ->name('profil.update');
+        Route::put('profil/password', [SiswaProfileController::class, 'updatePassword'])
+            ->name('profil.password');
+    });
 
     /*
     |--------------------------------------------------------------------------

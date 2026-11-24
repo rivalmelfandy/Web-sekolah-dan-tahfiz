@@ -226,10 +226,10 @@
                 </div>
             </div>
 
-            {{-- Catatan keamanan --}}
-            <div class="info-box mb-4">
-                <i class="bi bi-shield-lock-fill me-1"></i>
-                Pastikan kata sandi Anda kuat dan tidak mudah ditebak demi keamanan akun administrator.
+            {{-- Notifikasi kekuatan kata sandi --}}
+            <div class="password-strength-alert" style="display:none; align-items:center; gap:8px; background:#FFFBEB; border:1px solid #FDE68A; color:#B45309; border-radius:10px; padding:10px 14px; font-size:13px; margin-bottom:16px;">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                Harap gunakan kata sandi yang kuat dengan kombinasi huruf, angka, dan simbol.
             </div>
 
             <button type="submit" class="btn-simpan w-100 justify-content-center">
@@ -255,5 +255,19 @@ function togglePassword(btn) {
     eyeOff.style.display  = show ? ''     : 'none';
     btn.setAttribute('aria-label', show ? 'Sembunyikan kata sandi' : 'Lihat kata sandi');
 }
+
+(function () {
+    var pwdInput = document.querySelector('input[name="password"]');
+    var alert    = document.querySelector('.password-strength-alert');
+    if (!pwdInput || !alert) return;
+    pwdInput.addEventListener('input', function () {
+        var val     = pwdInput.value;
+        var hasLetter  = /[a-zA-Z]/.test(val);
+        var hasDigit   = /[0-9]/.test(val);
+        var hasSymbol  = /[^a-zA-Z0-9\s]/.test(val);
+        var weak = val.length > 0 && !(hasLetter && hasDigit && hasSymbol);
+        alert.style.display = weak ? 'flex' : 'none';
+    });
+})();
 </script>
 @endsection

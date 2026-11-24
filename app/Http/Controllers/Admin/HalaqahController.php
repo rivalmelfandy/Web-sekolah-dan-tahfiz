@@ -19,7 +19,10 @@ class HalaqahController extends Controller
      */
     public function index(Request $request): View
     {
-        $halaqahList = Halaqah::with('ustadz')
+        $halaqahList = Halaqah::with([
+            'ustadz:id,nama_lengkap',
+            'siswa' => fn ($q) => $q->orderBy('nama_lengkap')->select(['id', 'nama_lengkap', 'nip_nis', 'halaqah_id']),
+        ])
             ->withCount(['siswa'])
             ->orderBy('kode_halaqah')
             ->paginate(20)

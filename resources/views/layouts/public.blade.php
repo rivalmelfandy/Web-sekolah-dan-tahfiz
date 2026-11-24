@@ -121,114 +121,61 @@
 </main>
 
 {{-- ═══════════════════════════════════════════════════════════════════
-     FOOTER RESMI – SMA IT AL-FADHILAH PEKANBARU
-     Multi-Kolom Institusional Pendidikan Islam
+     FOOTER MINIMALIS RATA TENGAH
 ═══════════════════════════════════════════════════════════════════ --}}
-<footer class="pt-5 pb-4 mt-auto text-white" style="background: linear-gradient(135deg, #1E3A8A 0%, #1E40AF 45%, #1D4ED8 100%) !important;">
-    <div class="container">
-        <div class="row g-4 pb-4 border-bottom border-white border-opacity-20">
+<footer style="background:#E6EAF0; padding:48px 20px; text-align:center;">
 
-            {{-- Kolom 1: Profil Sekolah & Akreditasi --}}
-            <div class="col-12 col-lg-4">
-                <div class="d-flex align-items-center gap-3 mb-3">
-                    <img src="{{ asset('images/logo-sekolah.png') }}" alt="Logo SMA IT Al-Fadhilah" width="56" height="56" class="rounded-circle object-fit-contain bg-white p-1 shadow-sm">
-                    <div>
-                        <h5 class="fw-bold text-white mb-0 lh-1">SMA IT AL-FADHILAH</h5>
-                        <small class="fw-semibold" style="color: #FACC15;">Yayasan Darel Fadhilah Riau</small>
-                    </div>
-                </div>
-                <p class="small mb-3" style="color: rgba(255, 255, 255, 0.85); line-height: 1.7;">
-                    Lembaga pendidikan Islam terpadu yang memadukan keunggulan akademik nasional dengan pembinaan intensif tahfiz Al-Qur'an dan karakter kepemimpinan islami.
-                </p>
-                <div class="d-flex gap-2">
-                    <a href="https://www.instagram.com/smait_fadhilah" target="_blank" rel="noopener" class="btn btn-sm rounded-circle d-flex align-items-center justify-content-center text-white" style="width: 36px; height: 36px; background: rgba(255, 255, 255, 0.10); border: 1px solid rgba(255, 255, 255, 0.22);" title="Instagram">
-                        <i class="bi bi-instagram"></i>
-                    </a>
-                    <a href="https://www.facebook.com/smaitfadhilahpku" target="_blank" rel="noopener" class="btn btn-sm rounded-circle d-flex align-items-center justify-content-center text-white" style="width: 36px; height: 36px; background: rgba(255, 255, 255, 0.10); border: 1px solid rgba(255, 255, 255, 0.22);" title="Facebook">
-                        <i class="bi bi-facebook"></i>
-                    </a>
-                    <a href="https://www.tiktok.com/@smait_fadhilah" target="_blank" rel="noopener" class="btn btn-sm rounded-circle d-flex align-items-center justify-content-center text-white" style="width: 36px; height: 36px; background: rgba(255, 255, 255, 0.10); border: 1px solid rgba(255, 255, 255, 0.22);" title="TikTok">
-                        <i class="bi bi-tiktok"></i>
-                    </a>
-                </div>
-            </div>
-
-            {{-- Kolom 2: Tautan Program Pendidikan --}}
-            <div class="col-12 col-sm-6 col-lg-2">
-                <h6 class="fw-bold text-white text-uppercase mb-3" style="letter-spacing: 0.05em; font-size: 0.85rem;">
-                    Program Sekolah
-                </h6>
-                <ul class="list-unstyled small d-flex flex-column gap-2 mb-0">
-                    <li><a href="{{ route('public.akademik') }}" class="text-decoration-none text-hover-white" style="color: rgba(255, 255, 255, 0.85);">&rsaquo; Tahfiz Al-Qur'an</a></li>
-                    <li><a href="{{ route('public.akademik') }}" class="text-decoration-none text-hover-white" style="color: rgba(255, 255, 255, 0.85);">&rsaquo; Program Leadership</a></li>
-                    <li><a href="{{ route('public.akademik') }}" class="text-decoration-none text-hover-white" style="color: rgba(255, 255, 255, 0.85);">&rsaquo; Bahasa &amp; Public Speaking</a></li>
-                    <li><a href="{{ route('public.akademik') }}" class="text-decoration-none text-hover-white" style="color: rgba(255, 255, 255, 0.85);">&rsaquo; Bimbingan Sukses PTN</a></li>
-                    <li><a href="{{ route('public.akademik') }}#ekskul" class="text-decoration-none text-hover-white" style="color: rgba(255, 255, 255, 0.85);">&rsaquo; 13 Ekstrakurikuler</a></li>
-                    <li><a href="{{ route('public.spmb') }}" class="text-decoration-none fw-semibold" style="color: #FACC15;">&rsaquo; Pendaftaran SPMB</a></li>
-                </ul>
-            </div>
-
-            {{-- Kolom 3: Layanan Kontak Resmi --}}
-            <div class="col-12 col-sm-6 col-lg-3">
-                <h6 class="fw-bold text-white text-uppercase mb-3" style="letter-spacing: 0.05em; font-size: 0.85rem;">
-                    Layanan &amp; Kontak
-                </h6>
-                <div class="d-flex flex-column gap-3 small" style="color: rgba(255, 255, 255, 0.90);">
-                    <div class="d-flex align-items-start gap-2">
-                        <i class="bi bi-geo-alt-fill mt-1 flex-shrink-0" style="color: #FACC15;"></i>
-                        <span>Jl. Muhajirin No. RT/RW. 04/09 Kel. Sidomulyo Barat, Tuah Madani, Kota Pekanbaru, Riau 28294</span>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                        <i class="bi bi-telephone-fill flex-shrink-0" style="color: #FACC15;"></i>
-                        <span>(0761) 840-7782 (Kantor TU)</span>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                        <i class="bi bi-whatsapp flex-shrink-0" style="color: #86EFAC;"></i>
-                        <span>0812-3456-7890 (Layanan SPMB)</span>
-                    </div>
-                    <div class="d-flex align-items-center gap-2">
-                        <i class="bi bi-envelope-fill flex-shrink-0" style="color: #FACC15;"></i>
-                        <span>info@alfadhilah.sch.id</span>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Kolom 4: Jam Kunjungan & Akses Portal --}}
-            <div class="col-12 col-lg-3">
-                <h6 class="fw-bold text-white text-uppercase mb-3" style="letter-spacing: 0.05em; font-size: 0.85rem;">
-                    Jam Layanan &amp; Portal
-                </h6>
-                <div class="p-3 rounded-3 small mb-3" style="background: rgba(255, 255, 255, 0.10); border: 1px solid rgba(255, 255, 255, 0.22);">
-                    <div class="d-flex justify-content-between mb-1">
-                        <span style="color: rgba(255, 255, 255, 0.85);">Senin – Kamis:</span>
-                        <strong class="text-white">07.30 – 16.00 WIB</strong>
-                    </div>
-                    <div class="d-flex justify-content-between mb-1">
-                        <span style="color: rgba(255, 255, 255, 0.85);">Jum'at:</span>
-                        <strong class="text-white">07.30 – 11.30 WIB</strong>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <span style="color: rgba(255, 255, 255, 0.85);">Sabtu:</span>
-                        <strong class="text-white">08.00 – 13.00 WIB</strong>
-                    </div>
-                </div>
-                <a href="{{ url('/login') }}" class="btn btn-sm w-100 fw-bold shadow-sm btn-login-portal-white py-2" style="background: #FFFFFF; color: #1E3A8A; font-weight: 700; border: none; border-radius: 10px;">
-                    <i class="bi bi-box-arrow-in-right me-1"></i>Login Sistem Terpadu
-                </a>
-            </div>
-
-        </div>
-
-        {{-- Copyright Bawah --}}
-        <div class="d-flex flex-wrap justify-content-between align-items-center pt-3 small" style="border-top: 1px solid rgba(255, 255, 255, 0.16); color: rgba(255, 255, 255, 0.78);">
-            <p class="mb-0">
-                &copy; {{ date('Y') }} SMA IT Al-Fadhilah Pekanbaru. Hak cipta dilindungi.
-            </p>
-            <p class="mb-0">
-                Kota Pekanbaru, Riau, Indonesia
-            </p>
+    {{-- Baris 1: Logo + Nama Sekolah --}}
+    <div style="display:inline-flex; align-items:center; gap:14px; margin-bottom:18px;">
+        <img src="{{ asset('images/logo-sekolah.png') }}" alt="Logo SMA IT Al-Fadhilah"
+             style="width:46px; height:46px; object-fit:contain; border-radius:50%; filter:brightness(0) invert(1);">
+        <div style="text-align:left; font-weight:700; font-size:15px; line-height:1.35; color:#FFFFFF; letter-spacing:0.3px;">
+            SMA IT AL-FADHILAH<br>PEKANBARU
         </div>
     </div>
+
+    {{-- Baris 2: Alamat --}}
+    <p style="max-width:360px; margin:0 auto; font-size:13.5px; line-height:1.6; color:#FFFFFF;">
+        Jl. Muhajirin No.RT/RW. 04/09 Kel, Sidomulyo Bar., Tuah Madani, Kota Pekanbaru, Riau 28294
+    </p>
+
+    {{-- Baris 3: Garis Pemisah --}}
+    <div style="width:260px; max-width:80%; height:1px; background:rgba(255,255,255,.6); margin:22px auto;"></div>
+
+    {{-- Baris 4: Ikon Sosial Media --}}
+    <div style="display:flex; align-items:center; justify-content:center; gap:22px;">
+
+        {{-- Instagram --}}
+        <a href="https://www.instagram.com/smait_fadhilah" target="_blank" rel="noopener"
+           title="Instagram" style="color:#FFFFFF; display:inline-flex; transition:opacity .15s;"
+           onmouseover="this.style.opacity='.8'" onmouseout="this.style.opacity='1'">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                <circle cx="12" cy="12" r="4.5"/>
+                <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+            </svg>
+        </a>
+
+        {{-- Facebook --}}
+        <a href="https://www.facebook.com/smaitfadhilahpku" target="_blank" rel="noopener"
+           title="Facebook" style="color:#FFFFFF; display:inline-flex; transition:opacity .15s;"
+           onmouseover="this.style.opacity='.8'" onmouseout="this.style.opacity='1'">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+            </svg>
+        </a>
+
+        {{-- TikTok --}}
+        <a href="https://www.tiktok.com/@smait_fadhilah" target="_blank" rel="noopener"
+           title="TikTok" style="color:#FFFFFF; display:inline-flex; transition:opacity .15s;"
+           onmouseover="this.style.opacity='.8'" onmouseout="this.style.opacity='1'">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.14 8.14 0 0 0 4.77 1.52V6.76a4.85 4.85 0 0 1-1-.07z"/>
+            </svg>
+        </a>
+
+    </div>
+
 </footer>
 {{-- /FOOTER --}}
 

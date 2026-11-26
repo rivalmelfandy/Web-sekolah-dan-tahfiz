@@ -98,8 +98,7 @@
                         <div class="d-flex flex-wrap gap-2 mt-2">
                             <span class="badge px-3 py-1 rounded-pill fw-semibold"
                                 style="background:rgba(255,255,255,.18); color:#fff; font-size:.75rem;">
-                                <i class="bi bi-credit-card me-1"></i>NIS: {{ $user->nip_nis ?? $user->username }}
-                            </span>
+                                <i class="bi bi-credit-card me-1"></i>NIS: {{ $user->nip_nis }}</span>
                             @if($namaHalaqah && $namaHalaqah !== 'Belum tergabung dalam halaqah')
                                 <span class="badge px-3 py-1 rounded-pill fw-semibold"
                                     style="background:rgba(255,255,255,.18); color:#fff; font-size:.75rem;">
@@ -127,17 +126,6 @@
                             <div class="fw-bold text-white fs-5 lh-1">{{ $totalMurajaah }}</div>
                             <div class="text-white-50 mt-1" style="font-size:.7rem;">Murajaah</div>
                         </div>
-                        @if($rataNilai !== null)
-                            <div class="text-center px-3 py-2 rounded-3" style="background:rgba(255,255,255,.12); min-width:80px;">
-                                <div class="fw-bold text-white fs-5 lh-1">{{ $rataNilai }}</div>
-                                <div class="text-white-50 mt-1" style="font-size:.7rem;">
-                                    Rata Nilai
-                                    @if($predikatRata)
-                                        &middot; {{ $predikatRata->value }}
-                                    @endif
-                                </div>
-                            </div>
-                        @endif
                     </div>
                 @endif
 
@@ -209,8 +197,8 @@
 
                 <div class="mb-3">
                     <label class="form-label">NIS / NIP</label>
-                    <input type="text" class="form-control form-control-locked"
-                        value="{{ $user->nip_nis ?? $user->username }}" disabled readonly>
+                    <input type="text" class="form-control form-control-locked" value="{{ $user->nip_nis }}" disabled
+                        readonly>
                 </div>
 
                 <div class="mb-4">

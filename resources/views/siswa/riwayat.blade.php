@@ -12,9 +12,9 @@
         <p class="text-muted mb-0 small">Seluruh catatan setoran hafalan dan sesi murajaah Anda.</p>
     </div>
 
-    {{-- ── 3 KARTU STATISTIK RINGKAS ──────────────────────────────────── --}}
+    {{-- ── 2 KARTU STATISTIK RINGKAS ──────────────────────────────────── --}}
     <div class="row g-3 mb-4">
-        <div class="col-6 col-md-4">
+        <div class="col-6 col-md-6">
             <div class="card border-0 shadow-sm rounded-4 h-100">
                 <div class="card-body p-3 p-md-4">
                     <div class="d-flex align-items-center gap-3">
@@ -30,7 +30,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-6 col-md-4">
+        <div class="col-6 col-md-6">
             <div class="card border-0 shadow-sm rounded-4 h-100">
                 <div class="card-body p-3 p-md-4">
                     <div class="d-flex align-items-center gap-3">
@@ -41,32 +41,6 @@
                         <div>
                             <div class="fw-bold fs-4 text-dark lh-1">{{ $totalMurajaah }}</div>
                             <div class="text-muted small mt-1">Total Murajaah</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-4">
-            <div class="card border-0 shadow-sm rounded-4 h-100">
-                <div class="card-body p-3 p-md-4">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
-                            style="width:42px;height:42px;background:linear-gradient(135deg,#3B82F6,#2563EB);">
-                            <i class="bi bi-award-fill text-white fs-5"></i>
-                        </div>
-                        <div>
-                            <div class="fw-bold fs-4 text-dark lh-1">
-                                {{ $rataNilai !== null ? $rataNilai : '–' }}
-                            </div>
-                            <div class="text-muted small mt-1">
-                                Rata-Rata Nilai
-                                @if($predikatRata)
-                                    &middot;
-                                    <span class="badge-indeks bi-{{ $predikatRata->value }}">
-                                        {{ $predikatRata->value }}
-                                    </span>
-                                @endif
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -126,9 +100,9 @@
                             <p class="text-muted small mb-0 mt-1">
                                 @if($filterKategori !== 'semua' || $filterSurah !== '')
                                     Menampilkan {{ $aktivitas->count() }} hasil
-                                    @if($filterKategori !== 'semua') &middot; Kategori: <strong>{{ $filterKategori }}</strong>
-                                    @endif
-                                    @if($filterSurah !== '') &middot; Surah: <strong>"{{ $filterSurah }}"</strong> @endif
+                                    @if($filterKategori !== 'semua') &middot; Kategori:
+                                    <strong>{{ $filterKategori }}</strong>@endif
+                                    @if($filterSurah !== '') &middot; Surah: <strong>"{{ $filterSurah }}"</strong>@endif
                                 @else
                                     {{ $aktivitas->count() }} total catatan aktivitas
                                 @endif
@@ -169,13 +143,23 @@
                                         <th class="px-3 py-3">Tanggal</th>
                                         <th class="px-3 py-3">Kategori</th>
                                         <th class="px-3 py-3">Surah &amp; Ayat</th>
-                                        <th class="px-3 py-3 text-center">Nilai</th>
                                         <th class="px-3 py-3 text-center">Kualitas</th>
                                         <th class="px-4 py-3">Ustadz</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($aktivitas as $i => $item)
+                                        @php
+                                            $kVal = $item['kualitas'] instanceof \App\Enums\KualitasLevel
+                                                ? $item['kualitas']->value
+                                                : (string) ($item['kualitas'] ?? '–');
+                                            $kBg = match ($kVal) {
+                                                'Lancar' => ['bg' => '#D1FAE5', 'color' => '#065F46'],
+                                                'Kurang Lancar' => ['bg' => '#FEF9C3', 'color' => '#92400E'],
+                                                'Tidak Lancar' => ['bg' => '#FEE2E2', 'color' => '#991B1B'],
+                                                default => ['bg' => '#F3F4F6', 'color' => '#374151'],
+                                            };
+                                        @endphp
                                         <tr>
                                             <td class="px-4 py-3 text-muted small">{{ $i + 1 }}</td>
 
@@ -212,13 +196,10 @@
                                             </td>
 
                                             <td class="px-3 py-3 text-center">
-                                                <div class="fw-bold small text-dark">{{ $item['nilai'] }}</div>
-                                            </td>
-
-                                            <td class="px-3 py-3 text-center">
-                                                @if($item['kualitas_terkini'])
-                                                    <span class="badge-indeks bi-{{ $item['kualitas_terkini']->value }}">
-                                                        {{ $item['kualitas_terkini']->value }}
+                                                @if($kVal !== '–')
+                                                    <span class="badge fw-semibold px-2 py-1 rounded-pill"
+                                                        style="background:{{ $kBg['bg'] }}; color:{{ $kBg['color'] }}; font-size:.7rem;">
+                                                        {{ $kVal }}
                                                     </span>
                                                 @else
                                                     <span class="text-muted small">–</span>
@@ -264,75 +245,44 @@
                                 <span class="text-muted fw-normal">/{{ $totalMurajaah }}</span>
                             </span>
                         </div>
-                        @if($rataNilai !== null)
-                            <div class="d-flex justify-content-between align-items-center py-2 px-3 rounded-3"
-                                style="background:#F5F3FF;">
-                                <span class="text-muted">Rata-Rata Nilai</span>
-                                <span class="fw-bold" style="color:#6D28D9;">
-                                    {{ $rataNilai }}
-                                    @if($predikatRata)
-                                        <span class="badge-indeks bi-{{ $predikatRata->value }} ms-1" style="font-size:.65rem;">
-                                            {{ $predikatRata->value }}
-                                        </span>
-                                    @endif
-                                </span>
-                            </div>
-                        @endif
                     </div>
                 </div>
             </div>
 
-            {{-- Distribusi kualitas (jika ada data) --}}
-            @if($aktivitas->isNotEmpty())
-                @php
-                    $hanya = $filterKategori === 'Hafalan'
-                        ? $aktivitas
-                        : $aktivitas->where('kategori', 'Hafalan');
-                    $distribusi = $hanya->groupBy(fn($item) => $item['kualitas_terkini']?->value ?? '–')
-                        ->map->count()
-                        ->sortKeysDesc();
-                @endphp
-                @if($distribusi->isNotEmpty())
-                    <div class="card border-0 shadow-sm rounded-4">
-                        <div class="card-body p-4">
-                            <h4 class="fw-bold h6 text-dark mb-3">
-                                <i class="bi bi-bar-chart-fill me-2" style="color:#117A74;"></i>Distribusi Kualitas Hafalan
-                            </h4>
-                            <div class="d-flex flex-column gap-2">
-                                @foreach($distribusi as $grade => $jumlah)
-                                    @php
-                                        $totalHafalan = $hanya->count();
-                                        $pct = $totalHafalan > 0 ? round($jumlah / $totalHafalan * 100) : 0;
-                                        $gradeColors = [
-                                            'A' => ['bar' => '#10B981', 'bg' => '#D1FAE5', 'text' => '#065F46', 'border' => '#6EE7B7'],
-                                            'AB' => ['bar' => '#10B981', 'bg' => '#D1FAE5', 'text' => '#065F46', 'border' => '#6EE7B7'],
-                                            'B' => ['bar' => '#3B82F6', 'bg' => '#DBEAFE', 'text' => '#1D4ED8', 'border' => '#93C5FD'],
-                                            'BC' => ['bar' => '#3B82F6', 'bg' => '#DBEAFE', 'text' => '#1D4ED8', 'border' => '#93C5FD'],
-                                            'C' => ['bar' => '#F59E0B', 'bg' => '#FEF9C3', 'text' => '#92400E', 'border' => '#FDE68A'],
-                                            'D' => ['bar' => '#EF4444', 'bg' => '#FEE2E2', 'text' => '#991B1B', 'border' => '#FCA5A5'],
-                                            'E' => ['bar' => '#6B7280', 'bg' => '#F3F4F6', 'text' => '#374151', 'border' => '#D1D5DB'],
-                                        ];
-                                        $c = $gradeColors[$grade] ?? $gradeColors['E'];
-                                    @endphp
-                                    <div>
-                                        <div class="d-flex justify-content-between align-items-center mb-1">
-                                            <span class="badge-indeks"
-                                                style="background:{{ $c['bg'] }}; color:{{ $c['text'] }}; border:1px solid {{ $c['border'] }};">
-                                                {{ $grade }}
-                                            </span>
-                                            <span class="small text-muted">{{ $jumlah }} setoran ({{ $pct }}%)</span>
-                                        </div>
-                                        <div class="progress rounded-pill" style="height:6px; background:#E2E8F0;">
-                                            <div class="progress-bar rounded-pill"
-                                                style="width:{{ $pct }}%; background:{{ $c['bar'] }};">
-                                            </div>
-                                        </div>
+            {{-- Distribusi kualitas setoran --}}
+            @if($distribusiKualitas->isNotEmpty() && ($filterKategori === 'semua' || $filterKategori === 'Hafalan'))
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-body p-4">
+                        <h4 class="fw-bold h6 text-dark mb-3">
+                            <i class="bi bi-bar-chart-fill me-2" style="color:#117A74;"></i>Distribusi Kualitas Hafalan
+                        </h4>
+                        <div class="d-flex flex-column gap-2">
+                            @foreach([
+                                    'Lancar' => ['bar' => '#10B981', 'bg' => '#D1FAE5', 'color' => '#065F46'],
+                                    'Kurang Lancar' => ['bar' => '#F59E0B', 'bg' => '#FEF9C3', 'color' => '#92400E'],
+                                    'Tidak Lancar' => ['bar' => '#EF4444', 'bg' => '#FEE2E2', 'color' => '#991B1B'],
+                                ] as $kLabel => $kStyle)
+                                @php
+                                    $jumlah = $distribusiKualitas[$kLabel] ?? 0;
+                                    $pct = $totalSetoran > 0 ? round($jumlah / $totalSetoran * 100) : 0;
+                                @endphp
+                                <div>
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="badge fw-semibold px-2 py-1 rounded-pill"
+                                            style="background:{{ $kStyle['bg'] }}; color:{{ $kStyle['color'] }}; font-size:.7rem;">
+                                            {{ $kLabel }}
+                                        </span>
+                                        <span class="small text-muted">{{ $jumlah }} ({{ $pct }}%)</span>
                                     </div>
-                                @endforeach
-                            </div>
+                                    <div class="progress rounded-pill" style="height:6px; background:#E2E8F0;">
+                                        <div class="progress-bar rounded-pill"
+                                            style="width:{{ $pct }}%; background:{{ $kStyle['bar'] }};"></div>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
-                @endif
+                </div>
             @endif
 
             {{-- Panduan kualitas --}}
@@ -343,21 +293,18 @@
                         style="background:#D1FAE5; color:#065F46; font-size:.7rem; letter-spacing:.05em;">
                         <i class="bi bi-info-circle me-1"></i>PANDUAN PENILAIAN
                     </span>
-                    <div class="d-flex flex-column gap-1" style="font-size:.75rem;">
+                    <div class="d-flex flex-column gap-2" style="font-size:.8rem;">
                         @foreach([
-                                ['A', '90–100', 'Sangat Baik'],
-                                ['AB', '80–89', 'Baik Sekali'],
-                                ['B', '70–79', 'Baik'],
-                                ['BC', '60–69', 'Cukup Baik'],
-                                ['C', '50–59', 'Cukup'],
-                                ['D', '40–49', 'Kurang'],
-                                ['E', '0–39', 'Sangat Kurang'],
-                            ] as [$g, $range, $label])
+                                ['Lancar', '#D1FAE5', '#065F46', 'Hafalan sudah mutqin'],
+                                ['Kurang Lancar', '#FEF9C3', '#92400E', 'Masih perlu latihan'],
+                                ['Tidak Lancar', '#FEE2E2', '#991B1B', 'Perlu pengulangan intensif'],
+                            ] as [$label, $bg, $color, $desc])
                             <div class="d-flex align-items-center gap-2">
-                                <span class="badge-indeks bi-{{ $g }}"
-                                    style="min-width:32px; text-align:center;">{{ $g }}</span>
-                                <span class="text-muted" style="min-width:50px;">{{ $range }}</span>
-                                <span class="text-dark">{{ $label }}</span>
+                                <span class="badge fw-semibold px-2 py-1 rounded-pill flex-shrink-0"
+                                    style="background:{{ $bg }}; color:{{ $color }}; font-size:.7rem; min-width:90px; text-align:center;">
+                                    {{ $label }}
+                                </span>
+                                <span class="text-muted">{{ $desc }}</span>
                             </div>
                         @endforeach
                     </div>

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Siswa;
 
-use App\Enums\NilaiIndeks;
+use App\Enums\KualitasLevel;
 use App\Http\Controllers\Controller;
 use App\Models\Murajaah;
 use App\Models\SetoranHafalan;
@@ -16,37 +16,28 @@ class DashboardController extends Controller
     /**
      * Halaman utama dashboard siswa — Progres Hafalan.
      *
-     * Skema aktual (docs/Project tahfiz_yuk.dbml):
-     *   setoran_hafalan : siswa_id, nilai_hafalan (tinyint default 80)
-     *   murajaah        : setoran_id → setoran_hafalan.id (TIDAK ada siswa_id langsung)
-     *   target_hafalan  : siswa_id, status (enum Aktif|Nonaktif)
-     *   users           : id, nama_lengkap, nip_nis, no_hp, role, halaqah_id
+     * Skema SQL terbaru:
+     *   users            : id, nip_nis, password, nama_lengkap, no_hp, role, halaqah_id
+     *   setoran_hafalan  : id, siswa_id, ustadz_id, surah, ayat_awal, ayat_akhir, kualitas, catatan, tanggal_setor
+     *   murajaah         : id, setoran_id, siswa_id, ustadz_id, surah, ayat_range, status_mutqin, catatan, tanggal_murajaah
+     *   target_hafalan   : id, siswa_id, ustadz_id, surah_awal, surah_akhir, tanggal_mulai, tanggal_akhir, status (Aktif|Selesai|Nonaktif)
      */
     public function index(Request $request): View
     {
         $user = $request->user();
 
-        // ── Total setoran ──────────────────────────────────────────────
+        // ── Total setoran ───────────────────────────────────────────────
         $totalSetoran = SetoranHafalan::where('siswa_id', $user->id)->count();
 
-        // ── Rata-rata nilai hafalan ────────────────────────────────────
-        $rataNilai = null;
-        $predikatRata = null;
+        // ── Setoran Lancar (kualitas = 'Lancar') ────────────────────────
+        $setoranLancar = SetoranHafalan::where('siswa_id', $user->id)
+            ->where('kualitas', KualitasLevel::Lancar->value)
+            ->count();
 
-        if ($totalSetoran > 0) {
-            $avg = SetoranHafalan::where('siswa_id', $user->id)->avg('nilai_hafalan');
-            $rataNilai = round((float) $avg, 1);
-            $predikatRata = NilaiIndeks::dariNilai($rataNilai);
-        }
+        // ── Total murajaah (murajaah punya siswa_id langsung) ──────────
+        $totalMurajaah = Murajaah::where('siswa_id', $user->id)->count();
 
-        // ── Total murajaah (lewat setoran_hafalan.siswa_id) ────────────
-        // Murajaah tidak punya siswa_id langsung; harus JOIN ke setoran_hafalan.
-        $totalMurajaah = Murajaah::whereHas(
-            'setoran',
-            fn ($q) => $q->where('siswa_id', $user->id)
-        )->count();
-
-        // ── Target hafalan aktif ───────────────────────────────────────
+        // ── Target hafalan aktif ────────────────────────────────────────
         $targetAktifRaw = DB::table('target_hafalan')
             ->where('siswa_id', $user->id)
             ->where('status', 'Aktif')
@@ -61,7 +52,7 @@ class DashboardController extends Controller
                 ->value('nama_lengkap');
         }
 
-        // ── Sisa hari target ───────────────────────────────────────────
+        // ── Sisa hari target ────────────────────────────────────────────
         $hariSisaTarget = null;
         if ($targetAktifRaw) {
             $hariSisaTarget = (int) now()->diffInDays(
@@ -70,35 +61,31 @@ class DashboardController extends Controller
             );
         }
 
-        // ── Capaian target dalam persen (proxy: rata-rata nilai) ───────
-        $pctCapaian = $rataNilai !== null
-            ? (int) min(100, max(0, $rataNilai))
-            : 0;
-
-        // ── 5 Setoran terbaru ──────────────────────────────────────────
+        // ── 5 Setoran terbaru ───────────────────────────────────────────
         $setoranTerbaruRaw = SetoranHafalan::where('siswa_id', $user->id)
             ->orderByDesc('tanggal_setor')
             ->orderByDesc('id')
             ->limit(5)
-            ->get(['id', 'surah', 'ayat_awal', 'ayat_akhir', 'nilai_hafalan', 'tanggal_setor', 'ustadz_id']);
+            ->get(['id', 'surah', 'ayat_awal', 'ayat_akhir', 'kualitas', 'tanggal_setor', 'ustadz_id']);
 
         $ustadzIds = $setoranTerbaruRaw->pluck('ustadz_id')->filter()->unique()->values();
         $ustadzMap = DB::table('users')
             ->whereIn('id', $ustadzIds)
             ->pluck('nama_lengkap', 'id');
 
-        $setoranTerbaru = $setoranTerbaruRaw->map(fn ($s) => (object) [
+        $setoranTerbaru = $setoranTerbaruRaw->map(fn($s) => (object) [
             'id' => $s->id,
             'surah' => $s->surah,
             'ayat_awal' => $s->ayat_awal,
             'ayat_akhir' => $s->ayat_akhir,
-            'nilai' => $s->nilai_hafalan,
-            'indeks' => NilaiIndeks::dariNilai($s->nilai_hafalan),
-            'tanggal_setor' => $s->tanggal_setor,  // sudah di-cast Carbon oleh model
+            'kualitas' => $s->kualitas instanceof KualitasLevel
+                ? $s->kualitas
+                : KualitasLevel::from($s->kualitas),
+            'tanggal_setor' => $s->tanggal_setor,  // Carbon (di-cast model)
             'nama_ustadz' => $ustadzMap[$s->ustadz_id] ?? '–',
         ]);
 
-        // ── Nama halaqah siswa ─────────────────────────────────────────
+        // ── Nama halaqah siswa (via halaqah_id FK) ──────────────────────
         $namaHalaqah = $user->halaqah?->nama_halaqah ?? null;
 
         $setoranTerakhir = $setoranTerbaru->first();
@@ -106,8 +93,7 @@ class DashboardController extends Controller
         return view('siswa.dashboard', compact(
             'user',
             'totalSetoran',
-            'rataNilai',
-            'predikatRata',
+            'setoranLancar',
             'totalMurajaah',
             'targetAktifRaw',
             'namaUstadzTarget',
@@ -115,7 +101,6 @@ class DashboardController extends Controller
             'setoranTerbaru',
             'setoranTerakhir',
             'namaHalaqah',
-            'pctCapaian',
         ));
     }
 }

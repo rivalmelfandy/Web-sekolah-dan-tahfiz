@@ -9,92 +9,87 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-class DashboardController extends Controller
-{
-    /**
-     * Dashboard rekap administrator.
-     *
-     * Semua query agregat dijalankan di controller; tidak ada query di Blade.
-     */
-    public function index(Request $request): View
+    class DashboardController extends Controller
     {
-        // ── Kartu ringkasan ──────────────────────────────────────────────
+        public function index(Request $request): View
+        {
+            // Kartu ringkasan
+            $totalSiswaDalamHalaqah = User::where('role', UserRole::Siswa)
+                ->whereNotNull('halaqah_id')
+                ->count();
 
-        /** Siswa yang sudah terdaftar dalam halaqah */
-        $totalSiswaDalamHalaqah = User::where('role', UserRole::Siswa)
-            ->whereNotNull('halaqah_id')
-            ->count();
+            $totalUstadz = User::where('role', UserRole::Ustadz)->count();
 
-        /** Seluruh ustadz/ustadzah */
-        $totalUstadz = User::where('role', UserRole::Ustadz)->count();
+            $totalHalaqah = Halaqah::count();
 
-        /** Seluruh halaqah */
-        $totalHalaqah = Halaqah::count();
+            // Rekap jumlah setoran dan setoran berkualitas Lancar
+            $halaqahList = Halaqah::with(['ustadz:id,nama_lengkap'])
+                ->withCount([
+                    'siswa',
+                    'setoranHafalan as total_setoran_count',
+                    'setoranHafalan as setoran_lancar_count' => function ($query) {
+                        $query->where('kualitas', 'Lancar');
+                    },
+                ])
+                ->orderBy('kode_halaqah')
+                ->get([
+                    'id',
+                    'kode_halaqah',
+                    'nama_halaqah',
+                    'ustadz_id',
+                    'target_juz',
+                ]);
 
-        // ── Capaian per halaqah ──────────────────────────────────────────
-        //
-        // Capaian per halaqah = rata-rata kolom `nilai` dari setoran_hafalan
-        // seluruh siswa di halaqah tersebut.
-        // Jika halaqah belum punya siswa atau setoran → nilai_avg NULL → 0.
-        //
-        // Strategi query:
-        //   - Load semua halaqah dengan ustadz (eager, hanya kolom yang dibutuhkan).
-        //   - Hitung rata-rata `nilai` via subquery withAvg yang di-scope ke siswa
-        //     dalam halaqah itu melalui hasManyThrough (SetoranHafalan via User).
-        //   - Satu roundtrip query tambahan dengan withAvg = 1 extra LEFT JOIN query.
+            // Persentase setoran dengan kualitas Lancar
+            $listCapaian = $halaqahList->map(function ($h) {
+                if ($h->total_setoran_count == 0) {
+                    return 0;
+                }
 
-        $halaqahList = Halaqah::with(['ustadz:id,nama_lengkap'])
-            ->withCount(['siswa'])
-            ->withAvg(
-                // withAvg pada relasi hasManyThrough
-                'setoranHafalan',
-                'nilai_hafalan'
-            )
-            ->orderBy('kode_halaqah')
-            ->get(['id', 'kode_halaqah', 'nama_halaqah', 'ustadz_id', 'target_juz']);
+                return round(
+                    ($h->setoran_lancar_count / $h->total_setoran_count) * 100,
+                    1
+                );
+            });
 
-        // Rata-rata capaian keseluruhan (hindari division-by-zero jika semua avg NULL)
-        $listCapaian = $halaqahList
-            ->map(fn ($h) => round($h->setoran_hafalan_avg_nilai_hafalan ?? 0, 1));
+            $rataCapaianKeseluruhan = $listCapaian->isNotEmpty()
+                ? round($listCapaian->average(), 1)
+                : 0.0;
 
-        $rataCapaianKeseluruhan = $listCapaian->isNotEmpty()
-            ? round($listCapaian->average(), 1)
-            : 0.0;
+            // Ringkasan per halaqah
+            $ringkasanHalaqah = $halaqahList->map(function (Halaqah $h) {
+                $capaian = $h->total_setoran_count > 0
+                    ? round(
+                        ($h->setoran_lancar_count / $h->total_setoran_count) * 100,
+                        1
+                    )
+                    : 0;
 
-        // ── Ringkasan per halaqah (untuk tabel di view) ──────────────────
-        //
-        // Setiap item: nama halaqah, ustadz, target_juz, persen capaian, status
-        // Status = "Aktif" jika ada ≥1 siswa, "Kosong" jika belum ada siswa.
+                return [
+                    'nama_halaqah' => $h->nama_halaqah,
+                    'kode_halaqah' => $h->kode_halaqah,
+                    'ustadz' => $h->ustadz?->nama_lengkap ?? '—',
+                    'target_juz' => $h->target_juz,
+                    'capaian' => $capaian,
+                    'jumlah_siswa' => $h->siswa_count,
+                    'status' => $h->siswa_count > 0 ? 'Aktif' : 'Kosong',
+                ];
+            });
 
-        $ringkasanHalaqah = $halaqahList->map(function (Halaqah $h) {
-            $capaian = round($h->setoran_hafalan_avg_nilai_hafalan ?? 0, 1);
+            // Data grafik
+            $grafikLabels = $halaqahList->pluck('nama_halaqah')->all();
+            $grafikData = $listCapaian->values()->all();
 
-            return [
-                'nama_halaqah' => $h->nama_halaqah,
-                'kode_halaqah' => $h->kode_halaqah,
-                'ustadz' => $h->ustadz?->nama_lengkap ?? '—',
-                'target_juz' => $h->target_juz,
-                'capaian' => $capaian,
-                'jumlah_siswa' => $h->siswa_count,
-                'status' => $h->siswa_count > 0 ? 'Aktif' : 'Kosong',
-            ];
-        });
-
-        // ── Data grafik batang (label & nilai dalam format yang siap di-encode) ─
-
-        $grafikLabels = $halaqahList->pluck('nama_halaqah')->all();
-        $grafikData = $listCapaian->values()->all();
-
-        return view('admin.dashboard', [
-            'user' => $request->user(),
-            'totalSiswaDalamHalaqah' => $totalSiswaDalamHalaqah,
-            'totalUstadz' => $totalUstadz,
-            'totalHalaqah' => $totalHalaqah,
-            'rataCapaianKeseluruhan' => $rataCapaianKeseluruhan,
-            'ringkasanHalaqah' => $ringkasanHalaqah,
-            'grafikLabels' => $grafikLabels,
-            'grafikData' => $grafikData,
-            'periodeLabel' => now()->translatedFormat('F Y'),
-        ]);
+            return view('admin.dashboard', [
+                'user' => $request->user(),
+                'totalSiswaDalamHalaqah' => $totalSiswaDalamHalaqah,
+                'totalUstadz' => $totalUstadz,
+                'totalHalaqah' => $totalHalaqah,
+                'rataCapaianKeseluruhan' => $rataCapaianKeseluruhan,
+                'ringkasanHalaqah' => $ringkasanHalaqah,
+                'grafikLabels' => $grafikLabels,
+                'grafikData' => $grafikData,
+                'periodeLabel' => now()->translatedFormat('F Y'),
+            ]);
+        }
     }
-}

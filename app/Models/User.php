@@ -21,6 +21,7 @@ class User extends Authenticatable
      * @var string
      */
     protected $table = 'users';
+    public const UPDATED_AT = null;
 
     /**
      * Atribut yang boleh diisi secara massal.

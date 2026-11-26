@@ -22,7 +22,7 @@
                 </p>
             </div>
             <span class="badge bg-white bg-opacity-25 text-white px-3 py-2 rounded-pill small fw-semibold">
-                <i class="bi bi-person-badge me-1"></i>NIS: {{ $user->nip_nis ?? $user->username }}
+                <i class="bi bi-person-badge me-1"></i>NIS: {{ $user->nip_nis }}
             </span>
         </div>
     </div>
@@ -30,6 +30,7 @@
     {{-- ── 4 KARTU KPI ──────────────────────────────────────────────────── --}}
     <div class="row g-3 mb-4">
 
+        {{-- Total Setoran --}}
         <div class="col-6 col-xl-3">
             <div class="card border-0 shadow-sm rounded-4 h-100 kpi-siswa-card">
                 <div class="card-body p-4">
@@ -49,25 +50,31 @@
             </div>
         </div>
 
+        {{-- Setoran Lancar --}}
         <div class="col-6 col-xl-3">
             <div class="card border-0 shadow-sm rounded-4 h-100 kpi-siswa-card">
                 <div class="card-body p-4">
                     <div class="d-flex align-items-start justify-content-between mb-3">
                         <div class="rounded-3 d-flex align-items-center justify-content-center"
                             style="width:46px;height:46px;background:linear-gradient(135deg,#3B82F6,#2563EB);box-shadow:0 4px 10px rgba(59,130,246,.25);">
-                            <i class="bi bi-award-fill fs-5 text-white"></i>
+                            <i class="bi bi-patch-check-fill fs-5 text-white"></i>
                         </div>
                         <i class="bi bi-graph-up fs-3" style="color:#3B82F6;opacity:.18;"></i>
                     </div>
-                    <div class="display-6 fw-bold text-dark">{{ $rataNilai !== null ? $rataNilai : '–' }}</div>
-                    <div class="fw-semibold small mt-1 text-dark">RATA-RATA NILAI</div>
+                    <div class="display-6 fw-bold text-dark">{{ $setoranLancar }}</div>
+                    <div class="fw-semibold small mt-1 text-dark">SETORAN LANCAR</div>
                     <div class="text-muted" style="font-size:.72rem;">
-                        {{ $predikatRata ? 'Predikat: ' . $predikatRata->label() : 'Belum ada data nilai' }}
+                        @if($totalSetoran > 0)
+                            {{ $setoranLancar }} dari {{ $totalSetoran }} setoran
+                        @else
+                            Belum ada data setoran
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
 
+        {{-- Total Murajaah --}}
         <div class="col-6 col-xl-3">
             <div class="card border-0 shadow-sm rounded-4 h-100 kpi-siswa-card">
                 <div class="card-body p-4">
@@ -87,6 +94,7 @@
             </div>
         </div>
 
+        {{-- Status Target --}}
         <div class="col-6 col-xl-3">
             <div class="card border-0 shadow-sm rounded-4 h-100 kpi-siswa-card">
                 <div class="card-body p-4">
@@ -105,8 +113,8 @@
                     <div class="text-muted text-truncate" style="font-size:.72rem;"
                         title="{{ $targetAktifRaw ? $targetAktifRaw->surah_awal . ' – ' . $targetAktifRaw->surah_akhir : 'Belum ada target aktif' }}">
                         {{ $targetAktifRaw
-        ? $targetAktifRaw->surah_awal . ' – ' . $targetAktifRaw->surah_akhir
-        : 'Belum ada target aktif' }}
+                            ? $targetAktifRaw->surah_awal . ' – ' . $targetAktifRaw->surah_akhir
+                            : 'Belum ada target aktif' }}
                     </div>
                 </div>
             </div>
@@ -122,40 +130,85 @@
                     <h2 class="fw-bold mb-0 h5 text-dark">
                         <i class="bi bi-graph-up-arrow me-2" style="color:#117A74;"></i>Ringkasan Progres Hafalan
                     </h2>
-                    <p class="text-muted small mb-0 mt-1">Capaian berdasarkan rata-rata nilai seluruh setoran hafalan.</p>
+                    <p class="text-muted small mb-0 mt-1">Capaian berdasarkan kualitas hafalan yang dicatat Ustadz.</p>
                 </div>
-                @if($predikatRata)
-                    <span class="badge-indeks bi-{{ $predikatRata->value }} fs-6 px-3 py-2">
-                        Predikat {{ $predikatRata->value }}
+                @if($totalSetoran > 0)
+                    @php
+                        $pctLancar = $totalSetoran > 0
+                            ? round($setoranLancar / $totalSetoran * 100)
+                            : 0;
+                    @endphp
+                    <span class="badge px-3 py-2 rounded-pill fw-semibold"
+                        style="background:#D1FAE5; color:#065F46; font-size:.8rem;">
+                        {{ $pctLancar }}% Lancar
                     </span>
                 @endif
             </div>
 
             <div class="row g-4">
-                {{-- Progress bar capaian --}}
+                {{-- Bar distribusi kualitas + hafalan terakhir --}}
                 <div class="col-12 col-md-7">
-                    <div class="d-flex justify-content-between align-items-baseline mb-2">
-                        <span class="small fw-semibold text-dark">Capaian Nilai Rata-Rata</span>
-                        <span class="fw-bold" style="font-size:1.5rem; color:#117A74;">
-                            {{ $pctCapaian }}<span class="fs-6 text-muted fw-normal">/100</span>
-                        </span>
-                    </div>
-                    @php
-                        $barColor = $pctCapaian >= 80 ? '#10B981' : ($pctCapaian >= 60 ? '#3B82F6' : ($pctCapaian >= 40 ? '#F97316' : '#EF4444'));
-                    @endphp
-                    <div class="progress rounded-pill mb-1" style="height:16px; background:#E2E8F0;">
-                        <div class="progress-bar rounded-pill" role="progressbar"
-                            style="width:{{ $pctCapaian }}%; background:{{ $barColor }};" aria-valuenow="{{ $pctCapaian }}"
-                            aria-valuemin="0" aria-valuemax="100">
+
+                    @if($totalSetoran > 0)
+                        @php
+                            $pctLancar       = round($setoranLancar / $totalSetoran * 100);
+                            $setoranKurang   = \App\Models\SetoranHafalan::where('siswa_id', $user->id)
+                                ->where('kualitas', \App\Enums\KualitasLevel::KurangLancar->value)->count();
+                            $setoranTidak    = \App\Models\SetoranHafalan::where('siswa_id', $user->id)
+                                ->where('kualitas', \App\Enums\KualitasLevel::TidakLancar->value)->count();
+                            $pctKurang       = round($setoranKurang / $totalSetoran * 100);
+                            $pctTidak        = round($setoranTidak / $totalSetoran * 100);
+                        @endphp
+
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="small fw-semibold text-dark">Lancar</span>
+                                <span class="small text-muted">{{ $setoranLancar }} setoran ({{ $pctLancar }}%)</span>
+                            </div>
+                            <div class="progress rounded-pill mb-3" style="height:12px; background:#E2E8F0;">
+                                <div class="progress-bar rounded-pill" style="width:{{ $pctLancar }}%; background:#10B981;"></div>
+                            </div>
+
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="small fw-semibold text-dark">Kurang Lancar</span>
+                                <span class="small text-muted">{{ $setoranKurang }} setoran ({{ $pctKurang }}%)</span>
+                            </div>
+                            <div class="progress rounded-pill mb-3" style="height:12px; background:#E2E8F0;">
+                                <div class="progress-bar rounded-pill" style="width:{{ $pctKurang }}%; background:#F59E0B;"></div>
+                            </div>
+
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="small fw-semibold text-dark">Tidak Lancar</span>
+                                <span class="small text-muted">{{ $setoranTidak }} setoran ({{ $pctTidak }}%)</span>
+                            </div>
+                            <div class="progress rounded-pill" style="height:12px; background:#E2E8F0;">
+                                <div class="progress-bar rounded-pill" style="width:{{ $pctTidak }}%; background:#EF4444;"></div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="d-flex justify-content-between" style="font-size:.68rem; color:#94A3B8;">
-                        <span>E (0)</span><span>D (40)</span><span>C (50)</span>
-                        <span>B (70)</span><span>AB (80)</span><span>A (90)</span>
-                    </div>
+                    @else
+                        <div class="p-3 rounded-3 text-center text-muted" style="background:#F8FAFC; border:1px dashed #CBD5E1;">
+                            <i class="bi bi-journal-x d-block mb-1 opacity-25 fs-4"></i>
+                            <span class="small">Belum ada data setoran hafalan.</span>
+                        </div>
+                    @endif
 
                     {{-- Hafalan terakhir --}}
                     @if($setoranTerakhir)
+                        @php
+                            $kualitasLabel = $setoranTerakhir->kualitas->value;
+                            $kualitasBg = match($setoranTerakhir->kualitas->value) {
+                                'Lancar'        => '#D1FAE5',
+                                'Kurang Lancar' => '#FEF9C3',
+                                'Tidak Lancar'  => '#FEE2E2',
+                                default         => '#F3F4F6',
+                            };
+                            $kualitasColor = match($setoranTerakhir->kualitas->value) {
+                                'Lancar'        => '#065F46',
+                                'Kurang Lancar' => '#92400E',
+                                'Tidak Lancar'  => '#991B1B',
+                                default         => '#374151',
+                            };
+                        @endphp
                         <div class="mt-4 p-3 rounded-3" style="background:#F0FDF4; border:1px solid #A7F3D0;">
                             <div class="d-flex align-items-center gap-2 mb-2">
                                 <i class="bi bi-bookmark-check-fill" style="color:#059669;"></i>
@@ -167,15 +220,14 @@
                             <div class="fw-bold text-dark">{{ $setoranTerakhir->surah }}</div>
                             <div class="d-flex flex-wrap gap-3 mt-2 small">
                                 <span class="text-muted">
-                                    Ayat <strong
-                                        class="text-dark">{{ $setoranTerakhir->ayat_awal }}–{{ $setoranTerakhir->ayat_akhir }}</strong>
+                                    Ayat <strong class="text-dark">{{ $setoranTerakhir->ayat_awal }}–{{ $setoranTerakhir->ayat_akhir }}</strong>
                                 </span>
                                 <span class="text-muted">
-                                    Nilai <strong class="text-dark">{{ $setoranTerakhir->nilai }}</strong>
-                                </span>
-                                <span class="text-muted">
-                                    Kualitas <span
-                                        class="badge-indeks bi-{{ $setoranTerakhir->indeks->value }} ms-1">{{ $setoranTerakhir->indeks->value }}</span>
+                                    Kualitas
+                                    <span class="badge fw-semibold ms-1 px-2 py-1 rounded-pill"
+                                        style="background:{{ $kualitasBg }}; color:{{ $kualitasColor }}; font-size:.7rem;">
+                                        {{ $kualitasLabel }}
+                                    </span>
                                 </span>
                                 <span class="text-muted">
                                     Ustadz <strong class="text-dark">{{ $setoranTerakhir->nama_ustadz }}</strong>
@@ -241,16 +293,6 @@
                                         <span class="text-muted">–</span>
                                     @endif
                                 </div>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span class="text-muted">Capaian Nilai</span>
-                                    <span class="fw-bold" style="color:#117A74;">
-                                        {{ $pctCapaian }}%
-                                        @if($predikatRata)
-                                            <span class="badge-indeks bi-{{ $predikatRata->value }} ms-1"
-                                                style="font-size:.65rem;">{{ $predikatRata->value }}</span>
-                                        @endif
-                                    </span>
-                                </div>
                             </div>
                         </div>
                     @else
@@ -278,8 +320,7 @@
                     <div class="p-4 pb-3 d-flex align-items-center justify-content-between flex-wrap gap-2 border-bottom">
                         <div>
                             <h2 class="fw-bold mb-0 h5 text-dark">
-                                <i class="bi bi-journal-bookmark-fill me-2" style="color:#117A74;"></i>Setoran Hafalan
-                                Terbaru
+                                <i class="bi bi-journal-bookmark-fill me-2" style="color:#117A74;"></i>Setoran Hafalan Terbaru
                             </h2>
                             <p class="text-muted small mb-0 mt-1">5 catatan setoran hafalan terakhir Anda.</p>
                         </div>
@@ -300,8 +341,7 @@
                         <div class="text-center py-5 px-4 text-muted my-auto">
                             <i class="bi bi-journal-x display-5 d-block mb-2 opacity-25"></i>
                             <p class="fw-semibold text-dark small mb-1">Belum ada data setoran hafalan</p>
-                            <p class="mb-0 small">Catatan setoran Anda akan tampil di sini setelah diinput oleh Ustadz
-                                pembimbing.</p>
+                            <p class="mb-0 small">Catatan setoran Anda akan tampil di sini setelah diinput oleh Ustadz pembimbing.</p>
                         </div>
                     @else
                         <div class="table-responsive">
@@ -310,13 +350,26 @@
                                     <tr>
                                         <th class="px-4 py-3">Tanggal</th>
                                         <th class="px-3 py-3">Surah &amp; Ayat</th>
-                                        <th class="px-3 py-3 text-center">Nilai</th>
                                         <th class="px-3 py-3 text-center">Kualitas</th>
                                         <th class="px-4 py-3">Ustadz</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($setoranTerbaru as $setoran)
+                                        @php
+                                            $kBg = match($setoran->kualitas->value) {
+                                                'Lancar'        => '#D1FAE5',
+                                                'Kurang Lancar' => '#FEF9C3',
+                                                'Tidak Lancar'  => '#FEE2E2',
+                                                default         => '#F3F4F6',
+                                            };
+                                            $kColor = match($setoran->kualitas->value) {
+                                                'Lancar'        => '#065F46',
+                                                'Kurang Lancar' => '#92400E',
+                                                'Tidak Lancar'  => '#991B1B',
+                                                default         => '#374151',
+                                            };
+                                        @endphp
                                         <tr>
                                             <td class="px-4 py-3 small text-muted text-nowrap">
                                                 {{ $setoran->tanggal_setor->translatedFormat('d M Y') }}
@@ -327,12 +380,10 @@
                                                     Ayat {{ $setoran->ayat_awal }}–{{ $setoran->ayat_akhir }}
                                                 </div>
                                             </td>
-                                            <td class="px-3 py-3 text-center fw-bold small text-dark">
-                                                {{ $setoran->nilai }}
-                                            </td>
                                             <td class="px-3 py-3 text-center">
-                                                <span class="badge-indeks bi-{{ $setoran->indeks->value }}">
-                                                    {{ $setoran->indeks->value }}
+                                                <span class="badge fw-semibold px-2 py-1 rounded-pill"
+                                                    style="background:{{ $kBg }}; color:{{ $kColor }}; font-size:.7rem;">
+                                                    {{ $setoran->kualitas->value }}
                                                 </span>
                                             </td>
                                             <td class="px-4 py-3 small text-muted">

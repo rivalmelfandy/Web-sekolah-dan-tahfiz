@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Siswa;
 
-use App\Enums\NilaiIndeks;
 use App\Http\Controllers\Controller;
 use App\Models\Murajaah;
 use App\Models\SetoranHafalan;
@@ -21,28 +20,15 @@ class ProfileController extends Controller
     {
         $user = auth()->user();
 
-        // Nama halaqah via relasi (halaqah_id FK, bukan varchar).
+        // Nama halaqah via relasi (halaqah_id FK → tabel halaqah).
         $namaHalaqah = $user->halaqah?->nama_halaqah
             ?? 'Belum tergabung dalam halaqah';
 
-        // ── Ringkasan capaian hafalan untuk kartu identitas ───────────
+        // ── Ringkasan capaian hafalan ───────────────────────────────────
         $totalSetoran = SetoranHafalan::where('siswa_id', $user->id)->count();
+        $totalMurajaah = Murajaah::where('siswa_id', $user->id)->count();
 
-        $rataNilai = null;
-        $predikatRata = null;
-        if ($totalSetoran > 0) {
-            $avg = SetoranHafalan::where('siswa_id', $user->id)->avg('nilai_hafalan');
-            $rataNilai = round((float) $avg, 1);
-            $predikatRata = NilaiIndeks::dariNilai($rataNilai);
-        }
-
-        // Murajaah tidak punya siswa_id; harus JOIN ke setoran_hafalan.
-        $totalMurajaah = Murajaah::whereHas(
-            'setoran',
-            fn ($q) => $q->where('siswa_id', $user->id)
-        )->count();
-
-        // ── Ustadz pembimbing dari target aktif (jika ada) ────────────
+        // ── Ustadz pembimbing dari target aktif (jika ada) ─────────────
         $targetAktif = DB::table('target_hafalan')
             ->where('siswa_id', $user->id)
             ->where('status', 'Aktif')
@@ -61,8 +47,6 @@ class ProfileController extends Controller
             'namaHalaqah',
             'totalSetoran',
             'totalMurajaah',
-            'rataNilai',
-            'predikatRata',
             'namaUstadz',
         ));
     }
@@ -98,7 +82,7 @@ class ProfileController extends Controller
             'password.confirmed' => 'Konfirmasi kata sandi tidak sesuai.',
         ]);
 
-        if (! Hash::check($request->current_password, auth()->user()->password)) {
+        if (!Hash::check($request->current_password, auth()->user()->password)) {
             return back()->withErrors([
                 'current_password' => 'Kata sandi saat ini tidak sesuai.',
             ]);

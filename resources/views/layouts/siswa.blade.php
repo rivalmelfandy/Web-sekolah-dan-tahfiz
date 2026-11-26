@@ -76,13 +76,6 @@
                 Riwayat Hafalan
             </a>
         </li>
-        <li>
-            <a href="{{ route('siswa.profil') }}"
-               class="sb-link {{ request()->routeIs('siswa.profil*') ? 'active' : '' }}">
-                <i class="bi bi-person-circle"></i>
-                Profil Saya
-            </a>
-        </li>
     </ul>
 
     <div class="sb-spacer"></div>

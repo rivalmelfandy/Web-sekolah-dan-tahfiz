@@ -10,6 +10,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\Siswa\DashboardController as SiswaDashboardController;
 use App\Http\Controllers\Siswa\ProfileController as SiswaProfileController;
+use App\Http\Controllers\Siswa\RiwayatController as SiswaRiwayatController;
 use App\Http\Controllers\Ustadz\DashboardController as UstadzDashboardController;
 use App\Http\Controllers\Ustadz\ProfileController as UstadzProfileController;
 use Illuminate\Support\Facades\Route;
@@ -74,6 +75,8 @@ Route::middleware('auth')->group(function () {
             ->name('profil.update');
         Route::put('profil/password', [SiswaProfileController::class, 'updatePassword'])
             ->name('profil.password');
+        Route::get('riwayat', [SiswaRiwayatController::class, 'index'])
+            ->name('riwayat');
     });
 
     /*

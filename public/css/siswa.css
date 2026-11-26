@@ -1,236 +1,402 @@
 /*
  * siswa.css
- * Stylesheet khusus Modul Siswa — SIM Tahfiz "Tahfiz Yuk"
+ * Stylesheet khusus Layout & Modul Siswa — TahfizKu
+ * Diselaraskan dengan desain visual Admin (layouts/admin.blade.php)
  * SMA IT Al-Fadhilah Pekanbaru
- * Dipindah dari blok <style> di modules/siswa/index.php
- * Palet Wajib: Teal-Green (#11756D) | Latar: #F6F7F5
  */
 
+/* ── Variabel warna tema hijau sidebar (identik dengan Admin) ────── */
 :root {
-    /* ── Palet Teal (seragam dengan Dashboard Ustadz) ── */
-    --color-primary:      #11756D;
-    --color-primary-dark: #0D5C56;
-    --color-primary-deep: #0A2E2B;
-    --color-accent:       #11756D;
-    --color-soft:         #E6F4F1;
-    --color-soft-light:   #F4F7F6;
-    --color-tahfiz:       #11756D;
-    --color-navy:         #11756D;
-    --color-gold:         #D97706;
-    --color-border:       #E2E8F0;
-    /* Alias emerald → teal agar class Bootstrap warisan tetap benar */
-    --em-900: #0A2E2B;
-    --em-800: #11756D;
-    --em-700: #0D5C56;
-    --em-600: #11756D;
-    --em-500: #2A9D8F;
-    --em-100: #D1F0ED;
-    --em-50:  #E6F4F1;
-    --gold:    #D97706;
-    --gold-lt: #FEF3C7;
-    --gold-hi: #FACC15;
-    --slate-9: #0F172A;
-    --slate-7: #334155;
-    --slate-5: #64748B;
-    --slate-2: #E2E8F0;
-    --slate-1: #F1F5F9;
-    --white:   #FFFFFF;
-    --bg-page: #F6F7F5;
+    --sb-bg:        #117A74;
+    --sb-bg-dark:   #0D6B65;
+    --sb-bg-deeper: #0A5C57;
+    --sb-text:      rgba(255, 255, 255, .88);
+    --sb-text-dim:  rgba(255, 255, 255, .55);
+    --sb-active-bg: rgba(255, 255, 255, .18);
+    --sb-hover-bg:  rgba(255, 255, 255, .10);
+    --sb-border:    rgba(255, 255, 255, .12);
+    --sb-width:     240px;
+    --topbar-h:     0px;
 }
 
+/* ── Reset body ke flex baris ───────────────────────────────────── */
 body {
     font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-    background-color: #F6F7F5;
-    color: var(--slate-9);
+    display: flex;
+    flex-direction: row;
     min-height: 100vh;
     margin: 0;
 }
 
-/* ══════════════════════════════════════════════════════
-   SIDEBAR SISWA — identik dengan sidebar Ustadz
-══════════════════════════════════════════════════════ */
-.siswa-sidebar {
-    width: 256px !important;
-    min-width: 256px !important;
-    height: 100vh !important;
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    bottom: 0 !important;
-    background: linear-gradient(180deg, #11756D 0%, #0E625B 100%) !important;
-    color: #fff !important;
-    display: flex !important;
-    flex-direction: column !important;
-    overflow-y: auto !important;
-    scrollbar-width: none !important;
-    -ms-overflow-style: none !important;
-    z-index: 1040 !important;
-    transition: transform 0.3s ease !important;
-    padding: 0 !important;
+/* ── Sidebar ────────────────────────────────────────────────────── */
+#siswaSidebar {
+    width: var(--sb-width);
+    min-height: 100vh;
+    background: var(--sb-bg);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 1040;
+    transition: transform .25s ease;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
-.siswa-sidebar::-webkit-scrollbar { display: none !important; }
 
-/* Brand */
+#siswaSidebar::-webkit-scrollbar {
+    width: 4px;
+}
+
+#siswaSidebar::-webkit-scrollbar-thumb {
+    background: var(--sb-border);
+    border-radius: 99px;
+}
+
+/* ── Brand di atas sidebar ──────────────────────────────────────── */
 .sb-brand {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 20px 18px 16px;
-    border-bottom: 1px solid rgba(255,255,255,0.14);
+    gap: .75rem;
+    padding: 1.25rem 1rem 1rem;
+    border-bottom: 1px solid var(--sb-border);
+    text-decoration: none;
     flex-shrink: 0;
 }
-.sb-brand-logo {
-    width: 42px; height: 42px;
-    background: #fff;
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    flex-shrink: 0;
-}
-.sb-brand-logo img { width: 30px; height: 30px; object-fit: contain; }
-.sb-brand-name { font-size: 15px; font-weight: 700; color: #FACC15; line-height: 1.2; }
-.sb-brand-sub  { font-size: 11.5px; color: rgba(255,255,255,0.78); font-weight: 500; margin-top: 2px; }
 
-/* User card */
-.sb-user {
-    margin: 14px 12px 8px;
-    padding: 10px 12px;
-    background: rgba(255,255,255,0.10);
-    border: 1px solid rgba(255,255,255,0.16);
-    border-radius: 12px;
-    display: flex; align-items: center; gap: 10px;
+.sb-brand-text {
+    line-height: 1.1;
 }
+
+.sb-brand-title {
+    font-size: .85rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -.01em;
+}
+
+.sb-brand-sub {
+    font-size: .65rem;
+    font-weight: 500;
+    color: var(--sb-text-dim);
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+/* ── Profil di atas menu ────────────────────────────────────────── */
+.sb-profile {
+    padding: .9rem 1rem;
+    border-bottom: 1px solid var(--sb-border);
+    display: flex;
+    align-items: center;
+    gap: .65rem;
+}
+
 .sb-avatar {
-    width: 38px; height: 38px; min-width: 38px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
-    background: #0B4F49;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 700; font-size: 13px; color: #fff;
+    background: var(--sb-active-bg);
+    border: 1.5px solid var(--sb-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #fff;
+    font-size: .9rem;
+}
+
+.sb-profile-name {
+    font-size: .78rem;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.2;
+}
+
+.sb-profile-role {
+    font-size: .68rem;
+    color: var(--sb-text-dim);
+}
+
+a.sb-profile:hover {
+    background: var(--sb-hover-bg);
+}
+
+a.sb-profile.sb-profile-active {
+    background: var(--sb-active-bg);
+}
+
+/* ── Label grup ─────────────────────────────────────────────────── */
+.sb-label {
+    font-size: .62rem;
+    font-weight: 700;
+    color: var(--sb-text-dim);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 1rem 1rem .35rem;
+}
+
+/* ── Item menu ──────────────────────────────────────────────────── */
+.sb-nav {
+    list-style: none;
+    padding: 0 .65rem;
+    margin: 0;
+}
+
+.sb-nav li + li {
+    margin-top: .15rem;
+}
+
+.sb-link {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    padding: .55rem .75rem;
+    border-radius: 8px;
+    font-size: .82rem;
+    font-weight: 500;
+    color: var(--sb-text);
+    text-decoration: none;
+    transition: background .15s, color .15s;
+}
+
+.sb-link:hover {
+    background: var(--sb-hover-bg);
+    color: #fff;
+}
+
+.sb-link.active {
+    background: var(--sb-active-bg);
+    color: #fff;
+    font-weight: 700;
+    box-shadow: inset 3px 0 0 rgba(255, 255, 255, .7);
+}
+
+.sb-link i {
+    font-size: .95rem;
+    width: 18px;
+    text-align: center;
     flex-shrink: 0;
 }
-.sb-user-name  { font-size: 13px; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.3; }
-.sb-user-badge { font-size: 11px; color: #A7F3D0; font-weight: 500; display: flex; align-items: center; gap: 4px; }
 
-/* Nav label */
-.sb-label {
-    padding: 10px 20px 6px;
-    font-size: 11px; letter-spacing: 0.08em;
-    color: rgba(255,255,255,0.70);
-    text-transform: uppercase; font-weight: 700;
-    display: block;
-}
-
-/* Nav links */
-.sb-link {
-    display: flex; align-items: center; gap: 12px;
-    padding: 11px 14px;
-    margin: 4px 12px;
-    border-radius: 10px;
-    font-size: 13.5px; font-weight: 500;
-    color: rgba(255,255,255,0.88);
-    text-decoration: none;
-    transition: all 0.2s ease;
-    border: 1px solid transparent;
-}
-.sb-link i { font-size: 16px; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.sb-link:hover {
-    background: rgba(255,255,255,0.10);
+.sb-link .sb-badge {
+    margin-left: auto;
+    font-size: .6rem;
+    font-weight: 700;
+    background: rgba(255, 255, 255, .18);
     color: #fff;
-}
-.sb-link.active {
-    background: rgba(255,255,255,0.20);
-    color: #fff;
-    font-weight: 600;
-    border-color: rgba(255,255,255,0.28);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+    border-radius: 99px;
+    padding: .1em .5em;
 }
 
-/* Sidebar footer */
+/* ── Spacer fleksibel + tombol logout di bawah ──────────────────── */
+.sb-spacer {
+    flex: 1;
+}
+
 .sb-footer {
-    margin-top: auto;
-    padding: 16px 14px 20px;
-    border-top: 1px solid rgba(255,255,255,0.14);
-    display: flex; flex-direction: column;
+    padding: .75rem .65rem 1rem;
+    border-top: 1px solid var(--sb-border);
 }
-/* Tombol Keluar Sesi — merah solid seperti sidebar Ustadz */
-.sb-logout {
-    width: 100%;
-    height: 42px;
-    display: flex; align-items: center; justify-content: center;
-    gap: 8px;
-    background: #DC2626;
-    border: none;
-    border-radius: 10px;
-    color: #FFFFFF;
-    font-size: 13.5px; font-weight: 600;
-    text-decoration: none;
-    transition: background 0.2s ease;
-}
-.sb-logout:hover { background: #B91C1C; color: #FFFFFF; }
 
-/* Hamburger overlay (mobile) */
-.sb-overlay {
+.sb-logout {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    width: 100%;
+    padding: .55rem .75rem;
+    border-radius: 8px;
+    border: 1px solid rgba(252, 165, 165, .35);
+    background: transparent;
+    font-size: .82rem;
+    font-weight: 500;
+    color: #FCA5A5;
+    cursor: pointer;
+    transition: background .15s, color .15s, border-color .15s;
+}
+
+#siswaSidebar .sb-logout:hover,
+#siswaSidebar .sb-logout:focus-visible {
+    background: #DC2626;
+    color: #FFFFFF;
+    border-color: #DC2626;
+}
+
+#siswaSidebar .sb-logout:active {
+    background: #B91C1C;
+    color: #FFFFFF;
+    border-color: #B91C1C;
+}
+
+/* ── Topbar tipis (mobile only) ─────────────────────────────────── */
+#siswaTopbar {
     display: none;
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 52px;
+    background: var(--sb-bg);
+    z-index: 1050;
+    align-items: center;
+    padding: 0 1rem;
+    gap: .75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .12);
+}
+
+.sb-toggle {
+    background: none;
+    border: none;
+    padding: .4rem;
+    color: #fff;
+    font-size: 1.3rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+/* ── Overlay (mobile) ───────────────────────────────────────────── */
+#sbOverlaySiswa {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .35);
     z-index: 1039;
 }
 
-/* ══════════════════════════════════════════════════════
-   CONTENT WRAPPER
-══════════════════════════════════════════════════════ */
-.siswa-content-wrapper {
-    margin-left: 256px !important;
-    width: calc(100% - 256px) !important;
-    min-height: 100vh;
+/* ── Area konten utama ──────────────────────────────────────────── */
+#siswaContent {
+    margin-left: var(--sb-width);
+    flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    background-color: #F6F7F5;
+    background: #F8FAFC;
 }
 
-/* Hamburger button */
-.btn-ham {
-    display: none;
-    background: none; border: none;
-    padding: 6px; cursor: pointer;
-    color: var(--slate-7);
-    font-size: 22px;
-    border-radius: 8px;
-}
-.btn-ham:hover { background: var(--slate-1); }
-
-/* KPI card — aksen garis kiri teal */
-.kpi-card {
-    background: #ffffff;
-    border: 1px solid var(--color-border);
-    border-radius: 14px;
-    padding: 20px;
-    box-shadow: 0 2px 8px rgba(17, 117, 109, 0.05);
-    border-left: 4px solid #11756D;
-    height: 100%;
-}
-.kpi-card--warning {
-    border-left-color: #D97706;
+.siswa-main {
+    flex: 1;
+    padding: 1.75rem 1.75rem 2rem;
 }
 
-/* ══════════════════════════════════════════════════════
-   RESPONSIVITAS MOBILE & TABLET
-══════════════════════════════════════════════════════ */
+/* ── Topbar konten (breadcrumb + identitas) ─────────────────────── */
+.siswa-topbar {
+    background: #fff;
+    border-bottom: 1px solid #E2E8F0;
+    padding: .6rem 1.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* ── Responsive: layar < 992px ──────────────────────────────────── */
 @media (max-width: 991.98px) {
-    .siswa-sidebar {
-        transform: translateX(-100%) !important;
-        z-index: 1050 !important;
+    :root {
+        --topbar-h: 52px;
     }
-    .siswa-sidebar.open {
-        transform: translateX(0) !important;
+
+    #siswaTopbar {
+        display: flex;
     }
-    .sb-overlay.open {
+
+    #siswaSidebar {
+        transform: translateX(-100%);
+        top: 0;
+    }
+
+    #siswaSidebar.open {
+        transform: translateX(0);
+    }
+
+    #sbOverlaySiswa.open {
         display: block;
     }
-    .siswa-content-wrapper {
-        margin-left: 0 !important;
-        width: 100% !important;
+
+    #siswaContent {
+        margin-left: 0;
+        padding-top: var(--topbar-h);
     }
-    .btn-ham { display: flex !important; }
+
+    .siswa-topbar {
+        display: none;
+    }
+
+    .siswa-main {
+        padding: 1.25rem 1rem 1.5rem;
+    }
+}
+
+/* ── Komponen Dashboard & Tabel Siswa (selaras dengan Admin) ────── */
+.kpi-siswa-card {
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.kpi-siswa-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(17, 122, 116, .10) !important;
+}
+
+.tbl-siswa thead {
+    background: #D1FAE5;
+}
+
+.tbl-siswa thead th {
+    color: #065F46;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .045em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.tbl-siswa tbody tr:hover td {
+    background: #F0FDF4;
+}
+
+/* Badge Indeks Nilai (selaras dengan admin/laporan-tahfiz/show) */
+.badge-indeks {
+    font-size: .72rem;
+    font-weight: 700;
+    border-radius: 99px;
+    padding: .22em .75em;
+    display: inline-block;
+}
+
+.bi-A, .bi-AB {
+    background: #D1FAE5;
+    color: #065F46;
+    border: 1px solid #6EE7B7;
+}
+
+.bi-B, .bi-BC {
+    background: #DBEAFE;
+    color: #1D4ED8;
+    border: 1px solid #93C5FD;
+}
+
+.bi-C {
+    background: #FEF9C3;
+    color: #92400E;
+    border: 1px solid #FDE68A;
+}
+
+.bi-D, .bi-E {
+    background: #FEE2E2;
+    color: #991B1B;
+    border: 1px solid #FCA5A5;
+}
+
+/* ── Halaman Riwayat Hafalan ────────────────────────────────────── */
+.form-select:focus,
+.form-control:focus {
+    border-color: #0D6B65;
+    box-shadow: 0 0 0 3px rgba(13, 107, 101, .12);
+}
+
+/* Progress bar animasi --*/
+.progress-bar {
+    transition: width .8s ease-in-out;
 }

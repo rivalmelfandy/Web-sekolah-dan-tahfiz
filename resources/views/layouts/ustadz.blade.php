@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="{{ asset('css/public-style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/tahfiz.css') }}">
 
     <style>
         /* ── Variabel warna tema hijau sidebar ──────────────────────── */
@@ -254,10 +255,44 @@
         </div>
     </a>
 
-    {{-- ── Menu Utama (kosong, siap diisi menu khusus ustadz) ─────── --}}
+    {{-- ── Menu Utama ─────────────────────────────────────────────── --}}
     <div class="sb-label">Menu Utama</div>
     <ul class="sb-nav">
-        {{-- Menu ustadz akan ditambahkan di sini --}}
+        <li>
+            <a href="{{ route('ustadz.dashboard') }}"
+               class="sb-link {{ request()->routeIs('ustadz.dashboard') ? 'active' : '' }}">
+                <i class="bi bi-grid-1x2-fill"></i>
+                <span>Rekap Halaqah</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('ustadz.hafalan.index') }}"
+               class="sb-link {{ request()->routeIs('ustadz.hafalan.*') ? 'active' : '' }}">
+                <i class="bi bi-journal-check"></i>
+                <span>Setoran Hafalan</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('ustadz.murajaah.index') }}"
+               class="sb-link {{ request()->routeIs('ustadz.murajaah.*') ? 'active' : '' }}">
+                <i class="bi bi-arrow-repeat"></i>
+                <span>Murajaah</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('ustadz.target.index') }}"
+               class="sb-link {{ request()->routeIs('ustadz.target.*') ? 'active' : '' }}">
+                <i class="bi bi-bullseye"></i>
+                <span>Target Hafalan</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('ustadz.profil') }}"
+               class="sb-link {{ request()->routeIs('ustadz.profil') ? 'active' : '' }}">
+                <i class="bi bi-person-gear"></i>
+                <span>Profil Saya</span>
+            </a>
+        </li>
     </ul>
 
     <div class="sb-spacer"></div>

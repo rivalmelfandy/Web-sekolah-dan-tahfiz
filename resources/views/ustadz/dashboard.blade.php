@@ -290,5 +290,19 @@ document.getElementById('searchSiswaInput')?.addEventListener('input', function(
         badge.textContent = visibleCount + ' Siswa Ditampilkan';
     }
 });
+
+// Safeguard pemicu modal detail riwayat santri
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('[data-bs-target^="#modalRiwayat"]').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('data-bs-target');
+            const modalEl = document.querySelector(targetId);
+            if (modalEl && window.bootstrap) {
+                bootstrap.Modal.getOrCreateInstance(modalEl).show();
+            }
+        });
+    });
+});
 </script>
 @endsection

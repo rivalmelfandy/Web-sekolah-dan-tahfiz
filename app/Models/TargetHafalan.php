@@ -21,6 +21,13 @@ class TargetHafalan extends Model
     protected $table = 'target_hafalan';
 
     /**
+     * Kolom updated_at tidak ada di tabel ini.
+     *
+     * @var string|null
+     */
+    public const UPDATED_AT = null;
+
+    /**
      * Atribut yang boleh diisi secara massal.
      *
      * @var list<string>
@@ -41,7 +48,7 @@ class TargetHafalan extends Model
      * @var array<string, mixed>
      */
     protected $attributes = [
-        'status' => TargetStatus::Aktif->value,
+        'status' => 'Aktif',
     ];
 
     /**

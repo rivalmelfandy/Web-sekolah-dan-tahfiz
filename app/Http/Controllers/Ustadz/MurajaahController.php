@@ -37,27 +37,24 @@ class MurajaahController extends Controller
                 ->get();
         }
 
-        // ── Santri yang sedang dipilih ──────────────────────────────────
-        $selectedSiswaId = $request->integer('siswa_id') ?: $santriList->first()?->id;
-        $selectedSiswa = $santriList->firstWhere('id', $selectedSiswaId);
+        $santriIds = $santriList->pluck('id');
 
-        // ── Riwayat setoran untuk di-murajaah & riwayat murajaah yang sudah ada ──
-        $riwayatSetoran = collect();
-        $riwayatMurajaah = collect();
+        // ── Riwayat setoran & murajaah seluruh santri (untuk interaktivitas instan) ──
+        $semuaSetoran = SetoranHafalan::whereIn('siswa_id', $santriIds)
+            ->orderByDesc('tanggal_setor')
+            ->orderByDesc('id')
+            ->get();
+        $setoranPerSiswa = $semuaSetoran->groupBy('siswa_id');
 
-        if ($selectedSiswa) {
-            $riwayatSetoran = SetoranHafalan::where('siswa_id', $selectedSiswa->id)
-                ->orderByDesc('tanggal_setor')
-                ->orderByDesc('id')
-                ->limit(15)
-                ->get();
+        $semuaMurajaah = Murajaah::whereIn('siswa_id', $santriIds)
+            ->orderByDesc('tanggal_murajaah')
+            ->orderByDesc('id')
+            ->get();
+        $murajaahPerSiswa = $semuaMurajaah->groupBy('siswa_id');
 
-            $riwayatMurajaah = Murajaah::where('siswa_id', $selectedSiswa->id)
-                ->orderByDesc('tanggal_murajaah')
-                ->orderByDesc('id')
-                ->limit(15)
-                ->get();
-        }
+        // ── Santri yang sedang dipilih (null jika baru buka halaman) ────
+        $selectedSiswaId = $request->integer('siswa_id') ?: null;
+        $selectedSiswa = $selectedSiswaId ? $santriList->firstWhere('id', $selectedSiswaId) : null;
 
         $surahList = QuranHelper::getSurahList();
 
@@ -66,8 +63,8 @@ class MurajaahController extends Controller
             'halaqah' => $halaqah,
             'santriList' => $santriList,
             'selectedSiswa' => $selectedSiswa,
-            'riwayatSetoran' => $riwayatSetoran,
-            'riwayatMurajaah' => $riwayatMurajaah,
+            'setoranPerSiswa' => $setoranPerSiswa,
+            'murajaahPerSiswa' => $murajaahPerSiswa,
             'surahList' => $surahList,
         ]);
     }
@@ -95,6 +92,6 @@ class MurajaahController extends Controller
 
         return redirect()
             ->route('ustadz.murajaah.index', ['siswa_id' => $data['siswa_id']])
-            ->with('success', "Alhamdulillah! Evaluasi murajaah {$namaSiswa} untuk Surah {$murajaah->surah} ({$murajaah->ayat_range}) berhasil disimpan dengan status '{$murajaah->status_mutqin->value}'.");
+            ->with('success', "Alhamdulillah! Evaluasi murajaah {$namaSiswa} untuk Surah {$murajaah->surah} ({$murajaah->ayat_range}) berhasil disimpan dengan status '{$data['status_mutqin']}'.");
     }
 }

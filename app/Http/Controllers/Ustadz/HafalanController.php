@@ -38,27 +38,25 @@ class HafalanController extends Controller
                 ->get();
         }
 
-        // ── Santri yang sedang dipilih ──────────────────────────────────
-        $selectedSiswaId = $request->integer('siswa_id') ?: $santriList->first()?->id;
-        $selectedSiswa = $santriList->firstWhere('id', $selectedSiswaId);
+        $santriIds = $santriList->pluck('id');
 
-        // ── Data santri terpilih ────────────────────────────────────────
-        $targetAktif = null;
-        $riwayatSetoran = collect();
+        // ── Santri yang sedang dipilih (null jika baru buka halaman) ────
+        $selectedSiswaId = $request->integer('siswa_id') ?: null;
+        $selectedSiswa = $selectedSiswaId ? $santriList->firstWhere('id', $selectedSiswaId) : null;
 
-        if ($selectedSiswa) {
-            $targetAktif = TargetHafalan::where('siswa_id', $selectedSiswa->id)
-                ->where('status', TargetStatus::Aktif)
-                ->orderByDesc('tanggal_mulai')
-                ->orderByDesc('id')
-                ->first();
+        // ── Peta target aktif per santri ───────────────────────────────
+        $targetAktifMap = TargetHafalan::whereIn('siswa_id', $santriIds)
+            ->where('status', TargetStatus::Aktif)
+            ->orderByDesc('tanggal_mulai')
+            ->get()
+            ->keyBy('siswa_id');
 
-            $riwayatSetoran = SetoranHafalan::where('siswa_id', $selectedSiswa->id)
-                ->orderByDesc('tanggal_setor')
-                ->orderByDesc('id')
-                ->limit(10)
-                ->get();
-        }
+        // ── Peta setoran per santri (untuk riwayat di panel kanan) ──────
+        $semuaSetoran = SetoranHafalan::whereIn('siswa_id', $santriIds)
+            ->orderByDesc('tanggal_setor')
+            ->orderByDesc('id')
+            ->get();
+        $setoranPerSiswa = $semuaSetoran->groupBy('siswa_id');
 
         $surahList = QuranHelper::getSurahList();
 
@@ -67,8 +65,8 @@ class HafalanController extends Controller
             'halaqah' => $halaqah,
             'santriList' => $santriList,
             'selectedSiswa' => $selectedSiswa,
-            'targetAktif' => $targetAktif,
-            'riwayatSetoran' => $riwayatSetoran,
+            'targetAktifMap' => $targetAktifMap,
+            'setoranPerSiswa' => $setoranPerSiswa,
             'surahList' => $surahList,
         ]);
     }

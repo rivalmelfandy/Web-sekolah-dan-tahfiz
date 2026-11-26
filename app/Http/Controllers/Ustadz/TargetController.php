@@ -42,14 +42,20 @@ class TargetController extends Controller
 
         // ── Peta target aktif per siswa untuk indikator badge di panel kiri ──
         $targetAktifMap = TargetHafalan::whereIn('siswa_id', $santriIds)
-            ->where('status', TargetStatus::Aktif)
+            ->where('status', TargetStatus::Aktif->value)
             ->orderByDesc('tanggal_mulai')
             ->get()
             ->keyBy('siswa_id');
 
-        // ── Santri yang sedang dipilih ──────────────────────────────────
-        $selectedSiswaId = $request->integer('siswa_id') ?: $santriList->first()?->id;
-        $selectedSiswa = $santriList->firstWhere('id', $selectedSiswaId);
+        // ── Riwayat seluruh target per siswa ────────────────────────────
+        $semuaTarget = TargetHafalan::whereIn('siswa_id', $santriIds)
+            ->orderByDesc('created_at')
+            ->get();
+        $riwayatTargetMap = $semuaTarget->groupBy('siswa_id');
+
+        // ── Santri yang sedang dipilih (null jika baru buka) ─────────────
+        $selectedSiswaId = $request->integer('siswa_id') ?: null;
+        $selectedSiswa = $selectedSiswaId ? $santriList->firstWhere('id', $selectedSiswaId) : null;
 
         // ── Detail target santri terpilih ───────────────────────────────
         $targetAktif = null;
@@ -63,9 +69,7 @@ class TargetController extends Controller
                 $hariSisa = (int) now()->diffInDays(Carbon::parse($targetAktif->tanggal_akhir), false);
             }
 
-            $riwayatTarget = TargetHafalan::where('siswa_id', $selectedSiswa->id)
-                ->orderByDesc('created_at')
-                ->get();
+            $riwayatTarget = $riwayatTargetMap->get($selectedSiswa->id, collect());
         }
 
         $kurikulumTarget = QuranHelper::getKurikulumTarget();
@@ -76,6 +80,7 @@ class TargetController extends Controller
             'halaqah' => $halaqah,
             'santriList' => $santriList,
             'targetAktifMap' => $targetAktifMap,
+            'riwayatTargetMap' => $riwayatTargetMap,
             'selectedSiswa' => $selectedSiswa,
             'targetAktif' => $targetAktif,
             'riwayatTarget' => $riwayatTarget,
@@ -92,12 +97,12 @@ class TargetController extends Controller
     {
         $data = $request->validated();
         $data['ustadz_id'] = $request->user()->id;
-        $data['status'] = TargetStatus::Aktif;
+        $data['status'] = TargetStatus::Aktif->value;
 
         // Nonaktifkan target aktif sebelumnya jika ada
         TargetHafalan::where('siswa_id', $data['siswa_id'])
-            ->where('status', TargetStatus::Aktif)
-            ->update(['status' => TargetStatus::Nonaktif]);
+            ->where('status', TargetStatus::Aktif->value)
+            ->update(['status' => TargetStatus::Nonaktif->value]);
 
         $target = TargetHafalan::create($data);
 
@@ -106,18 +111,21 @@ class TargetController extends Controller
 
         return redirect()
             ->route('ustadz.target.index', ['siswa_id' => $data['siswa_id']])
-            ->with('success', "Target hafalan untuk {$namaSiswa} ({$target->surah_awal} s.d. {$target->surah_akhir}) berhasil ditetapkan.");
+            ->with('success', "Target hafalan untuk {$namaSiswa} ({$target->surah_awal} s.d. {$target->surah_akhir}) berhasil ditetapkan dan diaktifkan.");
     }
 
     /**
-     * Tandai target hafalan selesai.
+     * Tandai target hafalan sebagai Selesai.
      */
     public function markSelesai(Request $request, TargetHafalan $target): RedirectResponse
     {
-        $target->update(['status' => TargetStatus::Selesai]);
+        $target->update(['status' => TargetStatus::Selesai->value]);
+
+        $siswa = User::find($target->siswa_id);
+        $namaSiswa = $siswa?->nama_lengkap ?? 'Siswa';
 
         return redirect()
             ->route('ustadz.target.index', ['siswa_id' => $target->siswa_id])
-            ->with('success', "Target hafalan telah berhasil ditandai sebagai Selesai.");
+            ->with('success', "Target hafalan {$namaSiswa} telah ditandai Selesai. Barakallahu fiik!");
     }
 }

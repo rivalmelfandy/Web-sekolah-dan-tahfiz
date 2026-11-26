@@ -4,7 +4,7 @@
 
 @section('content')
 
-{{-- ── Notifikasi Alert ─────────────────────────────────────────────── --}}
+{{-- ── Notifikasi Alert ──────────────────────────────────────────────── --}}
 @if(session('success'))
     <div class="alert alert-success alert-dismissible d-flex align-items-center gap-2 py-2 mb-4" role="alert">
         <i class="bi bi-check-circle-fill flex-shrink-0"></i>
@@ -25,276 +25,234 @@
     </div>
 @endif
 
-{{-- ── Header Banner ────────────────────────────────────────────────── --}}
+{{-- ── Header Banner ──────────────────────────────────────────────────── --}}
 <div class="mb-4">
-    <span class="badge px-3 py-1 text-white mb-2 fw-bold" style="background-color: #117A74;">PENGUATAN HAFALAN</span>
+    <span class="badge px-3 py-1 text-white mb-2 fw-bold" style="background-color: #11756D;">PENGUATAN HAFALAN</span>
     <h2 class="fw-bold mb-1" style="color: #1E293B; font-size: 1.65rem;">Evaluasi Murajaah Siswa</h2>
     <p class="text-muted small mb-0">Uji dan perkuat hafalan lama siswa binaan agar tetap mutqin dan terjaga kelancarannya.</p>
 </div>
 
-{{-- ── Layout 2 Kolom (Sesuai Referensi RPLBO) ───────────────────────── --}}
+{{-- ── Layout 2 Kolom (Identik dengan Tab Hafalan & RPLBO) ─────────────── --}}
 <div class="hafalan-layout">
 
-    {{-- ══ PANEL KIRI: DAFTAR PILIH SISWA ══════════════════════════════ --}}
+    {{-- ══ PANEL KIRI: DAFTAR PILIH SISWA ══════════════════════════════════ --}}
     <section class="hafalan-panel hafalan-panel-siswa" aria-label="Pilih siswa murajaah">
         <h2 class="hafalan-panel-title">
-            <i class="bi bi-person-check-fill" style="color:#117A74;"></i>
+            <i class="bi bi-person"></i>
             <span>Pilih Siswa ({{ $santriList->count() }})</span>
         </h2>
         <div class="hafalan-search-wrap">
             <i class="bi bi-search"></i>
             <input type="search" id="searchMurajaahSiswa" placeholder="Cari nama atau NIS..." autocomplete="off">
         </div>
-        <div id="listMurajaahSiswa" class="d-flex flex-column gap-1 overflow-y-auto" style="max-height: 580px;">
+        <div id="listMurajaahSiswa">
             @forelse($santriList as $s)
                 @php
                     $kata = explode(' ', trim($s->nama_lengkap));
                     $inisial = strtoupper(substr($kata[0], 0, 1));
                     if (isset($kata[1])) $inisial .= strtoupper(substr($kata[1], 0, 1));
-                    $isAktif = $selectedSiswa && $selectedSiswa->id === $s->id;
                 @endphp
-                <a href="{{ route('ustadz.murajaah.index', ['siswa_id' => $s->id]) }}"
-                   class="hafalan-siswa-card text-decoration-none {{ $isAktif ? 'aktif active' : '' }}"
-                   data-nama="{{ strtolower($s->nama_lengkap) }}"
-                   data-nis="{{ strtolower($s->nip_nis) }}">
-                    <span class="hafalan-avatar" aria-hidden="true"
-                          style="{{ $isAktif ? 'background:#117A74; color:#fff;' : '' }}">
-                        {{ $inisial }}
-                    </span>
+                <button type="button"
+                        class="hafalan-siswa-card"
+                        data-id="{{ $s->id }}"
+                        data-nama="{{ $s->nama_lengkap }}"
+                        data-nis="{{ $s->nip_nis }}"
+                        data-inisial="{{ $inisial }}"
+                        data-search-nama="{{ strtolower($s->nama_lengkap) }}"
+                        data-search-nis="{{ strtolower($s->nip_nis) }}"
+                        onclick="pilihSantriMurajaah(this)">
+                    <span class="hafalan-avatar" aria-hidden="true">{{ $inisial }}</span>
                     <span class="hafalan-siswa-meta">
-                        <span class="hafalan-siswa-nama text-truncate" style="color: #1E293B;">{{ $s->nama_lengkap }}</span>
+                        <span class="hafalan-siswa-nama text-truncate">{{ $s->nama_lengkap }}</span>
                         <span class="hafalan-siswa-nis">NIS: {{ $s->nip_nis }}</span>
                     </span>
-                    @if($isAktif)
-                        <i class="bi bi-chevron-right ms-auto" style="color:#117A74; font-size:12px;"></i>
-                    @endif
-                </a>
+                </button>
             @empty
-                <div class="text-center py-4 text-muted small">
-                    Belum ada siswa dalam halaqah.
+                <div class="text-center text-muted small py-4">
+                    <i class="bi bi-people" style="font-size:2rem;opacity:.35;"></i>
+                    <p class="mt-2 mb-0">Belum ada siswa di halaqah Anda.</p>
                 </div>
             @endforelse
         </div>
     </section>
 
-    {{-- ══ PANEL KANAN: TABEL RIWAYAT & FORM MURAJAAH ══════════════════ --}}
-    <section class="hafalan-panel hafalan-panel-surah" aria-label="Detail murajaah siswa">
-        @if(!$selectedSiswa)
-            <div class="hafalan-empty">
-                <i class="bi bi-arrow-repeat fs-1 text-muted d-block mb-3"></i>
-                <p>Pilih siswa terlebih dahulu di panel sebelah kiri untuk mencatat evaluasi murajaah.</p>
-            </div>
-        @else
-            <div>
-                {{-- Header Siswa Terpilih --}}
-                <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 pb-3 mb-3"
-                     style="border-bottom: 1px solid #E2E8F0;">
-                    <div>
-                        <span class="badge px-2 py-1 rounded-pill mb-1" style="background:#E6F4F1; color:#117A74; font-size:11px;">
-                            Siswa Terpilih
-                        </span>
-                        <h4 class="fw-bold mb-0 text-dark">{{ $selectedSiswa->nama_lengkap }}</h4>
-                        <div class="text-muted small">NIS: {{ $selectedSiswa->nip_nis }} &bull; Halaqah: {{ $halaqah?->nama_halaqah ?? '–' }}</div>
-                    </div>
-                    <div>
-                        <button type="button" class="btn text-white px-3 py-2 rounded-3 fw-semibold shadow-sm"
-                                style="background:#117A74; font-size:13.5px;"
-                                onclick="openModalMurajaahBebas()">
-                            <i class="bi bi-plus-circle me-1"></i>Murajaah Mandiri
-                        </button>
-                    </div>
-                </div>
+    {{-- ══ PANEL KANAN: RIWAYAT SETORAN & EVALUASI MURAJAAH ══════════════ --}}
+    <section class="hafalan-panel hafalan-panel-surah" aria-label="Riwayat setoran dan evaluasi murajaah" id="panelKananMurajaah">
 
-                {{-- Tabel 1: Setoran Hafalan yang Dapat Dimurajaah --}}
-                <div class="mb-4">
-                    <h6 class="fw-bold text-dark mb-2" style="font-size:14px;">
-                        <i class="bi bi-journal-text me-1 text-primary"></i>Setoran Hafalan yang Dapat Diulang / Diuji
-                    </h6>
-                    <div class="table-responsive" style="border:1px solid #E2E8F0; border-radius:12px; overflow:hidden;">
-                        <table class="table table-hover align-middle mb-0" style="font-size:13px;">
-                            <thead style="background:#F8FAFC;">
-                                <tr style="font-size:12px; color:#64748B; text-transform:uppercase; letter-spacing:0.03em;">
-                                    <th class="ps-3 py-2.5 fw-semibold" style="width:40px;">No</th>
-                                    <th class="py-2.5 fw-semibold" style="width:120px;">Tgl Setor</th>
-                                    <th class="py-2.5 fw-semibold">Surah &amp; Ayat</th>
-                                    <th class="py-2.5 fw-semibold" style="width:130px;">Kualitas Setor</th>
-                                    <th class="py-2.5 pe-3 fw-semibold text-center" style="width:150px;">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($riwayatSetoran as $idx => $setor)
-                                    <tr>
-                                        <td class="ps-3 text-muted small">{{ $idx + 1 }}</td>
-                                        <td class="text-nowrap small text-secondary fw-semibold">
-                                            {{ $setor->tanggal_setor?->translatedFormat('d M Y') }}
-                                        </td>
-                                        <td>
-                                            <div class="fw-bold text-dark">{{ $setor->surah }}</div>
-                                            <div class="text-muted small">Ayat {{ $setor->ayat_awal }} – {{ $setor->ayat_akhir }}</div>
-                                        </td>
-                                        <td>
-                                            @if($setor->kualitas?->value === 'Lancar')
-                                                <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded-pill">
-                                                    Lancar
-                                                </span>
-                                            @elseif($setor->kualitas?->value === 'Kurang Lancar')
-                                                <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-2 py-1 rounded-pill">
-                                                    Kurang Lancar
-                                                </span>
-                                            @else
-                                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1 rounded-pill">
-                                                    Tidak Lancar
-                                                </span>
-                                            @endif
-                                        </td>
-                                        <td class="pe-3 text-center">
-                                            <button type="button" class="btn btn-sm btn-outline-success rounded-pill px-3 fw-semibold"
-                                                    style="font-size:12px;"
-                                                    onclick="openModalEvaluasiSetoran({{ $setor->id }}, '{{ addslashes($setor->surah) }}', 'Ayat {{ $setor->ayat_awal }}–{{ $setor->ayat_akhir }}')">
-                                                <i class="bi bi-patch-check me-1"></i>Evaluasi
-                                            </button>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="5" class="text-center py-4 text-muted small">
-                                            Belum ada setoran hafalan yang tercatat untuk siswa ini.
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+        {{-- State kosong --}}
+        <div id="murajaahEmpty" class="hafalan-empty">
+            <p>Pilih siswa di panel kiri untuk melihat riwayat setoran dan menambahkan evaluasi murajaah.</p>
+        </div>
 
-                {{-- Tabel 2: Riwayat Evaluasi Murajaah Sebelumnya --}}
+        {{-- State aktif (muncul setelah siswa dipilih) --}}
+        <div id="murajaahRiwayatArea" hidden>
+
+            {{-- Header panel kanan --}}
+            <div class="hafalan-surah-head">
                 <div>
-                    <h6 class="fw-bold text-dark mb-2" style="font-size:14px;">
-                        <i class="bi bi-clock-history me-1 text-success"></i>Riwayat Evaluasi Murajaah Santri ({{ $riwayatMurajaah->count() }})
-                    </h6>
-                    <div class="table-responsive" style="border:1px solid #E2E8F0; border-radius:12px; overflow:hidden;">
-                        <table class="table table-hover align-middle mb-0" style="font-size:13px;">
-                            <thead style="background:#F8FAFC;">
-                                <tr style="font-size:12px; color:#64748B; text-transform:uppercase; letter-spacing:0.03em;">
-                                    <th class="ps-3 py-2.5 fw-semibold" style="width:40px;">No</th>
-                                    <th class="py-2.5 fw-semibold" style="width:120px;">Tgl Murajaah</th>
-                                    <th class="py-2.5 fw-semibold">Surah &amp; Rentang</th>
-                                    <th class="py-2.5 fw-semibold" style="width:130px;">Status Mutqin</th>
-                                    <th class="py-2.5 pe-3 fw-semibold">Catatan Ustadz</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($riwayatMurajaah as $idx => $mur)
-                                    <tr>
-                                        <td class="ps-3 text-muted small">{{ $idx + 1 }}</td>
-                                        <td class="text-nowrap small text-secondary fw-semibold">
-                                            {{ $mur->tanggal_murajaah?->translatedFormat('d M Y') }}
-                                        </td>
-                                        <td>
-                                            <div class="fw-bold text-dark">{{ $mur->surah }}</div>
-                                            <div class="text-muted small">{{ $mur->ayat_range }}</div>
-                                        </td>
-                                        <td>
-                                            @if($mur->status_mutqin?->value === 'Lancar')
-                                                <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded-pill">
-                                                    Mutqin / Lancar
-                                                </span>
-                                            @elseif($mur->status_mutqin?->value === 'Kurang Lancar')
-                                                <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-2 py-1 rounded-pill">
-                                                    Kurang Lancar
-                                                </span>
-                                            @else
-                                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1 rounded-pill">
-                                                    Tidak Lancar
-                                                </span>
-                                            @endif
-                                        </td>
-                                        <td class="pe-3 text-muted small">
-                                            {{ $mur->catatan ?: '–' }}
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="5" class="text-center py-4 text-muted small">
-                                            Belum ada catatan evaluasi murajaah untuk siswa ini.
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
+                    <h2>Riwayat Setoran &amp; Evaluasi Murajaah</h2>
+                    <p>Pilih baris setoran untuk memperbaiki kualitas hafalan melalui murajaah</p>
                 </div>
-
+                <div class="d-flex align-items-center gap-2">
+                    <button type="button"
+                            class="btn btn-sm text-white fw-semibold rounded-pill px-3 shadow-sm"
+                            style="background:#11756D; font-size:12.5px;"
+                            onclick="openModalMurajaahBebas()">
+                        <i class="bi bi-journal-plus me-1"></i>Murajaah Mandiri
+                    </button>
+                    <span class="hafalan-santri-pill" id="badgeSantriMurajaah">Siswa: –</span>
+                </div>
             </div>
-        @endif
+
+            {{-- Tabel 1: Riwayat Setoran yang bisa di-evaluasi --}}
+            <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="fw-bold" style="font-size:14px; color:#1E293B;">
+                        <i class="bi bi-list-check me-1" style="color:#11756D;"></i>Daftar Setoran Santri
+                    </span>
+                    <span class="text-muted" style="font-size:12px;" id="infoJumlahSetoran">Menampilkan 0 setoran</span>
+                </div>
+                <div class="table-responsive" style="max-height: 320px; overflow-y: auto; border: 1px solid #F1F5F9; border-radius: 10px;">
+                    <table class="hafalan-table mb-0">
+                        <thead style="position: sticky; top: 0; background: #FFFFFF; z-index: 2;">
+                            <tr>
+                                <th style="width:110px;">Tanggal</th>
+                                <th>Nama Surah</th>
+                                <th style="width:140px;">Rentang Ayat</th>
+                                <th style="width:150px;">Kualitas Setor</th>
+                                <th class="col-aksi">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelSetoranMurajaah">
+                            <tr><td colspan="5" class="text-center text-muted small py-3">Memuat data...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="d-flex justify-content-end align-items-center mt-2" style="font-size:12px; color:#94A3B8;">
+                    <span>Tekan tombol <strong style="color:#11756D;">+</strong> pada baris setoran untuk mengevaluasi murajaah</span>
+                </div>
+            </div>
+
+            {{-- Tabel 2: Riwayat Hasil Evaluasi Murajaah --}}
+            <div class="pt-3 border-top">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="fw-bold" style="font-size:14px; color:#1E293B;">
+                        <i class="bi bi-patch-check-fill me-1" style="color:#11756D;"></i>Riwayat Hasil Evaluasi Murajaah
+                    </span>
+                    <span class="text-muted" style="font-size:12px;" id="labelJmlMurajaah">(0 evaluasi)</span>
+                </div>
+                <div class="table-responsive" style="max-height: 260px; overflow-y: auto; border: 1px solid #F1F5F9; border-radius: 10px;">
+                    <table class="hafalan-table mb-0">
+                        <thead style="position: sticky; top: 0; background: #FFFFFF; z-index: 2;">
+                            <tr>
+                                <th style="width:40px;">No</th>
+                                <th style="width:110px;">Tanggal</th>
+                                <th>Surah &amp; Rentang</th>
+                                <th style="width:150px;">Hasil Evaluasi</th>
+                                <th>Catatan Ustadz</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelRiwayatMurajaah">
+                            <tr><td colspan="5" class="text-center text-muted small py-3">Memuat data...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>{{-- /murajaahRiwayatArea --}}
     </section>
 
-</div>
+</div>{{-- /hafalan-layout --}}
 
-{{-- ══ MODAL EVALUASI MURAJAAH ════════════════════════════════════════ --}}
-@if($selectedSiswa)
-<div class="modal fade" id="modalEvaluasiMurajaah" tabindex="-1" aria-labelledby="modalEvaluasiLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow rounded-4 overflow-hidden">
-            <form action="{{ route('ustadz.murajaah.store') }}" method="POST">
+{{-- ══ MODAL: LEMBAR EVALUASI MURAJAAH ══════════════════════════════════════ --}}
+<div class="modal fade" id="modalEvaluasiMurajaah" tabindex="-1" aria-labelledby="modalEvaluasiMurajaahLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 540px;">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <form method="POST" action="{{ route('ustadz.murajaah.store') }}">
                 @csrf
-                <input type="hidden" name="siswa_id" value="{{ $selectedSiswa->id }}">
-                <input type="hidden" name="setoran_id" id="modalSetoranId" value="">
+                <input type="hidden" name="siswa_id" id="modalMurajaahSiswaId">
+                <input type="hidden" name="setoran_id" id="modalSetoranId">
 
-                <div class="modal-header text-white" style="background:#117A74;">
-                    <div>
-                        <h6 class="modal-title fw-bold mb-0" id="modalEvaluasiLabel">
-                            <i class="bi bi-patch-check me-1"></i>Form Evaluasi Murajaah
-                        </h6>
-                        <small class="opacity-75">Siswa: {{ $selectedSiswa->nama_lengkap }} ({{ $selectedSiswa->nip_nis }})</small>
+                {{-- Header Gradient Elegan --}}
+                <div class="modal-header border-0 text-white py-3 px-4"
+                     style="background: linear-gradient(135deg, #0A2E2B 0%, #11756D 100%);">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-3 d-flex align-items-center justify-content-center"
+                             style="background: rgba(255,255,255,0.15); width: 42px; height: 42px;">
+                            <i class="bi bi-patch-check fs-4 text-warning"></i>
+                        </div>
+                        <div>
+                            <span class="badge bg-warning text-dark fw-bold px-2 py-0.5 mb-1" style="font-size: 0.65rem; letter-spacing: 0.5px;">
+                                EVALUASI PENGUATAN HAFALAN
+                            </span>
+                            <h5 class="modal-title fw-bold mb-0 text-white" id="modalEvaluasiMurajaahLabel">
+                                Lembar Evaluasi Murajaah
+                            </h5>
+                            <div class="small text-white-50 mt-0.5">
+                                Santri: <span id="modalNamaSantriMurajaah" class="fw-semibold text-white">-</span>
+                            </div>
+                        </div>
                     </div>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                    <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="modal" aria-label="Tutup"></button>
                 </div>
 
                 <div class="modal-body p-4">
                     {{-- Nama Surah --}}
                     <div class="mb-3">
-                        <label class="form-label small fw-bold text-dark">Surah yang Diulang <span class="text-danger">*</span></label>
-                        <input type="text" name="surah" id="modalSurah" class="form-control form-control-sm"
-                               placeholder="Contoh: An-Naba', Al-Mulk" required style="border-radius:8px;">
+                        <label class="form-label small fw-bold text-dark">Nama Surah <span class="text-danger">*</span></label>
+                        <input type="text" name="surah" id="modalSurah" class="form-control"
+                               placeholder="Pilih atau ketik nama surah..." required
+                               style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; height:42px; font-size:14px;"
+                               list="datalistSurahMurajaah">
+                        <datalist id="datalistSurahMurajaah">
+                            @foreach($surahList as $sr)
+                                <option value="{{ $sr['nama'] }}">
+                            @endforeach
+                        </datalist>
                     </div>
 
                     {{-- Rentang Ayat --}}
                     <div class="mb-3">
-                        <label class="form-label small fw-bold text-dark">Rentang Ayat / Keterangan <span class="text-danger">*</span></label>
-                        <input type="text" name="ayat_range" id="modalAyatRange" class="form-control form-control-sm"
-                               placeholder="Contoh: Ayat 1–20, Seluruh Ayat" required style="border-radius:8px;">
+                        <label class="form-label small fw-bold text-dark">Rentang Ayat <span class="text-danger">*</span></label>
+                        <input type="text" name="ayat_range" id="modalAyatRange" class="form-control"
+                               placeholder="Contoh: Ayat 1–20 atau Seluruh Ayat" required
+                               style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; height:42px; font-size:14px;">
                     </div>
 
-                    {{-- Status Mutqin / Kelancaran --}}
+                    {{-- Hasil Evaluasi Kelancaran --}}
                     <div class="mb-3">
                         <label class="form-label small fw-bold text-dark">Hasil Evaluasi Kelancaran <span class="text-danger">*</span></label>
-                        <select name="status_mutqin" id="modalStatusMutqin" class="form-select form-select-sm" required style="border-radius:8px;">
+                        <select name="status_mutqin" id="modalStatusMutqin" class="form-select" required
+                                style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; height:42px; font-size:14px;">
                             <option value="Lancar" selected>Lancar (Mutqin)</option>
-                            <option value="Kurang Lancar">Kurang Lancar (Perlu Diulang Sekali Lagi)</option>
-                            <option value="Tidak Lancar">Tidak Lancar (Belum Menguasai Sambungan Ayat)</option>
+                            <option value="Kurang Lancar">Kurang Lancar (Perlu Diulang)</option>
+                            <option value="Tidak Lancar">Tidak Lancar (Belum Menguasai)</option>
                         </select>
                     </div>
 
                     {{-- Tanggal Murajaah --}}
                     <div class="mb-3">
-                        <label class="form-label small fw-bold text-dark">Tanggal Murajaah <span class="text-danger">*</span></label>
-                        <input type="date" name="tanggal_murajaah" class="form-control form-control-sm"
-                               value="{{ date('Y-m-d') }}" required style="border-radius:8px;">
+                        <label class="form-label small fw-bold text-dark">Tanggal Evaluasi <span class="text-danger">*</span></label>
+                        <input type="date" name="tanggal_murajaah" class="form-control"
+                               value="{{ date('Y-m-d') }}" required
+                               style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; height:42px; font-size:14px;">
                     </div>
 
-                    {{-- Catatan --}}
+                    {{-- Catatan Ustadz --}}
                     <div class="mb-2">
                         <label class="form-label small fw-bold text-dark">Catatan Ustadz (Opsional)</label>
-                        <textarea name="catatan" rows="3" class="form-control form-control-sm"
-                                  placeholder="Catatan pelafalan makhraj, wakaf, atau pesan untuk santri..."
-                                  style="border-radius:8px;"></textarea>
+                        <textarea name="catatan" rows="3" class="form-control"
+                                  placeholder="Catatan makhraj, tajwid, kelancaran sambungan ayat..."
+                                  style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; font-size:13.5px;"></textarea>
                     </div>
                 </div>
 
-                <div class="modal-footer bg-light">
-                    <button type="button" class="btn btn-sm btn-secondary rounded-pill px-3" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-sm text-white rounded-pill px-4 fw-semibold" style="background:#117A74;">
+                <div class="modal-footer px-4 py-3 bg-light border-0 d-flex gap-2">
+                    <button type="button" class="btn btn-light rounded-pill px-4 fw-semibold text-secondary" data-bs-dismiss="modal">
+                        Batal
+                    </button>
+                    <button type="submit" class="btn text-white rounded-pill px-4 fw-bold ms-auto"
+                            style="background:#11756D;">
                         <i class="bi bi-save me-1"></i>Simpan Evaluasi
                     </button>
                 </div>
@@ -302,42 +260,178 @@
         </div>
     </div>
 </div>
-@endif
 
 @endsection
 
 @section('scripts')
 <script>
-// Filter pencarian santri di panel kiri
-document.getElementById('searchMurajaahSiswa')?.addEventListener('input', function() {
-    const keyword = this.value.toLowerCase().trim();
-    const cards = document.querySelectorAll('#listMurajaahSiswa .hafalan-siswa-card');
+// ── Data dari DB (di-encode controller) ─────────────────────────────────────
+const SETORAN_PER_SISWA  = @json($setoranPerSiswa);
+const MURAJAAH_PER_SISWA = @json($murajaahPerSiswa);
 
-    cards.forEach(card => {
-        const nama = card.getAttribute('data-nama') || '';
-        const nis = card.getAttribute('data-nis') || '';
-        if (nama.includes(keyword) || nis.includes(keyword)) {
-            card.style.display = '';
-        } else {
-            card.style.display = 'none';
-        }
+// ── State aktif ──────────────────────────────────────────────────────────────
+let aktivSiswaId = null;
+
+// ── Helper: format tanggal ───────────────────────────────────────────────────
+function fmtTgl(str) {
+    if (!str) return '-';
+    const d = new Date(str);
+    if (isNaN(d)) return str;
+    return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+// ── Helper: badge kualitas ───────────────────────────────────────────────────
+function badgeKualitas(kualitas) {
+    if (kualitas === 'Lancar') {
+        return '<span class="hafalan-badge hafalan-badge-selesai"><i class="bi bi-check-circle-fill me-1"></i>Lancar (Mutqin)</span>';
+    } else if (kualitas === 'Kurang Lancar') {
+        return '<span class="hafalan-badge hafalan-badge-berjalan"><i class="bi bi-clock-history me-1"></i>Kurang Lancar</span>';
+    } else if (kualitas === 'Tidak Lancar') {
+        return '<span class="hafalan-badge" style="background:#FEE2E2; color:#B91C1C;"><i class="bi bi-x-circle-fill me-1"></i>Tidak Lancar</span>';
+    }
+    return `<span class="hafalan-badge hafalan-badge-belum">${kualitas || '-'}</span>`;
+}
+
+// ── Pilih santri ─────────────────────────────────────────────────────────────
+function pilihSantriMurajaah(btn) {
+    // Hapus highlight lama
+    document.querySelectorAll('#listMurajaahSiswa .hafalan-siswa-card').forEach(c => {
+        c.classList.remove('aktif', 'active');
+    });
+
+    // Highlight yang dipilih
+    btn.classList.add('aktif', 'active');
+
+    const id      = parseInt(btn.dataset.id);
+    const nama    = btn.dataset.nama;
+    const nis     = btn.dataset.nis;
+    aktivSiswaId  = id;
+
+    // Update header panel kanan
+    document.getElementById('badgeSantriMurajaah').textContent = 'Siswa: ' + nama;
+
+    // Render tabel setoran & riwayat murajaah
+    renderTabelSetoran(id);
+    renderTabelMurajaah(id);
+
+    // Tampilkan panel kanan (sembunyikan empty state tanpa konflik CSS)
+    document.getElementById('murajaahEmpty').hidden       = true;
+    document.getElementById('murajaahRiwayatArea').hidden = false;
+}
+
+// ── Render tabel setoran yang bisa di-murajaah ───────────────────────────────
+function renderTabelSetoran(siswaId) {
+    const tbody  = document.getElementById('tabelSetoranMurajaah');
+    const label  = document.getElementById('infoJumlahSetoran');
+    const list   = SETORAN_PER_SISWA[siswaId] ?? [];
+    label.textContent = `Menampilkan ${list.length} setoran`;
+
+    if (!list.length) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted small py-4">
+            <i class="bi bi-inbox" style="font-size:1.75rem;opacity:.35;"></i>
+            <div class="mt-2">Belum ada setoran hafalan untuk siswa ini.</div>
+        </td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = list.map((s, i) => {
+        const ayat = `Ayat ${s.ayat_awal}–${s.ayat_akhir}`;
+        return `<tr>
+            <td style="color:#64748B; font-size:13px;">${fmtTgl(s.tanggal_setor)}</td>
+            <td>
+                <span class="fw-bold text-dark" style="font-size:13.5px;">${s.surah ?? '-'}</span>
+            </td>
+            <td style="color:#64748B; font-size:13px;">${ayat}</td>
+            <td>${badgeKualitas(s.kualitas ?? '-')}</td>
+            <td class="col-aksi">
+                <button type="button" class="btn-setoran-plus"
+                        title="Evaluasi Murajaah ${s.surah}"
+                        onclick="openModalEvaluasiSetoran(${s.id ?? 0}, '${(s.surah ?? '').replace(/'/g,"\\'")}', '${ayat.replace(/'/g,"\\'")}')">
+                    <i class="bi bi-plus-lg"></i>
+                </button>
+            </td>
+        </tr>`;
+    }).join('');
+}
+
+// ── Render tabel riwayat hasil evaluasi murajaah ─────────────────────────────
+function renderTabelMurajaah(siswaId) {
+    const tbody = document.getElementById('tabelRiwayatMurajaah');
+    const label = document.getElementById('labelJmlMurajaah');
+    const list  = MURAJAAH_PER_SISWA[siswaId] ?? [];
+    label.textContent = `(${list.length} evaluasi)`;
+
+    if (!list.length) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted small py-4">
+            <i class="bi bi-journal-x" style="font-size:1.75rem;opacity:.35;"></i>
+            <div class="mt-2">Belum ada catatan evaluasi murajaah untuk siswa ini.</div>
+        </td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = list.map((m, i) => {
+        return `<tr>
+            <td style="color:#94A3B8; font-size:13px;">${i + 1}.</td>
+            <td style="color:#64748B; font-size:13px;">${fmtTgl(m.tanggal_murajaah)}</td>
+            <td>
+                <span class="fw-semibold text-dark">${m.surah ?? '-'}</span>
+                <span class="text-muted small ms-1">(${m.ayat_range ?? ''})</span>
+            </td>
+            <td>${badgeKualitas(m.status_mutqin ?? '-')}</td>
+            <td class="text-muted small">${m.catatan ? m.catatan : '–'}</td>
+        </tr>`;
+    }).join('');
+}
+
+// ── Buka modal dari baris setoran ────────────────────────────────────────────
+function openModalEvaluasiSetoran(setoranId, surah, ayatRange) {
+    document.getElementById('modalSetoranId').value         = setoranId;
+    document.getElementById('modalSurah').value             = surah;
+    document.getElementById('modalAyatRange').value         = ayatRange;
+    document.getElementById('modalMurajaahSiswaId').value   = aktivSiswaId ?? '';
+    
+    const siswaCard = document.querySelector(`#listMurajaahSiswa .hafalan-siswa-card[data-id="${aktivSiswaId}"]`);
+    const namaSiswa = siswaCard ? siswaCard.dataset.nama : 'Siswa';
+    document.getElementById('modalNamaSantriMurajaah').textContent = namaSiswa;
+
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('modalEvaluasiMurajaah')).show();
+}
+
+// ── Buka modal murajaah mandiri (tanpa id setoran) ────────────────────────────
+function openModalMurajaahBebas() {
+    document.getElementById('modalSetoranId').value         = '';
+    document.getElementById('modalSurah').value             = '';
+    document.getElementById('modalAyatRange').value         = '';
+    document.getElementById('modalMurajaahSiswaId').value   = aktivSiswaId ?? '';
+
+    const siswaCard = document.querySelector(`#listMurajaahSiswa .hafalan-siswa-card[data-id="${aktivSiswaId}"]`);
+    const namaSiswa = siswaCard ? siswaCard.dataset.nama : 'Siswa';
+    document.getElementById('modalNamaSantriMurajaah').textContent = namaSiswa;
+
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('modalEvaluasiMurajaah')).show();
+}
+
+// ── Filter pencarian panel kiri ──────────────────────────────────────────────
+document.getElementById('searchMurajaahSiswa')?.addEventListener('input', function() {
+    const kw = this.value.toLowerCase().trim();
+    document.querySelectorAll('#listMurajaahSiswa .hafalan-siswa-card').forEach(card => {
+        const nama = card.dataset.searchNama ?? '';
+        const nis  = card.dataset.searchNis  ?? '';
+        card.style.display = (nama.includes(kw) || nis.includes(kw)) ? '' : 'none';
     });
 });
 
-// Buka modal dari tombol baris setoran tertentu
-function openModalEvaluasiSetoran(setoranId, surah, ayatRange) {
-    document.getElementById('modalSetoranId').value = setoranId;
-    document.getElementById('modalSurah').value = surah;
-    document.getElementById('modalAyatRange').value = ayatRange;
-    new bootstrap.Modal(document.getElementById('modalEvaluasiMurajaah')).show();
-}
-
-// Buka modal untuk murajaah mandiri (tanpa id setoran)
-function openModalMurajaahBebas() {
-    document.getElementById('modalSetoranId').value = '';
-    document.getElementById('modalSurah').value = '';
-    document.getElementById('modalAyatRange').value = 'Semua Ayat';
-    new bootstrap.Modal(document.getElementById('modalEvaluasiMurajaah')).show();
-}
+// ── Auto-pilih siswa setelah redirect dari store ──────────────────────────────
+@if($selectedSiswa)
+document.addEventListener('DOMContentLoaded', function() {
+    const targetBtn = document.querySelector(
+        '#listMurajaahSiswa .hafalan-siswa-card[data-id="{{ $selectedSiswa->id }}"]'
+    );
+    if (targetBtn) {
+        targetBtn.click();
+        setTimeout(() => targetBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
+    }
+});
+@endif
 </script>
 @endsection

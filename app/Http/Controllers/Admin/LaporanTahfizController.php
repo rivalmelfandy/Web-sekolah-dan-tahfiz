@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Enums\NilaiIndeks;
+use App\Enums\KualitasLevel;
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Models\Halaqah;
@@ -29,7 +29,7 @@ class LaporanTahfizController extends Controller
         // Daftar siswa — eager load halaqah + ustadz pembimbing halaqah
         $siswaList = User::where('role', UserRole::Siswa)
             ->with(['halaqah:id,nama_halaqah,kode_halaqah,ustadz_id', 'halaqah.ustadz:id,nama_lengkap'])
-            ->when($halaqahIdFilter, fn ($q) => $q->where('halaqah_id', $halaqahIdFilter))
+            ->when($halaqahIdFilter, fn($q) => $q->where('halaqah_id', $halaqahIdFilter))
             ->orderBy('nama_lengkap')
             ->get(['id', 'nip_nis', 'nama_lengkap', 'halaqah_id']);
 
@@ -49,20 +49,17 @@ class LaporanTahfizController extends Controller
         $siswa->load(['halaqah:id,nama_halaqah,kode_halaqah,ustadz_id', 'halaqah.ustadz:id,nama_lengkap']);
 
         // ── Setoran hafalan siswa ────────────────────────────────────────
+        // Kolom kualitas (enum: Lancar|Kurang Lancar|Tidak Lancar); tidak ada nilai_hafalan.
         $setoran = $siswa->setoranHafalan()
             ->orderByDesc('tanggal_setor')
             ->orderByDesc('id')
-            ->get(['id', 'siswa_id', 'surah', 'ayat_awal', 'ayat_akhir', 'nilai_hafalan', 'tanggal_setor', 'catatan']);
+            ->get(['id', 'siswa_id', 'ustadz_id', 'surah', 'ayat_awal', 'ayat_akhir', 'kualitas', 'catatan', 'tanggal_setor']);
 
-        // ── Murajaah siswa (lewat setoran yang dimilikinya) ──────────────
-        // Murajaah tidak langsung berelasi ke siswa; harus melalui setoran_hafalan.
-        $setoranIds = $setoran->pluck('id');
-
-        $murajaah = Murajaah::whereIn('setoran_id', $setoranIds)
-            ->with('setoran:id,surah,ayat_awal,ayat_akhir')
+        // ── Murajaah siswa (murajaah punya siswa_id langsung) ───────────
+        $murajaah = Murajaah::where('siswa_id', $siswa->id)
             ->orderByDesc('tanggal_murajaah')
             ->orderByDesc('id')
-            ->get(['id', 'setoran_id', 'ayat_range', 'nilai_murajaah', 'tanggal_murajaah', 'catatan']);
+            ->get(['id', 'setoran_id', 'siswa_id', 'ustadz_id', 'surah', 'ayat_range', 'status_mutqin', 'catatan', 'tanggal_murajaah']);
 
         // ── Gabungkan ke satu koleksi terurut tanggal terbaru ────────────
         $aktivitas = $this->gabungkanAktivitas($setoran, $murajaah);
@@ -77,7 +74,7 @@ class LaporanTahfizController extends Controller
 
     /**
      * Gabungkan koleksi setoran dan murajaah ke satu Collection terurut terbaru.
-     * Tiap item memuat: nama_surah, tanggal, kategori, nilai, kualitas (NilaiIndeks).
+     * Tiap item memuat: nama_surah, tanggal, kategori, kualitas (KualitasLevel), catatan.
      *
      * @param  Collection<int, SetoranHafalan>  $setoran
      * @param  Collection<int, Murajaah>  $murajaah
@@ -85,29 +82,37 @@ class LaporanTahfizController extends Controller
      */
     private function gabungkanAktivitas(Collection $setoran, Collection $murajaah): Collection
     {
-        $barisSetoran = $setoran->map(fn ($s) => [
-            'id' => $s->id,
-            'kategori' => 'Hafalan',
-            'nama_surah' => $s->surah.' ('.$s->ayat_awal.'–'.$s->ayat_akhir.')',
-            'tanggal' => $s->tanggal_setor,          // Carbon instance (di-cast)
-            'nilai' => $s->nilai_hafalan,
-            'kualitas' => NilaiIndeks::dariNilai($s->nilai_hafalan),
-            'catatan' => $s->catatan,
-            'ayat_range' => null,
-        ]);
+        $barisSetoran = $setoran->map(function ($s) {
+            $kualitas = $s->kualitas instanceof KualitasLevel
+                ? $s->kualitas
+                : KualitasLevel::tryFrom((string) $s->kualitas);
 
-        $barisMurajaah = $murajaah->map(fn ($m) => [
-            'id' => $m->id,
-            'kategori' => 'Murajaah',
-            'nama_surah' => $m->setoran
-                ? $m->setoran->surah.' ('.$m->setoran->ayat_awal.'–'.$m->setoran->ayat_akhir.')'
-                : ($m->ayat_range ?? '–'),
-            'tanggal' => $m->tanggal_murajaah,       // Carbon instance (di-cast)
-            'nilai' => $m->nilai_murajaah,
-            'kualitas' => NilaiIndeks::dariNilai($m->nilai_murajaah),
-            'catatan' => $m->catatan,
-            'ayat_range' => $m->ayat_range,
-        ]);
+            return [
+                'id' => $s->id,
+                'kategori' => 'Hafalan',
+                'nama_surah' => $s->surah . ' (' . $s->ayat_awal . '–' . $s->ayat_akhir . ')',
+                'tanggal' => $s->tanggal_setor,  // Carbon (di-cast model)
+                'kualitas' => $kualitas,
+                'catatan' => $s->catatan,
+                'ayat_range' => null,
+            ];
+        });
+
+        $barisMurajaah = $murajaah->map(function ($m) {
+            $kualitas = $m->status_mutqin instanceof KualitasLevel
+                ? $m->status_mutqin
+                : KualitasLevel::tryFrom((string) $m->status_mutqin);
+
+            return [
+                'id' => $m->id,
+                'kategori' => 'Murajaah',
+                'nama_surah' => ($m->surah ?? '') . ' (' . ($m->ayat_range ?? '–') . ')',
+                'tanggal' => $m->tanggal_murajaah,  // Carbon (di-cast model)
+                'kualitas' => $kualitas,
+                'catatan' => $m->catatan,
+                'ayat_range' => $m->ayat_range,
+            ];
+        });
 
         return $barisSetoran
             ->concat($barisMurajaah)
@@ -116,8 +121,8 @@ class LaporanTahfizController extends Controller
     }
 
     /**
-     * Hitung statistik ringkas: total setoran, total murajaah, rata-rata nilai,
-     * dan indeks huruf rata-rata.
+     * Hitung statistik ringkas: total setoran, total murajaah,
+     * dan distribusi kualitas (Lancar / Kurang Lancar / Tidak Lancar).
      *
      * @param  Collection<int, SetoranHafalan>  $setoran
      * @param  Collection<int, Murajaah>  $murajaah
@@ -128,19 +133,49 @@ class LaporanTahfizController extends Controller
         $totalSetoran = $setoran->count();
         $totalMurajaah = $murajaah->count();
 
-        // Rata-rata gabungan: prioritaskan nilai murajaah (evaluasi terkini)
-        $semuaNilai = $setoran->pluck('nilai_hafalan')
-            ->concat($murajaah->pluck('nilai_murajaah'));
+        // Distribusi kualitas setoran
+        $distribusiSetoran = collect([
+            KualitasLevel::Lancar->value => 0,
+            KualitasLevel::KurangLancar->value => 0,
+            KualitasLevel::TidakLancar->value => 0,
+        ]);
 
-        $rataRata = $semuaNilai->isNotEmpty()
-            ? round($semuaNilai->average(), 1)
+        foreach ($setoran as $s) {
+            $val = $s->kualitas instanceof KualitasLevel
+                ? $s->kualitas->value
+                : (string) $s->kualitas;
+            if ($distribusiSetoran->has($val)) {
+                $distribusiSetoran[$val]++;
+            }
+        }
+
+        // Distribusi status_mutqin murajaah
+        $distribusiMurajaah = collect([
+            KualitasLevel::Lancar->value => 0,
+            KualitasLevel::KurangLancar->value => 0,
+            KualitasLevel::TidakLancar->value => 0,
+        ]);
+
+        foreach ($murajaah as $m) {
+            $val = $m->status_mutqin instanceof KualitasLevel
+                ? $m->status_mutqin->value
+                : (string) $m->status_mutqin;
+            if ($distribusiMurajaah->has($val)) {
+                $distribusiMurajaah[$val]++;
+            }
+        }
+
+        // Persen lancar setoran (untuk ringkasan)
+        $pctLancarSetoran = $totalSetoran > 0
+            ? round($distribusiSetoran[KualitasLevel::Lancar->value] / $totalSetoran * 100, 1)
             : 0.0;
 
         return [
             'total_setoran' => $totalSetoran,
             'total_murajaah' => $totalMurajaah,
-            'rata_nilai' => $rataRata,
-            'indeks' => NilaiIndeks::dariNilai($rataRata),
+            'distribusi_setoran' => $distribusiSetoran,
+            'distribusi_murajaah' => $distribusiMurajaah,
+            'pct_lancar_setoran' => $pctLancarSetoran,
         ];
     }
 }

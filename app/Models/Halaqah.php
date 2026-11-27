@@ -15,11 +15,18 @@ class Halaqah extends Model
     use HasFactory;
 
     /**
-     * Tabel yang diasosiasikan dengan model (nama DBML, bukan jamak default Eloquent).
+     * Tabel yang diasosiasikan dengan model.
      *
      * @var string
      */
     protected $table = 'halaqah';
+
+    /**
+     * Kolom updated_at tidak ada di tabel ini.
+     *
+     * @var string|null
+     */
+    public const UPDATED_AT = null;
 
     /**
      * Atribut yang boleh diisi secara massal.
@@ -34,7 +41,7 @@ class Halaqah extends Model
     ];
 
     /**
-     * Nilai default yang diasumsikan model sebelum disimpan, mengikuti default database.
+     * Nilai default yang diasumsikan model sebelum disimpan.
      *
      * @var array<string, mixed>
      */

@@ -331,7 +331,7 @@
                         KATEGORI</th>
                     <th
                         style="width:15%; border:1px solid #475569 !important; padding:6px 8px; font-size:9pt; font-weight:700; text-align:center;">
-                        KUALITAS</th>
+                        INDEKS</th>
                 </tr>
             </thead>
             <tbody>
@@ -340,9 +340,8 @@
                         $bgKat = $item['kategori'] === 'Hafalan'
                             ? 'background:#BAFC8C; color:#086314;'
                             : 'background:#FFE6A8; color:#634F08;';
-                        $kValPrint = $item['kualitas'] instanceof \App\Enums\KualitasLevel
-                            ? $item['kualitas']->value
-                            : (string) ($item['kualitas'] ?? '–');
+                        $nilaiPrint = $item['nilai'] ?? '–';
+                        $indeksPrint = $item['indeks']?->value ?? '–';
                     @endphp
                     <tr>
                         <td
@@ -360,7 +359,7 @@
                         </td>
                         <td
                             style="border:1px solid #475569 !important; padding:5px 8px; font-size:9pt; color:#000000; text-align:center; font-weight:600;">
-                            {{ $kValPrint }}</td>
+                            {{ $nilaiPrint }} ({{ $indeksPrint }})</td>
                     </tr>
                 @empty
                     <tr>
@@ -462,10 +461,10 @@
             <div class="d-flex flex-wrap gap-2">
                 @php
                     $pills = [
-                        ['label' => 'Total Setoran', 'nilai' => $stat['total_setoran'], 'icon' => 'bi-journal-bookmark-fill', 'cls' => 'stat-setoran'],
-                        ['label' => 'Total Murajaah', 'nilai' => $stat['total_murajaah'], 'icon' => 'bi-arrow-repeat', 'cls' => 'stat-murajaah'],
-                        ['label' => 'Setoran Lancar', 'nilai' => $stat['pct_lancar_setoran'] . '%', 'icon' => 'bi-patch-check-fill', 'cls' => 'stat-rata'],
-                        ['label' => 'Lancar', 'nilai' => $stat['distribusi_setoran']['Lancar'] ?? 0, 'icon' => 'bi-award-fill', 'cls' => 'stat-predikat'],
+                        ['label' => 'Total Setoran',  'nilai' => $stat['total_setoran'],          'icon' => 'bi-journal-bookmark-fill', 'cls' => 'stat-setoran'],
+                        ['label' => 'Total Murajaah', 'nilai' => $stat['total_murajaah'],         'icon' => 'bi-arrow-repeat',          'cls' => 'stat-murajaah'],
+                        ['label' => 'Rata-Rata Nilai', 'nilai' => $stat['rata_nilai'] . '%',       'icon' => 'bi-graph-up-arrow',        'cls' => 'stat-rata'],
+                        ['label' => 'Predikat',        'nilai' => $stat['indeks']->value,          'icon' => 'bi-award-fill',            'cls' => 'stat-predikat'],
                     ];
                 @endphp
                 @foreach($pills as $st)
@@ -530,14 +529,15 @@
                 <tbody>
                     @forelse($aktivitas as $i => $item)
                         @php
-                            /** @var \App\Enums\KualitasLevel $kualitas */
-                            $kualitas   = $item['kualitas'];
-                            $kVal       = $kualitas instanceof \App\Enums\KualitasLevel ? $kualitas->value : (string) $kualitas;
+                            /** @var \App\Enums\NilaiIndeks $indeks */
+                            $indeks = $item['indeks'];
+                            $kVal   = $indeks?->value ?? '–';
                             $kBg = match($kVal) {
-                                'Lancar'        => ['bg'=>'#D1FAE5','color'=>'#065F46','border'=>'#6EE7B7'],
-                                'Kurang Lancar' => ['bg'=>'#FEF9C3','color'=>'#92400E','border'=>'#FDE68A'],
-                                'Tidak Lancar'  => ['bg'=>'#FEE2E2','color'=>'#991B1B','border'=>'#FCA5A5'],
-                                default         => ['bg'=>'#F3F4F6','color'=>'#374151','border'=>'#D1D5DB'],
+                                'A', 'AB' => ['bg'=>'#D1FAE5','color'=>'#065F46','border'=>'#6EE7B7'],
+                                'B', 'BC' => ['bg'=>'#DBEAFE','color'=>'#1D4ED8','border'=>'#93C5FD'],
+                                'C'       => ['bg'=>'#FEF9C3','color'=>'#92400E','border'=>'#FDE68A'],
+                                'D', 'E'  => ['bg'=>'#FEE2E2','color'=>'#991B1B','border'=>'#FCA5A5'],
+                                default   => ['bg'=>'#F3F4F6','color'=>'#374151','border'=>'#D1D5DB'],
                             };
                             $katClass = $item['kategori'] === 'Hafalan' ? 'badge-hafalan' : 'badge-murajaah';
                         @endphp

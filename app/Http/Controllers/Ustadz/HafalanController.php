@@ -86,6 +86,6 @@ class HafalanController extends Controller
 
         return redirect()
             ->route('ustadz.hafalan.index', ['siswa_id' => $data['siswa_id']])
-            ->with('success', "Alhamdulillah! Setoran {$namaSiswa} untuk Surah {$setoran->surah} (Ayat {$setoran->ayat_awal}–{$setoran->ayat_akhir}) kualitas '{$setoran->kualitas->value}' berhasil dicatat.");
+            ->with('success', "Alhamdulillah! Setoran {$namaSiswa} untuk Surah {$setoran->surah} (Ayat {$setoran->ayat_awal}–{$setoran->ayat_akhir}) nilai {$setoran->nilai_hafalan} berhasil dicatat.");
     }
 }

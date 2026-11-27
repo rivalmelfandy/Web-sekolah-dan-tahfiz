@@ -28,7 +28,7 @@ use Illuminate\View\View;
                     'siswa',
                     'setoranHafalan as total_setoran_count',
                     'setoranHafalan as setoran_lancar_count' => function ($query) {
-                        $query->where('kualitas', 'Lancar');
+                        $query->where('nilai_hafalan', '>=', 80);
                     },
                 ])
                 ->orderBy('kode_halaqah')

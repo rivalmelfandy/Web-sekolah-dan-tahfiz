@@ -130,7 +130,7 @@
                     <h2 class="fw-bold mb-0 h5 text-dark">
                         <i class="bi bi-graph-up-arrow me-2" style="color:#117A74;"></i>Ringkasan Progres Hafalan
                     </h2>
-                    <p class="text-muted small mb-0 mt-1">Capaian berdasarkan kualitas hafalan yang dicatat Ustadz.</p>
+                    <p class="text-muted small mb-0 mt-1">Capaian berdasarkan rata-rata nilai hafalan yang dicatat Ustadz.</p>
                 </div>
                 @if($totalSetoran > 0)
                     @php
@@ -151,38 +151,39 @@
 
                     @if($totalSetoran > 0)
                         @php
-                            $pctLancar       = round($setoranLancar / $totalSetoran * 100);
-                            $setoranKurang   = \App\Models\SetoranHafalan::where('siswa_id', $user->id)
-                                ->where('kualitas', \App\Enums\KualitasLevel::KurangLancar->value)->count();
-                            $setoranTidak    = \App\Models\SetoranHafalan::where('siswa_id', $user->id)
-                                ->where('kualitas', \App\Enums\KualitasLevel::TidakLancar->value)->count();
-                            $pctKurang       = round($setoranKurang / $totalSetoran * 100);
-                            $pctTidak        = round($setoranTidak / $totalSetoran * 100);
+                            $pctLancar  = round($setoranLancar / $totalSetoran * 100);
+                            $setoranBaik    = $setoranLancar; // nilai >= 80
+                            $setoranSedang  = \App\Models\SetoranHafalan::where('siswa_id', $user->id)
+                                ->whereBetween('nilai_hafalan', [60, 79])->count();
+                            $setoranKurang  = \App\Models\SetoranHafalan::where('siswa_id', $user->id)
+                                ->where('nilai_hafalan', '<', 60)->count();
+                            $pctSedang  = round($setoranSedang / $totalSetoran * 100);
+                            $pctKurang  = round($setoranKurang / $totalSetoran * 100);
                         @endphp
 
                         <div class="mb-3">
                             <div class="d-flex justify-content-between mb-1">
-                                <span class="small fw-semibold text-dark">Lancar</span>
-                                <span class="small text-muted">{{ $setoranLancar }} setoran ({{ $pctLancar }}%)</span>
+                                <span class="small fw-semibold text-dark">Baik (≥80)</span>
+                                <span class="small text-muted">{{ $setoranBaik }} setoran ({{ $pctLancar }}%)</span>
                             </div>
                             <div class="progress rounded-pill mb-3" style="height:12px; background:#E2E8F0;">
                                 <div class="progress-bar rounded-pill" style="width:{{ $pctLancar }}%; background:#10B981;"></div>
                             </div>
 
                             <div class="d-flex justify-content-between mb-1">
-                                <span class="small fw-semibold text-dark">Kurang Lancar</span>
-                                <span class="small text-muted">{{ $setoranKurang }} setoran ({{ $pctKurang }}%)</span>
+                                <span class="small fw-semibold text-dark">Sedang (60–79)</span>
+                                <span class="small text-muted">{{ $setoranSedang }} setoran ({{ $pctSedang }}%)</span>
                             </div>
                             <div class="progress rounded-pill mb-3" style="height:12px; background:#E2E8F0;">
-                                <div class="progress-bar rounded-pill" style="width:{{ $pctKurang }}%; background:#F59E0B;"></div>
+                                <div class="progress-bar rounded-pill" style="width:{{ $pctSedang }}%; background:#F59E0B;"></div>
                             </div>
 
                             <div class="d-flex justify-content-between mb-1">
-                                <span class="small fw-semibold text-dark">Tidak Lancar</span>
-                                <span class="small text-muted">{{ $setoranTidak }} setoran ({{ $pctTidak }}%)</span>
+                                <span class="small fw-semibold text-dark">Perlu Perbaikan (&lt;60)</span>
+                                <span class="small text-muted">{{ $setoranKurang }} setoran ({{ $pctKurang }}%)</span>
                             </div>
                             <div class="progress rounded-pill" style="height:12px; background:#E2E8F0;">
-                                <div class="progress-bar rounded-pill" style="width:{{ $pctTidak }}%; background:#EF4444;"></div>
+                                <div class="progress-bar rounded-pill" style="width:{{ $pctKurang }}%; background:#EF4444;"></div>
                             </div>
                         </div>
                     @else
@@ -195,18 +196,19 @@
                     {{-- Hafalan terakhir --}}
                     @if($setoranTerakhir)
                         @php
-                            $kualitasLabel = $setoranTerakhir->kualitas->value;
-                            $kualitasBg = match($setoranTerakhir->kualitas->value) {
-                                'Lancar'        => '#D1FAE5',
-                                'Kurang Lancar' => '#FEF9C3',
-                                'Tidak Lancar'  => '#FEE2E2',
-                                default         => '#F3F4F6',
+                            $indeksTerakhir = $setoranTerakhir->indeks;
+                            $indeksLabel = $indeksTerakhir->value;
+                            $indeksBg = match($indeksTerakhir->value) {
+                                'A', 'AB' => '#D1FAE5',
+                                'B', 'BC' => '#DBEAFE',
+                                'C'       => '#FEF9C3',
+                                default   => '#FEE2E2',
                             };
-                            $kualitasColor = match($setoranTerakhir->kualitas->value) {
-                                'Lancar'        => '#065F46',
-                                'Kurang Lancar' => '#92400E',
-                                'Tidak Lancar'  => '#991B1B',
-                                default         => '#374151',
+                            $indeksColor = match($indeksTerakhir->value) {
+                                'A', 'AB' => '#065F46',
+                                'B', 'BC' => '#1D4ED8',
+                                'C'       => '#92400E',
+                                default   => '#991B1B',
                             };
                         @endphp
                         <div class="mt-4 p-3 rounded-3" style="background:#F0FDF4; border:1px solid #A7F3D0;">
@@ -223,10 +225,10 @@
                                     Ayat <strong class="text-dark">{{ $setoranTerakhir->ayat_awal }}–{{ $setoranTerakhir->ayat_akhir }}</strong>
                                 </span>
                                 <span class="text-muted">
-                                    Kualitas
+                                    Nilai <strong class="text-dark">{{ $setoranTerakhir->nilai }}</strong>
                                     <span class="badge fw-semibold ms-1 px-2 py-1 rounded-pill"
-                                        style="background:{{ $kualitasBg }}; color:{{ $kualitasColor }}; font-size:.7rem;">
-                                        {{ $kualitasLabel }}
+                                        style="background:{{ $indeksBg }}; color:{{ $indeksColor }}; font-size:.7rem;">
+                                        {{ $indeksLabel }}
                                     </span>
                                 </span>
                                 <span class="text-muted">

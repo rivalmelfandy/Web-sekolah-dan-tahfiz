@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Siswa;
 
-use App\Enums\KualitasLevel;
+use App\Enums\NilaiIndeks;
 use App\Http\Controllers\Controller;
 use App\Models\Murajaah;
 use App\Models\SetoranHafalan;
@@ -16,11 +16,9 @@ class DashboardController extends Controller
     /**
      * Halaman utama dashboard siswa — Progres Hafalan.
      *
-     * Skema SQL terbaru:
-     *   users            : id, nip_nis, password, nama_lengkap, no_hp, role, halaqah_id
-     *   setoran_hafalan  : id, siswa_id, ustadz_id, surah, ayat_awal, ayat_akhir, kualitas, catatan, tanggal_setor
-     *   murajaah         : id, setoran_id, siswa_id, ustadz_id, surah, ayat_range, status_mutqin, catatan, tanggal_murajaah
-     *   target_hafalan   : id, siswa_id, ustadz_id, surah_awal, surah_akhir, tanggal_mulai, tanggal_akhir, status (Aktif|Selesai|Nonaktif)
+     * Skema DBML terkini:
+     *   setoran_hafalan : nilai_hafalan (tinyint default 80)
+     *   murajaah        : setoran_id FK (tidak ada siswa_id langsung)
      */
     public function index(Request $request): View
     {
@@ -29,13 +27,16 @@ class DashboardController extends Controller
         // ── Total setoran ───────────────────────────────────────────────
         $totalSetoran = SetoranHafalan::where('siswa_id', $user->id)->count();
 
-        // ── Setoran Lancar (kualitas = 'Lancar') ────────────────────────
+        // "Setoran baik" = nilai_hafalan >= 80 (predikat AB ke atas)
         $setoranLancar = SetoranHafalan::where('siswa_id', $user->id)
-            ->where('kualitas', KualitasLevel::Lancar->value)
+            ->where('nilai_hafalan', '>=', 80)
             ->count();
 
-        // ── Total murajaah (murajaah punya siswa_id langsung) ──────────
-        $totalMurajaah = Murajaah::where('siswa_id', $user->id)->count();
+        // ── Total murajaah via setoran ──────────────────────────────────
+        $totalMurajaah = Murajaah::whereHas(
+            'setoran',
+            fn ($q) => $q->where('siswa_id', $user->id)
+        )->count();
 
         // ── Target hafalan aktif ────────────────────────────────────────
         $targetAktifRaw = DB::table('target_hafalan')
@@ -66,28 +67,25 @@ class DashboardController extends Controller
             ->orderByDesc('tanggal_setor')
             ->orderByDesc('id')
             ->limit(5)
-            ->get(['id', 'surah', 'ayat_awal', 'ayat_akhir', 'kualitas', 'tanggal_setor', 'ustadz_id']);
+            ->get(['id', 'surah', 'ayat_awal', 'ayat_akhir', 'nilai_hafalan', 'tanggal_setor', 'ustadz_id']);
 
         $ustadzIds = $setoranTerbaruRaw->pluck('ustadz_id')->filter()->unique()->values();
         $ustadzMap = DB::table('users')
             ->whereIn('id', $ustadzIds)
             ->pluck('nama_lengkap', 'id');
 
-        $setoranTerbaru = $setoranTerbaruRaw->map(fn($s) => (object) [
-            'id' => $s->id,
-            'surah' => $s->surah,
-            'ayat_awal' => $s->ayat_awal,
-            'ayat_akhir' => $s->ayat_akhir,
-            'kualitas' => $s->kualitas instanceof KualitasLevel
-                ? $s->kualitas
-                : KualitasLevel::from($s->kualitas),
-            'tanggal_setor' => $s->tanggal_setor,  // Carbon (di-cast model)
-            'nama_ustadz' => $ustadzMap[$s->ustadz_id] ?? '–',
+        $setoranTerbaru = $setoranTerbaruRaw->map(fn ($s) => (object) [
+            'id'           => $s->id,
+            'surah'        => $s->surah,
+            'ayat_awal'    => $s->ayat_awal,
+            'ayat_akhir'   => $s->ayat_akhir,
+            'nilai'        => $s->nilai_hafalan,
+            'indeks'       => NilaiIndeks::dariNilai($s->nilai_hafalan),
+            'tanggal_setor' => $s->tanggal_setor,
+            'nama_ustadz'  => $ustadzMap[$s->ustadz_id] ?? '–',
         ]);
 
-        // ── Nama halaqah siswa (via halaqah_id FK) ──────────────────────
-        $namaHalaqah = $user->halaqah?->nama_halaqah ?? null;
-
+        $namaHalaqah     = $user->halaqah?->nama_halaqah ?? null;
         $setoranTerakhir = $setoranTerbaru->first();
 
         return view('siswa.dashboard', compact(

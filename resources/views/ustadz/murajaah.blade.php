@@ -219,15 +219,12 @@
                                style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; height:42px; font-size:14px;">
                     </div>
 
-                    {{-- Hasil Evaluasi Kelancaran --}}
+                    {{-- Nilai Murajaah --}}
                     <div class="mb-3">
-                        <label class="form-label small fw-bold text-dark">Hasil Evaluasi Kelancaran <span class="text-danger">*</span></label>
-                        <select name="status_mutqin" id="modalStatusMutqin" class="form-select" required
-                                style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; height:42px; font-size:14px;">
-                            <option value="Lancar" selected>Lancar (Mutqin)</option>
-                            <option value="Kurang Lancar">Kurang Lancar (Perlu Diulang)</option>
-                            <option value="Tidak Lancar">Tidak Lancar (Belum Menguasai)</option>
-                        </select>
+                        <label class="form-label small fw-bold text-dark">Nilai Murajaah (0–100) <span class="text-danger">*</span></label>
+                        <input type="number" name="nilai_murajaah" id="modalNilaiMurajaah" class="form-control"
+                               value="80" min="0" max="100" required
+                               style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; height:42px; font-size:14px;">
                     </div>
 
                     {{-- Tanggal Murajaah --}}
@@ -280,16 +277,16 @@ function fmtTgl(str) {
     return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
-// ── Helper: badge kualitas ───────────────────────────────────────────────────
-function badgeKualitas(kualitas) {
-    if (kualitas === 'Lancar') {
-        return '<span class="hafalan-badge hafalan-badge-selesai"><i class="bi bi-check-circle-fill me-1"></i>Lancar (Mutqin)</span>';
-    } else if (kualitas === 'Kurang Lancar') {
-        return '<span class="hafalan-badge hafalan-badge-berjalan"><i class="bi bi-clock-history me-1"></i>Kurang Lancar</span>';
-    } else if (kualitas === 'Tidak Lancar') {
-        return '<span class="hafalan-badge" style="background:#FEE2E2; color:#B91C1C;"><i class="bi bi-x-circle-fill me-1"></i>Tidak Lancar</span>';
-    }
-    return `<span class="hafalan-badge hafalan-badge-belum">${kualitas || '-'}</span>`;
+// ── Helper: badge nilai/indeks ───────────────────────────────────────────────
+function badgeNilai(nilai) {
+    const n = parseInt(nilai);
+    if (isNaN(n)) return `<span class="hafalan-badge hafalan-badge-belum">${nilai || '-'}</span>`;
+    if (n >= 90) return `<span class="hafalan-badge hafalan-badge-selesai"><i class="bi bi-check-circle-fill me-1"></i>A (${n})</span>`;
+    if (n >= 80) return `<span class="hafalan-badge hafalan-badge-selesai"><i class="bi bi-check-circle-fill me-1"></i>AB (${n})</span>`;
+    if (n >= 70) return `<span class="hafalan-badge hafalan-badge-berjalan"><i class="bi bi-clock-history me-1"></i>B (${n})</span>`;
+    if (n >= 60) return `<span class="hafalan-badge hafalan-badge-berjalan"><i class="bi bi-clock-history me-1"></i>BC (${n})</span>`;
+    if (n >= 50) return `<span class="hafalan-badge" style="background:#FEF9C3; color:#B45309;"><i class="bi bi-dash-circle me-1"></i>C (${n})</span>`;
+    return `<span class="hafalan-badge" style="background:#FEE2E2; color:#B91C1C;"><i class="bi bi-x-circle-fill me-1"></i>D/E (${n})</span>`;
 }
 
 // ── Pilih santri ─────────────────────────────────────────────────────────────
@@ -342,7 +339,7 @@ function renderTabelSetoran(siswaId) {
                 <span class="fw-bold text-dark" style="font-size:13.5px;">${s.surah ?? '-'}</span>
             </td>
             <td style="color:#64748B; font-size:13px;">${ayat}</td>
-            <td>${badgeKualitas(s.kualitas ?? '-')}</td>
+            <td>${badgeNilai(s.nilai_hafalan ?? '-')}</td>
             <td class="col-aksi">
                 <button type="button" class="btn-setoran-plus"
                         title="Evaluasi Murajaah ${s.surah}"
@@ -377,7 +374,7 @@ function renderTabelMurajaah(siswaId) {
                 <span class="fw-semibold text-dark">${m.surah ?? '-'}</span>
                 <span class="text-muted small ms-1">(${m.ayat_range ?? ''})</span>
             </td>
-            <td>${badgeKualitas(m.status_mutqin ?? '-')}</td>
+            <td>${badgeNilai(m.nilai_murajaah ?? '-')}</td>
             <td class="text-muted small">${m.catatan ? m.catatan : '–'}</td>
         </tr>`;
     }).join('');

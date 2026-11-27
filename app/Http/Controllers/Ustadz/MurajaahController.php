@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Ustadz;
 
+use App\Enums\NilaiIndeks;
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Ustadz\StoreMurajaahRequest;
@@ -17,13 +18,13 @@ use Illuminate\View\View;
 class MurajaahController extends Controller
 {
     /**
-     * Halaman Penilaian Murajaah Santri (Layout 2 Kolom RPLBO).
+     * Halaman Penilaian Murajaah Santri (Layout 2 Kolom).
      */
     public function index(Request $request): View
     {
         $user = $request->user();
 
-        // ── Ambil halaqah dan santri binaan ─────────────────────────────
+        // ── Halaqah dan santri binaan ───────────────────────────────────
         $halaqah = Halaqah::where('ustadz_id', $user->id)->first();
 
         if ($halaqah) {
@@ -39,59 +40,71 @@ class MurajaahController extends Controller
 
         $santriIds = $santriList->pluck('id');
 
-        // ── Riwayat setoran & murajaah seluruh santri (untuk interaktivitas instan) ──
+        // ── Setoran per santri (sumber daftar setoran yang bisa dimurajaah) ──
         $semuaSetoran = SetoranHafalan::whereIn('siswa_id', $santriIds)
             ->orderByDesc('tanggal_setor')
             ->orderByDesc('id')
             ->get();
         $setoranPerSiswa = $semuaSetoran->groupBy('siswa_id');
 
-        $semuaMurajaah = Murajaah::whereIn('siswa_id', $santriIds)
+        // ── Murajaah per santri via relasi setoran ──────────────────────
+        $setoranIds = $semuaSetoran->pluck('id');
+
+        $semuaMurajaah = Murajaah::with('setoran:id,siswa_id,surah,ayat_awal,ayat_akhir')
+            ->whereIn('setoran_id', $setoranIds)
             ->orderByDesc('tanggal_murajaah')
             ->orderByDesc('id')
             ->get();
-        $murajaahPerSiswa = $semuaMurajaah->groupBy('siswa_id');
 
-        // ── Santri yang sedang dipilih (null jika baru buka halaman) ────
+        // Kelompokkan murajaah berdasarkan siswa_id dari setoran
+        $murajaahPerSiswa = $semuaMurajaah->groupBy(
+            fn ($m) => $m->setoran?->siswa_id
+        );
+
+        // ── Santri yang sedang dipilih ──────────────────────────────────
         $selectedSiswaId = $request->integer('siswa_id') ?: null;
-        $selectedSiswa = $selectedSiswaId ? $santriList->firstWhere('id', $selectedSiswaId) : null;
+        $selectedSiswa   = $selectedSiswaId
+            ? $santriList->firstWhere('id', $selectedSiswaId)
+            : null;
 
         $surahList = QuranHelper::getSurahList();
 
         return view('ustadz.murajaah', [
-            'user' => $user,
-            'halaqah' => $halaqah,
-            'santriList' => $santriList,
-            'selectedSiswa' => $selectedSiswa,
-            'setoranPerSiswa' => $setoranPerSiswa,
+            'user'             => $user,
+            'halaqah'          => $halaqah,
+            'santriList'       => $santriList,
+            'selectedSiswa'    => $selectedSiswa,
+            'setoranPerSiswa'  => $setoranPerSiswa,
             'murajaahPerSiswa' => $murajaahPerSiswa,
-            'surahList' => $surahList,
+            'surahList'        => $surahList,
         ]);
     }
 
     /**
      * Simpan evaluasi murajaah ke database.
+     * Kolom setoran_id wajib — murajaah selalu terkait setoran.
+     * setoran_hafalan.nilai_hafalan TIDAK ditimpa (aturan bisnis DBML).
      */
     public function store(StoreMurajaahRequest $request): RedirectResponse
     {
-        $data = $request->validated();
+        $data              = $request->validated();
         $data['ustadz_id'] = $request->user()->id;
 
         $murajaah = Murajaah::create($data);
 
-        // Jika murajaah terkait dengan setoran tertentu, perbarui kualitas setoran jika mutqin
-        if (!empty($data['setoran_id'])) {
-            $setoran = SetoranHafalan::find($data['setoran_id']);
-            if ($setoran) {
-                $setoran->update(['kualitas' => $data['status_mutqin']]);
-            }
-        }
+        // Ambil nama siswa dari setoran yang dimurajaah
+        $setoran   = SetoranHafalan::find($data['setoran_id']);
+        $namaSiswa = $setoran?->siswa?->nama_lengkap ?? 'Siswa';
+        $siswaId   = $setoran?->siswa_id;
 
-        $siswa = User::find($data['siswa_id']);
-        $namaSiswa = $siswa?->nama_lengkap ?? 'Siswa';
+        $indeks = NilaiIndeks::dariNilai($murajaah->nilai_murajaah);
 
         return redirect()
-            ->route('ustadz.murajaah.index', ['siswa_id' => $data['siswa_id']])
-            ->with('success', "Alhamdulillah! Evaluasi murajaah {$namaSiswa} untuk Surah {$murajaah->surah} ({$murajaah->ayat_range}) berhasil disimpan dengan status '{$data['status_mutqin']}'.");
+            ->route('ustadz.murajaah.index', array_filter(['siswa_id' => $siswaId]))
+            ->with(
+                'success',
+                "Alhamdulillah! Evaluasi murajaah {$namaSiswa} untuk Surah {$setoran?->surah}"
+                . " berhasil disimpan. Nilai: {$murajaah->nilai_murajaah} (Predikat {$indeks->value})."
+            );
     }
 }

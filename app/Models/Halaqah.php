@@ -22,13 +22,6 @@ class Halaqah extends Model
     protected $table = 'halaqah';
 
     /**
-     * Kolom updated_at tidak ada di tabel ini.
-     *
-     * @var string|null
-     */
-    public const UPDATED_AT = null;
-
-    /**
      * Atribut yang boleh diisi secara massal.
      *
      * @var list<string>

@@ -150,14 +150,14 @@
                                 <tbody>
                                     @foreach($aktivitas as $i => $item)
                                         @php
-                                            $kVal = $item['kualitas'] instanceof \App\Enums\KualitasLevel
-                                                ? $item['kualitas']->value
-                                                : (string) ($item['kualitas'] ?? '–');
+                                            $indeks = $item['kualitas_terkini'] ?? null;
+                                            $kVal = $indeks?->value ?? '–';
                                             $kBg = match ($kVal) {
-                                                'Lancar' => ['bg' => '#D1FAE5', 'color' => '#065F46'],
-                                                'Kurang Lancar' => ['bg' => '#FEF9C3', 'color' => '#92400E'],
-                                                'Tidak Lancar' => ['bg' => '#FEE2E2', 'color' => '#991B1B'],
-                                                default => ['bg' => '#F3F4F6', 'color' => '#374151'],
+                                                'A', 'AB' => ['bg' => '#D1FAE5', 'color' => '#065F46'],
+                                                'B', 'BC' => ['bg' => '#DBEAFE', 'color' => '#1D4ED8'],
+                                                'C'       => ['bg' => '#FEF9C3', 'color' => '#92400E'],
+                                                'D', 'E'  => ['bg' => '#FEE2E2', 'color' => '#991B1B'],
+                                                default   => ['bg' => '#F3F4F6', 'color' => '#374151'],
                                             };
                                         @endphp
                                         <tr>

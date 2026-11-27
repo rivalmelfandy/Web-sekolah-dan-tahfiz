@@ -264,7 +264,7 @@ tr:hover .badge-baca-mushaf {
                                 <th class="ps-3 py-2 fw-semibold" style="width:40px;">No</th>
                                 <th class="py-2 fw-semibold" style="width:110px;">Tanggal</th>
                                 <th class="py-2 fw-semibold">Surah &amp; Ayat</th>
-                                <th class="py-2 fw-semibold" style="width:120px;">Kualitas</th>
+                                <th class="py-2 fw-semibold" style="width:120px;">Nilai</th>
                                 <th class="py-2 pe-3 fw-semibold">Catatan</th>
                             </tr>
                         </thead>
@@ -367,13 +367,10 @@ tr:hover .badge-baca-mushaf {
 
                     <div class="row g-3 mb-3">
                         <div class="col-6">
-                            <label class="form-label small fw-bold text-dark mb-1">Kualitas Hafalan <span class="text-danger">*</span></label>
-                            <select name="kualitas" id="modalSelectKualitas" class="form-select"
-                                    style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; height:42px; font-size:14px;">
-                                <option value="Lancar" selected>Lancar (Mumtaz)</option>
-                                <option value="Kurang Lancar">Kurang Lancar (Jayyid)</option>
-                                <option value="Tidak Lancar">Tidak Lancar (Perlu Diulang)</option>
-                            </select>
+                            <label class="form-label small fw-bold text-dark mb-1">Nilai Hafalan (0–100) <span class="text-danger">*</span></label>
+                            <input type="number" name="nilai_hafalan" id="modalNilaiHafalan" class="form-control"
+                                   value="80" min="0" max="100" required
+                                   style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; height:42px; font-size:14px;">
                         </div>
                         <div class="col-6">
                             <label class="form-label small fw-bold text-dark mb-1">Tanggal Setor <span class="text-danger">*</span></label>
@@ -684,15 +681,19 @@ tr:hover .badge-baca-mushaf {
         }
 
         tbody.innerHTML = list.slice(0, 15).map((s, idx) => {
-            const tgl = s.tanggal_setor ? s.tanggal_setor.substring(0, 10) : '-';
-            const kual = s.kualitas || '-';
-            let kualBadge = `<span class="badge bg-secondary-subtle text-secondary px-2 py-1 rounded-pill">${escHtml(kual)}</span>`;
-            if (kual === 'Lancar') {
-                kualBadge = `<span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded-pill">Lancar</span>`;
-            } else if (kual === 'Kurang Lancar') {
-                kualBadge = `<span class="badge bg-warning-subtle text-warning border border-warning-subtle px-2 py-1 rounded-pill">Kurang Lancar</span>`;
-            } else if (kual === 'Tidak Lancar') {
-                kualBadge = `<span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1 rounded-pill">Tidak Lancar</span>`;
+            const tgl  = s.tanggal_setor ? s.tanggal_setor.substring(0, 10) : '-';
+            const nilaiH = s.nilai_hafalan ?? '–';
+            let kualBadge;
+            if (nilaiH >= 90) {
+                kualBadge = `<span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded-pill">A (${nilaiH})</span>`;
+            } else if (nilaiH >= 80) {
+                kualBadge = `<span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded-pill">AB (${nilaiH})</span>`;
+            } else if (nilaiH >= 70) {
+                kualBadge = `<span class="badge bg-info-subtle text-info border border-info-subtle px-2 py-1 rounded-pill">B (${nilaiH})</span>`;
+            } else if (nilaiH >= 60) {
+                kualBadge = `<span class="badge bg-warning-subtle text-warning border border-warning-subtle px-2 py-1 rounded-pill">BC (${nilaiH})</span>`;
+            } else {
+                kualBadge = `<span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1 rounded-pill">C/D/E (${nilaiH})</span>`;
             }
             return `<tr>
                 <td class="ps-3 text-muted small">${idx + 1}</td>

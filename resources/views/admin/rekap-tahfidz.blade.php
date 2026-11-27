@@ -162,9 +162,9 @@
                     </div>
                     <div>
                         <div class="fw-bold fs-4 lh-1" style="color:#065F46;">
-                            {{ $statTotal['pct_lancar'] }}<span class="fs-6 fw-normal text-muted">% Lancar</span>
+                            {{ $statTotal['rata_nilai'] }}<span class="fs-6 fw-normal text-muted">% Rata Nilai</span>
                         </div>
-                        <div class="text-muted small mt-1">Rata-Rata Setoran Lancar</div>
+                        <div class="text-muted small mt-1">Rata-Rata Nilai Hafalan</div>
                     </div>
                 </div>
             </div>
@@ -302,37 +302,42 @@
                                             <div class="text-muted" style="font-size:.7rem;">
                                                 {{ $s['hafalan_terakhir']['tanggal'] }} &middot;
                                                 @php
-                                                    $kualColor = match($s['hafalan_terakhir']['kualitas'] ?? '') {
-                                                        'Lancar'        => 'color:#065F46;font-weight:600;',
-                                                        'Kurang Lancar' => 'color:#92400E;font-weight:600;',
-                                                        'Tidak Lancar'  => 'color:#991B1B;font-weight:600;',
-                                                        default         => '',
+                                                    $indeksVal = $s['hafalan_terakhir']['indeks'] ?? '–';
+                                                    $kualColor = match($indeksVal) {
+                                                        'A', 'AB' => 'color:#065F46;font-weight:600;',
+                                                        'B', 'BC' => 'color:#1D4ED8;font-weight:600;',
+                                                        'C'       => 'color:#92400E;font-weight:600;',
+                                                        default   => 'color:#991B1B;font-weight:600;',
                                                     };
                                                 @endphp
-                                                <span style="{{ $kualColor }}">{{ $s['hafalan_terakhir']['kualitas'] ?? '–' }}</span>
+                                                Nilai: <strong>{{ $s['hafalan_terakhir']['nilai'] ?? '–' }}</strong>
+                                                <span style="{{ $kualColor }}"> ({{ $indeksVal }})</span>
                                             </div>
                                         @else
                                             <span class="text-muted small">Belum ada setoran</span>
                                         @endif
                                     </td>
 
-                                    {{-- Capaian Setoran Lancar --}}
+                                    {{-- Capaian --}}
                                     <td class="px-3 py-3 text-center">
                                         @php
-                                            $pct = $s['pct_lancar'];
+                                            $pct = $s['persen_capaian'];
                                             if ($pct >= 80)      { $kls = 'bg-a'; $barColor = '#047857'; }
-                                            elseif ($pct >= 60)  { $kls = 'bg-b'; $barColor = '#1D4ED8'; }
-                                            elseif ($pct >= 40)  { $kls = 'bg-c'; $barColor = '#D97706'; }
+                                            elseif ($pct >= 70)  { $kls = 'bg-b'; $barColor = '#1D4ED8'; }
+                                            elseif ($pct >= 60)  { $kls = 'bg-c'; $barColor = '#D97706'; }
                                             else                 { $kls = 'bg-d'; $barColor = '#DC2626'; }
                                         @endphp
                                         <div class="d-flex flex-column align-items-center gap-1">
-                                            <span class="badge-capaian {{ $kls }}">{{ $pct }}% Lancar</span>
+                                            <span class="badge-capaian {{ $kls }}">
+                                                {{ $pct }}
+                                                <span class="fw-normal">({{ $s['indeks'] }})</span>
+                                            </span>
                                             <div class="prog-capaian w-100" style="max-width:90px;">
                                                 <div class="prog-capaian-fill"
                                                     style="width:{{ $pct }}%; background:{{ $barColor }};"></div>
                                             </div>
                                             <div class="text-muted" style="font-size:.65rem;">
-                                                {{ $s['jumlah_lancar'] }}/{{ $s['total_setoran'] }} setoran
+                                                rata nilai dari {{ $s['rata_nilai'] }}
                                             </div>
                                         </div>
                                     </td>

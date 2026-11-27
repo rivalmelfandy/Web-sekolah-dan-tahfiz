@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Ustadz;
 
-use App\Enums\KualitasLevel;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -19,12 +18,10 @@ class StoreMurajaahRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'siswa_id' => ['required', 'integer', Rule::exists('users', 'id')->where('role', 'siswa')],
-            'setoran_id' => ['nullable', 'integer', Rule::exists('setoran_hafalan', 'id')],
-            'surah' => ['required', 'string', 'max:50'],
-            'ayat_range' => ['required', 'string', 'max:50'],
-            'status_mutqin' => ['required', Rule::enum(KualitasLevel::class)],
-            'catatan' => ['nullable', 'string', 'max:1000'],
+            'setoran_id'       => ['required', 'integer', Rule::exists('setoran_hafalan', 'id')],
+            'ayat_range'       => ['nullable', 'string', 'max:50'],
+            'nilai_murajaah'   => ['required', 'integer', 'min:0', 'max:100'],
+            'catatan'          => ['nullable', 'string', 'max:1000'],
             'tanggal_murajaah' => ['required', 'date'],
         ];
     }
@@ -35,11 +32,11 @@ class StoreMurajaahRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'siswa_id.required' => 'Pilih siswa terlebih dahulu.',
-            'siswa_id.exists' => 'Data siswa tidak valid.',
-            'surah.required' => 'Surah yang dimurajaah wajib diisi.',
-            'ayat_range.required' => 'Rentang ayat wajib diisi.',
-            'status_mutqin.required' => 'Status kelancaran/mutqin wajib ditentukan.',
+            'setoran_id.required'       => 'Pilih setoran yang akan dimurajaah.',
+            'setoran_id.exists'         => 'Data setoran tidak valid.',
+            'nilai_murajaah.required'   => 'Nilai murajaah (0–100) wajib diisi.',
+            'nilai_murajaah.min'        => 'Nilai minimal 0.',
+            'nilai_murajaah.max'        => 'Nilai maksimal 100.',
             'tanggal_murajaah.required' => 'Tanggal murajaah wajib diisi.',
         ];
     }

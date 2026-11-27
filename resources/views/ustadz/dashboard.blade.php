@@ -233,14 +233,15 @@
                                         @foreach($s->riwayat_murajaah as $rMur)
                                             <tr>
                                                 <td class="text-nowrap">{{ $rMur->tanggal_murajaah?->translatedFormat('d M Y') }}</td>
-                                                <td class="fw-semibold">{{ $rMur->surah }} ({{ $rMur->ayat_range }})</td>
+                                                <td class="fw-semibold">{{ $rMur->setoran?->surah ?? '–' }} ({{ $rMur->ayat_range ?? '–' }})</td>
                                                 <td>
-                                                    @if($rMur->status_mutqin?->value === 'Lancar')
-                                                        <span class="badge bg-success-subtle text-success border border-success-subtle">Lancar</span>
-                                                    @elseif($rMur->status_mutqin?->value === 'Kurang Lancar')
-                                                        <span class="badge bg-warning-subtle text-warning border border-warning-subtle">Kurang Lancar</span>
+                                                    @php $nm = $rMur->nilai_murajaah ?? 0; @endphp
+                                                    @if($nm >= 80)
+                                                        <span class="badge bg-success-subtle text-success border border-success-subtle">{{ $nm }} (AB+)</span>
+                                                    @elseif($nm >= 60)
+                                                        <span class="badge bg-warning-subtle text-warning border border-warning-subtle">{{ $nm }} (B/BC)</span>
                                                     @else
-                                                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle">Tidak Lancar</span>
+                                                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle">{{ $nm }} (C/D/E)</span>
                                                     @endif
                                                 </td>
                                                 <td class="text-muted">{{ $rMur->catatan ?: '–' }}</td>

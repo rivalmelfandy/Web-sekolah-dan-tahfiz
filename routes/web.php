@@ -12,7 +12,10 @@ use App\Http\Controllers\Siswa\DashboardController as SiswaDashboardController;
 use App\Http\Controllers\Siswa\ProfileController as SiswaProfileController;
 use App\Http\Controllers\Siswa\RiwayatController as SiswaRiwayatController;
 use App\Http\Controllers\Ustadz\DashboardController as UstadzDashboardController;
+use App\Http\Controllers\Ustadz\HafalanController as UstadzHafalanController;
+use App\Http\Controllers\Ustadz\MurajaahController as UstadzMurajaahController;
 use App\Http\Controllers\Ustadz\ProfileController as UstadzProfileController;
+use App\Http\Controllers\Ustadz\TargetController as UstadzTargetController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -62,6 +65,23 @@ Route::middleware('auth')->group(function () {
             ->name('profil.update');
         Route::put('profil/password', [UstadzProfileController::class, 'updatePassword'])
             ->name('profil.password');
+
+        Route::get('hafalan', [UstadzHafalanController::class, 'index'])
+            ->name('hafalan.index');
+        Route::post('hafalan', [UstadzHafalanController::class, 'store'])
+            ->name('hafalan.store');
+
+        Route::get('murajaah', [UstadzMurajaahController::class, 'index'])
+            ->name('murajaah.index');
+        Route::post('murajaah', [UstadzMurajaahController::class, 'store'])
+            ->name('murajaah.store');
+
+        Route::get('target', [UstadzTargetController::class, 'index'])
+            ->name('target.index');
+        Route::post('target', [UstadzTargetController::class, 'store'])
+            ->name('target.store');
+        Route::patch('target/{target}/selesai', [UstadzTargetController::class, 'markSelesai'])
+            ->name('target.selesai');
     });
 
     Route::get('/siswa', [SiswaDashboardController::class, 'index'])

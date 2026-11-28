@@ -26,7 +26,12 @@ class ProfileController extends Controller
 
         // ── Ringkasan capaian hafalan ───────────────────────────────────
         $totalSetoran = SetoranHafalan::where('siswa_id', $user->id)->count();
-        $totalMurajaah = Murajaah::where('siswa_id', $user->id)->count();
+
+        // Murajaah tidak punya kolom siswa_id; ambil via setoran milik siswa.
+        $totalMurajaah = Murajaah::whereHas(
+            'setoran',
+            fn($q) => $q->where('siswa_id', $user->id)
+        )->count();
 
         // ── Ustadz pembimbing dari target aktif (jika ada) ─────────────
         $targetAktif = DB::table('target_hafalan')

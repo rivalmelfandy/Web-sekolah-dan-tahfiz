@@ -62,7 +62,7 @@
                         <i class="bi bi-graph-up fs-3" style="color:#3B82F6;opacity:.18;"></i>
                     </div>
                     <div class="display-6 fw-bold text-dark">{{ $setoranLancar }}</div>
-                    <div class="fw-semibold small mt-1 text-dark">SETORAN LANCAR</div>
+                    <div class="fw-semibold small mt-1 text-dark">NILAI BAIK (≥80)</div>
                     <div class="text-muted" style="font-size:.72rem;">
                         @if($totalSetoran > 0)
                             {{ $setoranLancar }} dari {{ $totalSetoran }} setoran
@@ -140,7 +140,7 @@
                     @endphp
                     <span class="badge px-3 py-2 rounded-pill fw-semibold"
                         style="background:#D1FAE5; color:#065F46; font-size:.8rem;">
-                        {{ $pctLancar }}% Lancar
+                        {{ $pctLancar }}% Nilai Baik (≥80)
                     </span>
                 @endif
             </div>
@@ -352,24 +352,18 @@
                                     <tr>
                                         <th class="px-4 py-3">Tanggal</th>
                                         <th class="px-3 py-3">Surah &amp; Ayat</th>
-                                        <th class="px-3 py-3 text-center">Kualitas</th>
+                                        <th class="px-3 py-3 text-center">Nilai Hafalan</th>
                                         <th class="px-4 py-3">Ustadz</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($setoranTerbaru as $setoran)
                                         @php
-                                            $kBg = match($setoran->kualitas->value) {
-                                                'Lancar'        => '#D1FAE5',
-                                                'Kurang Lancar' => '#FEF9C3',
-                                                'Tidak Lancar'  => '#FEE2E2',
-                                                default         => '#F3F4F6',
-                                            };
-                                            $kColor = match($setoran->kualitas->value) {
-                                                'Lancar'        => '#065F46',
-                                                'Kurang Lancar' => '#92400E',
-                                                'Tidak Lancar'  => '#991B1B',
-                                                default         => '#374151',
+                                            $indBg = match($setoran->indeks->value) {
+                                                'A', 'AB' => ['bg' => '#D1FAE5', 'color' => '#065F46'],
+                                                'B', 'BC' => ['bg' => '#DBEAFE', 'color' => '#1D4ED8'],
+                                                'C'       => ['bg' => '#FEF9C3', 'color' => '#92400E'],
+                                                default   => ['bg' => '#FEE2E2', 'color' => '#991B1B'],
                                             };
                                         @endphp
                                         <tr>
@@ -383,9 +377,10 @@
                                                 </div>
                                             </td>
                                             <td class="px-3 py-3 text-center">
+                                                <div class="fw-bold small text-dark mb-1">{{ $setoran->nilai }}</div>
                                                 <span class="badge fw-semibold px-2 py-1 rounded-pill"
-                                                    style="background:{{ $kBg }}; color:{{ $kColor }}; font-size:.7rem;">
-                                                    {{ $setoran->kualitas->value }}
+                                                    style="background:{{ $indBg['bg'] }}; color:{{ $indBg['color'] }}; font-size:.7rem;">
+                                                    {{ $setoran->indeks->value }}
                                                 </span>
                                             </td>
                                             <td class="px-4 py-3 small text-muted">

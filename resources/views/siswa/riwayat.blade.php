@@ -143,7 +143,7 @@
                                         <th class="px-3 py-3">Tanggal</th>
                                         <th class="px-3 py-3">Kategori</th>
                                         <th class="px-3 py-3">Surah &amp; Ayat</th>
-                                        <th class="px-3 py-3 text-center">Kualitas</th>
+                                        <th class="px-3 py-3 text-center">Nilai</th>
                                         <th class="px-4 py-3">Ustadz</th>
                                     </tr>
                                 </thead>
@@ -155,9 +155,9 @@
                                             $kBg = match ($kVal) {
                                                 'A', 'AB' => ['bg' => '#D1FAE5', 'color' => '#065F46'],
                                                 'B', 'BC' => ['bg' => '#DBEAFE', 'color' => '#1D4ED8'],
-                                                'C'       => ['bg' => '#FEF9C3', 'color' => '#92400E'],
-                                                'D', 'E'  => ['bg' => '#FEE2E2', 'color' => '#991B1B'],
-                                                default   => ['bg' => '#F3F4F6', 'color' => '#374151'],
+                                                'C' => ['bg' => '#FEF9C3', 'color' => '#92400E'],
+                                                'D', 'E' => ['bg' => '#FEE2E2', 'color' => '#991B1B'],
+                                                default => ['bg' => '#F3F4F6', 'color' => '#374151'],
                                             };
                                         @endphp
                                         <tr>
@@ -196,13 +196,12 @@
                                             </td>
 
                                             <td class="px-3 py-3 text-center">
+                                                <div class="fw-bold small text-dark">{{ $item['nilai'] }}</div>
                                                 @if($kVal !== '–')
                                                     <span class="badge fw-semibold px-2 py-1 rounded-pill"
                                                         style="background:{{ $kBg['bg'] }}; color:{{ $kBg['color'] }}; font-size:.7rem;">
                                                         {{ $kVal }}
                                                     </span>
-                                                @else
-                                                    <span class="text-muted small">–</span>
                                                 @endif
                                             </td>
 
@@ -245,38 +244,57 @@
                                 <span class="text-muted fw-normal">/{{ $totalMurajaah }}</span>
                             </span>
                         </div>
+                        @if($rataNilai !== null)
+                        <div class="d-flex justify-content-between align-items-center py-2 px-3 rounded-3"
+                            style="background:#F5F3FF;">
+                            <span class="text-muted">Rata-Rata Nilai</span>
+                            <span class="fw-bold" style="color:#6D28D9;">
+                                {{ $rataNilai }}
+                                @if($predikatRata)
+                                    <span class="badge fw-semibold ms-1 px-2 rounded-pill"
+                                        style="background:{{ match($predikatRata->value) {'A','AB'=>'#D1FAE5','B','BC'=>'#DBEAFE','C'=>'#FEF9C3',default=>'#FEE2E2'} }}; color:{{ match($predikatRata->value) {'A','AB'=>'#065F46','B','BC'=>'#1D4ED8','C'=>'#92400E',default=>'#991B1B'} }}; font-size:.65rem;">
+                                        {{ $predikatRata->value }}
+                                    </span>
+                                @endif
+                            </span>
+                        </div>
+                        @endif
                     </div>
                 </div>
             </div>
 
-            {{-- Distribusi kualitas setoran --}}
+            {{-- Distribusi indeks nilai setoran --}}
             @if($distribusiKualitas->isNotEmpty() && ($filterKategori === 'semua' || $filterKategori === 'Hafalan'))
                 <div class="card border-0 shadow-sm rounded-4">
                     <div class="card-body p-4">
                         <h4 class="fw-bold h6 text-dark mb-3">
-                            <i class="bi bi-bar-chart-fill me-2" style="color:#117A74;"></i>Distribusi Kualitas Hafalan
+                            <i class="bi bi-bar-chart-fill me-2" style="color:#117A74;"></i>Distribusi Indeks Nilai
                         </h4>
                         <div class="d-flex flex-column gap-2">
                             @foreach([
-                                    'Lancar' => ['bar' => '#10B981', 'bg' => '#D1FAE5', 'color' => '#065F46'],
-                                    'Kurang Lancar' => ['bar' => '#F59E0B', 'bg' => '#FEF9C3', 'color' => '#92400E'],
-                                    'Tidak Lancar' => ['bar' => '#EF4444', 'bg' => '#FEE2E2', 'color' => '#991B1B'],
-                                ] as $kLabel => $kStyle)
+                                    'A' => ['bar' => '#10B981', 'bg' => '#D1FAE5', 'color' => '#065F46'],
+                                    'AB' => ['bar' => '#10B981', 'bg' => '#D1FAE5', 'color' => '#065F46'],
+                                    'B' => ['bar' => '#3B82F6', 'bg' => '#DBEAFE', 'color' => '#1D4ED8'],
+                                    'BC' => ['bar' => '#3B82F6', 'bg' => '#DBEAFE', 'color' => '#1D4ED8'],
+                                    'C' => ['bar' => '#F59E0B', 'bg' => '#FEF9C3', 'color' => '#92400E'],
+                                    'D' => ['bar' => '#EF4444', 'bg' => '#FEE2E2', 'color' => '#991B1B'],
+                                    'E' => ['bar' => '#6B7280', 'bg' => '#F3F4F6', 'color' => '#374151'],
+                                ] as $indeksLabel => $indStyle)
                                 @php
-                                    $jumlah = $distribusiKualitas[$kLabel] ?? 0;
+                                    $jumlah = $distribusiKualitas[$indeksLabel] ?? 0;
                                     $pct = $totalSetoran > 0 ? round($jumlah / $totalSetoran * 100) : 0;
                                 @endphp
                                 <div>
                                     <div class="d-flex justify-content-between align-items-center mb-1">
                                         <span class="badge fw-semibold px-2 py-1 rounded-pill"
-                                            style="background:{{ $kStyle['bg'] }}; color:{{ $kStyle['color'] }}; font-size:.7rem;">
-                                            {{ $kLabel }}
+                                            style="background:{{ $indStyle['bg'] }}; color:{{ $indStyle['color'] }}; font-size:.7rem; min-width:32px; text-align:center;">
+                                            {{ $indeksLabel }}
                                         </span>
-                                        <span class="small text-muted">{{ $jumlah }} ({{ $pct }}%)</span>
+                                        <span class="small text-muted">{{ $jumlah }} setoran ({{ $pct }}%)</span>
                                     </div>
                                     <div class="progress rounded-pill" style="height:6px; background:#E2E8F0;">
                                         <div class="progress-bar rounded-pill"
-                                            style="width:{{ $pct }}%; background:{{ $kStyle['bar'] }};"></div>
+                                            style="width:{{ $pct }}%; background:{{ $indStyle['bar'] }};"></div>
                                     </div>
                                 </div>
                             @endforeach
@@ -285,7 +303,7 @@
                 </div>
             @endif
 
-            {{-- Panduan kualitas --}}
+            {{-- Panduan indeks nilai --}}
             <div class="card border-0 shadow-sm rounded-4"
                 style="background:linear-gradient(135deg,#F0FDF4,#ECFDF5); border-left:4px solid #10B981 !important;">
                 <div class="card-body p-4">
@@ -295,16 +313,21 @@
                     </span>
                     <div class="d-flex flex-column gap-2" style="font-size:.8rem;">
                         @foreach([
-                                ['Lancar', '#D1FAE5', '#065F46', 'Hafalan sudah mutqin'],
-                                ['Kurang Lancar', '#FEF9C3', '#92400E', 'Masih perlu latihan'],
-                                ['Tidak Lancar', '#FEE2E2', '#991B1B', 'Perlu pengulangan intensif'],
-                            ] as [$label, $bg, $color, $desc])
+                                ['A', '90–100', 'Sangat Baik', '#D1FAE5', '#065F46'],
+                                ['AB', '80–89', 'Baik Sekali', '#D1FAE5', '#065F46'],
+                                ['B', '70–79', 'Baik', '#DBEAFE', '#1D4ED8'],
+                                ['BC', '60–69', 'Cukup Baik', '#DBEAFE', '#1D4ED8'],
+                                ['C', '50–59', 'Cukup', '#FEF9C3', '#92400E'],
+                                ['D', '40–49', 'Kurang', '#FEE2E2', '#991B1B'],
+                                ['E', '0–39', 'Sangat Kurang', '#F3F4F6', '#374151'],
+                            ] as [$label, $range, $desc, $bg, $color])
                             <div class="d-flex align-items-center gap-2">
                                 <span class="badge fw-semibold px-2 py-1 rounded-pill flex-shrink-0"
-                                    style="background:{{ $bg }}; color:{{ $color }}; font-size:.7rem; min-width:90px; text-align:center;">
+                                    style="background:{{ $bg }}; color:{{ $color }}; font-size:.7rem; min-width:36px; text-align:center;">
                                     {{ $label }}
                                 </span>
-                                <span class="text-muted">{{ $desc }}</span>
+                                <span class="text-muted" style="min-width:60px;">{{ $range }}</span>
+                                <span class="text-dark">{{ $desc }}</span>
                             </div>
                         @endforeach
                     </div>

@@ -43,6 +43,7 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
+        'remember_token',
     ];
 
     /**
@@ -132,23 +133,5 @@ class User extends Authenticatable
     public function isSiswa(): bool
     {
         return $this->role === UserRole::Siswa;
-    }
-
-    // ── Remember token — kolom tidak tersedia di tabel users ─────────
-    // Override agar Laravel tidak mencoba membaca/menulis remember_token.
-
-    public function getRememberToken(): string
-    {
-        return '';
-    }
-
-    public function setRememberToken($value): void
-    {
-        // Sengaja dikosongkan — kolom remember_token tidak ada di tabel.
-    }
-
-    public function getRememberTokenName(): string
-    {
-        return '';
     }
 }
